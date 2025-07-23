@@ -7,6 +7,7 @@ Antes de iniciar o projeto, certifique-se de ter instalado:
 - 📦 **npm** (vem com Node.js)
 - 🐧 **Git**rys Leão - Sistema de E-commerce
 
+
 Sistema completo de e-commerce desenvolvido com **Spring Boot** (Backend) e **React** (Frontend).
 
 ## 📋 Pré-requisitos
