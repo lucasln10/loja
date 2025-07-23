@@ -1,4 +1,4 @@
-# 🛍## 📋 Pré-requisitos
+# 🛍 📋 Pré-requisitos
 
 Antes de iniciar o projeto, certifique-se de ter instalado:
 
