@@ -1,4 +1,11 @@
-# 🛍️ Loja Crys Leão - Sistema de E-commerce
+# 🛍## 📋 Pré-requisitos
+
+Antes de iniciar o projeto, certifique-se de ter instalado:
+
+- ☕ **Java 21 ou superior**
+- 🟢 **Node.js 18 ou superior**
+- 📦 **npm** (vem com Node.js)
+- 🐧 **Git**rys Leão - Sistema de E-commerce
 
 Sistema completo de e-commerce desenvolvido com **Spring Boot** (Backend) e **React** (Frontend).
 
@@ -100,6 +107,7 @@ loja/
 ## 🛠️ Tecnologias Utilizadas
 
 ### Backend
+- **Java 21**
 - **Spring Boot 3.5.3**
 - **Spring Security** (Configuração JWT ready)
 - **Spring Data JPA**
@@ -174,9 +182,9 @@ kill -9 <PID>
 
 ### Erro: Java não encontrado
 ```bash
-# Ubuntu/Debian
+# Ubuntu/Debian - Java 21
 sudo apt update
-sudo apt install openjdk-11-jdk
+sudo apt install openjdk-21-jdk
 
 # Verificar instalação
 java -version
@@ -184,7 +192,7 @@ java -version
 
 ### Erro: Node.js não encontrado
 ```bash
-# Ubuntu/Debian
+# Ubuntu/Debian - Node.js 18
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
