@@ -6,21 +6,27 @@ import jakarta.persistence.*;
 @Entity
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
+@Table(name = "produtos")
 public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
-    public String nome;
+    @Column(nullable = false)
+    private String name;
 
-    public double preco;
+    @Column(nullable = false)
+    private double price;
 
-    public int quantidade;
+    @Column(nullable = false)
+    private int quantity;
 
-    public String descricao;
+    @Column(nullable = true)
+    private String description;
 
-    public String categoria;
+    @Column(nullable = true)
+    private String category;
 
 
     public Long getId() {
@@ -31,43 +37,43 @@ public class Produto {
         id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public double getPreco() {
-        return preco;
+    public double getPrice() {
+        return price;
     }
 
-    public void setPreco(double preco) {
-        this.preco = preco;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
-    public int getQuantidade() {
-        return quantidade;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getCategoria() {
-        return categoria;
+    public String getCategory() {
+        return category;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public void setCategoria(String category) {
+        this.category = category;
     }
 }
