@@ -1,5 +1,6 @@
 package com.lojacrysleao.lojacrysleao_api.controller;
 
+import com.lojacrysleao.lojacrysleao_api.config.JwtTokenProvider;
 import com.lojacrysleao.lojacrysleao_api.dto.LoginRequest;
 import com.lojacrysleao.lojacrysleao_api.dto.LoginResponse;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class AuthController {
                 )
         );
 
-        String token = tokenProvider.generateToken(Authentication authentication);
+        String token = tokenProvider.generateToken(authentication);
         return ResponseEntity.ok(new LoginResponse(token));
     }
 }

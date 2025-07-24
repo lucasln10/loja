@@ -1,18 +1,18 @@
-package com.lojacrysleao.lojacrysleao_api.dto;
+    package com.lojacrysleao.lojacrysleao_api.dto;
 
-public class LoginResponse {
+    public class LoginResponse {
 
-    private String token;
+        private String token;
 
-    public LoginResponse (String token) {
-        this.token = token;
+        public LoginResponse (String token) {
+            this.token = token;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
     }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-}

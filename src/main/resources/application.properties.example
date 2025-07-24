@@ -1,0 +1,22 @@
+spring.application.name=
+
+# Chave JWT
+jwt.secret=
+
+# ConfiguraÃ§Ãµes do servidor
+server.port=
+server.servlet.context-path=/
+
+# ConfiguraÃ§Ã£o do banco de dados MySQL
+spring.datasource.url=
+spring.datasource.driver-class-name=
+spring.datasource.username=
+spring.datasource.password=
+
+# ConfiguraÃ§Ã£o do JPA
+spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+# ConfiguraÃ§Ãµes de desenvolvimento
+spring.devtools.restart.enabled=true
