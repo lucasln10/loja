@@ -25,9 +25,6 @@ git --version
 #### 1. **Backend (Spring Boot) - Porta 8080**
 
 ```bash
-# Navegar para o diretório do backend
-cd lojacrysleao-api
-
 # Iniciar o servidor Spring Boot
 ./mvnw spring-boot:run
 ```
