@@ -1,23 +1,14 @@
-# 🛍## 📋 Pré-requisitos
+# 🛍 📋 Pré-requisitos
 
 Antes de iniciar o projeto, certifique-se de ter instalado:
 
 - ☕ **Java 21 ou superior**
 - 🟢 **Node.js 18 ou superior**
 - 📦 **npm** (vem com Node.js)
-- 🐧 **Git**rys Leão - Sistema de E-commerce
+- 🐧 **Git** Crys Leão - Sistema de E-commerce
 
 
 Sistema completo de e-commerce desenvolvido com **Spring Boot** (Backend) e **React** (Frontend).
-
-## 📋 Pré-requisitos
-
-Antes de iniciar o projeto, certifique-se de ter instalado:
-
-- ☕ **Java 17 ou superior**
-- 🟢 **Node.js 14 ou superior**
-- 📦 **npm** (vem com Node.js)
-- 🐧 **Git**
 
 ### Verificar instalações:
 ```bash
