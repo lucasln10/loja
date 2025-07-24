@@ -1,4 +1,4 @@
-package com.lojacrysleao.lojacrysleao_api.config;
+package com.lojacrysleao.lojacrysleao_api.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,14 +19,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource))
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/public/**").permitAll()
-                .requestMatchers("/actuator/**").permitAll()
-                .anyRequest().authenticated()
-            );
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
+                        .anyRequest().authenticated()
+                );
 
         return http.build();
     }
