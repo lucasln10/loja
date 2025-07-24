@@ -17,7 +17,9 @@ target/
 .idea
 *.iws
 *.iml
-*.ipr
+
+# Ignora arquivo de propriedades
+src/main/resources/application.properties
 
 ### NetBeans ###
 /nbproject/private/
