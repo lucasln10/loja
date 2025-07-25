@@ -4,7 +4,7 @@
 
 /* Hero Carousel Section */
 .hero-carousel {
-  background: linear-gradient(135deg, #DC143C 0%, #FA8072 50%, #FFE4E1 100%);
+  background: #fdc6c0;
   padding: 4rem 2rem;
   min-height: 80vh;
   display: flex;
@@ -18,29 +18,6 @@
   width: 100%;
 }
 
-.carousel-content {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 4rem;
-  align-items: center;
-}
-
-.carousel-text h1 {
-  font-size: 3.5rem;
-  color: white;
-  margin-bottom: 1.5rem;
-  font-weight: 700;
-  line-height: 1.2;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.carousel-text p {
-  font-size: 1.3rem;
-  color: white;
-  margin-bottom: 2rem;
-  opacity: 0.95;
-  line-height: 1.6;
-}
 
 .carousel-features {
   display: flex;
@@ -126,7 +103,7 @@
   position: absolute;
   top: 15px;
   right: 15px;
-  background: linear-gradient(135deg, #DC143C, #FA8072);
+  background: linear-gradient(135deg, #833927, #FA8072);
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -264,7 +241,7 @@
 }
 
 .view-all-btn {
-  background: linear-gradient(135deg, #DC143C, #FA8072);
+  background: linear-gradient(135deg, #833927, #FA8072);
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -283,7 +260,7 @@
 /* Why Choose Us */
 .why-choose-us {
   padding: 5rem 2rem;
-  background: linear-gradient( #FA8072 0%, #DC143C 40%);
+  background: linear-gradient( #FA8072 0%, #833927 40%);
 }
 
 .why-choose-us h2 {

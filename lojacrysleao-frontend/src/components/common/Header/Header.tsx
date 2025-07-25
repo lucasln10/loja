@@ -9,72 +9,123 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { state } = useCart();
 
   const navigationItems = [
-    { id: 'home', label: 'Home', icon: '🏠' },
-    { id: 'produtos', label: 'Produtos', icon: '🧁' },
-    { id: 'sobre', label: 'Sobre', icon: '💝' },
-    { id: 'contato', label: 'Contato', icon: '📞' }
+    { id: 'promocoes', label: 'PROMOÇÕES' },
+    { id: 'cortadores', label: 'CORTADORES' },
+    { id: 'moldes-silicone', label: 'MOLDES DE SILICONE' },
+    { id: 'polymer-clay', label: 'POLYMER CLAY' },
+    { id: 'utensilios', label: 'UTENSÍLIOS' },
+    { id: 'formas-acetato', label: 'FORMAS DE ACETATO' },
   ];
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Buscar por:', searchQuery);
+  };
 
   return (
     <header className="header">
-      <div className="header-container">
-        <div className="logo" onClick={() => onPageChange('home')}>
-          <div className="logo-icon">
-            <img 
-              src="/images/logo.webp" 
-              alt="Crys Leão Logo" 
-              className="logo-image"
-              onError={(e) => {
-                // Fallback para emoji se a imagem não carregar
-                const target = e.currentTarget;
-                target.style.display = 'none';
-                const fallback = target.nextElementSibling as HTMLElement;
-                if (fallback) {
-                  fallback.style.display = 'flex';
-                }
-              }}
-            />
-            <div className="logo-fallback">👩‍🍳</div>
+      {/* Barra superior com frete grátis */}
+      <div className="header-top">
+        <div className="header-top-container">
+          <div className="free-shipping">
+            <span className="shipping-icon">📦</span>
+            <span>FRETE GRÁTIS</span>
+            <span className="shipping-conditions">CONFIRA CONDIÇÕES</span>
           </div>
-          <div className="logo-text">
-            <h1>Crys Leão</h1>
-            <p>Moldes para Bolos</p>
+          <div className="header-top-actions">
+            <span>Seja Bem-vinda(o)!</span>
+            <button className="login-btn">LOGIN</button>
+            <span>ou</span>
+            <button className="register-btn">CADASTRE-SE</button>
           </div>
         </div>
+      </div>
 
-        <nav className={`nav ${isMenuOpen ? 'nav--open' : ''}`}>
-          <ul className="nav-list">
-            {navigationItems.map(item => (
-              <li key={item.id} className="nav-item">
-                <button
-                  className={`nav-link ${currentPage === item.id ? 'nav-link--active' : ''}`}
-                  onClick={() => {
-                    onPageChange(item.id);
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  <span className="nav-icon">{item.icon}</span>
-                  {item.label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
+      {/* Barra principal com logo, busca e contato */}
+      <div className="header-main">
+        <div className="header-main-container">
+          <div className="logo" onClick={() => onPageChange('home')}>
+            <div className="logo-icon">
+              <img 
+                src="/images/logo.webp" 
+                alt="Crys Leão Logo" 
+                className="logo-image"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.style.display = 'none';
+                  const fallback = target.nextElementSibling as HTMLElement;
+                  if (fallback) {
+                    fallback.style.display = 'flex';
+                  }
+                }}
+              />
+            </div>
+            <div className="logo-text">
+              <h1>Crys Leão</h1>
+              <p>Moldes para Doces Personalizados</p>
+            </div>
+          </div>
 
-        <div className="header-actions">
-          <button
-            className="cart-button"
-            onClick={() => onPageChange('carrinho')}
-          >
-            <span className="cart-icon">🛒</span>
-            <span className="cart-text">Carrinho</span>
-            {state.itemCount > 0 && (
-              <span className="cart-badge">{state.itemCount}</span>
-            )}
-          </button>
+          {/* Barra de Pesquisa */}
+          <form className="search-form" onSubmit={handleSearch}>
+            <input
+              type="text"
+              placeholder="Digite o que você procura"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+            <button type="submit" className="search-button">
+              🔍
+            </button>
+          </form>
+
+          <div className="header-main-actions">
+            <div className="contact-info">
+                <div className="contact-details">
+                  <span className="phone">(99) 99999-9999</span>
+                  <span className="schedule">Segunda a sexta 8h às 18h</span>
+                  <span className="schedule">Sábados 8h às 12h</span>
+              </div>
+            </div>
+
+            <button
+              className="cart-button"
+              onClick={() => onPageChange('carrinho')}
+            >
+              <span className="cart-icon">🛒</span>
+              {state.itemCount > 0 && (
+                <span className="cart-badge">{state.itemCount}</span>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Barra de navegação com categorias */}
+      <div className="header-nav">
+        <div className="header-nav-container">
+          <nav className={`nav ${isMenuOpen ? 'nav--open' : ''}`}>
+            <ul className="nav-list">
+              {navigationItems.map(item => (
+                <li key={item.id} className="nav-item">
+                  <button
+                    className={`nav-link ${currentPage === item.id ? 'nav-link--active' : ''}`}
+                    onClick={() => {
+                      onPageChange(item.id);
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
           <button
             className="menu-toggle"
