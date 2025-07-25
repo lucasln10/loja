@@ -53,4 +53,47 @@ Este diretório contém o backend da Loja Crysleão, desenvolvido em Java com Sp
 
 ---
 
+# Instruções para criar o banco de dados MySQL
+
+## Windows
+
+1. Na pasta `backend`, vai ter um arquivo chamado `criar_banco.bat` 
+
+```
+
+2. Dê dois cliques no arquivo ou execute no terminal/cmd. Siga as instruções na tela.
+
+---
+
+3. Para executar no terminal, vá até a pasta que está o .bat e coloque no cmd criar_banco.bat
+
+
+## Linux/Mac
+
+1. Na pasta `backend`, vai ter um arquivo chamado `criar_banco.sh` 
+
+
+2. Dê permissão de execução:
+   ```bash
+   chmod +x criar_banco.sh
+   ```
+3. Execute o script:
+   ```bash
+   ./criar_banco.sh
+   ```
+4. Digite a senha do root do MySQL quando solicitado.
+
+---
+
+## Observações
+- O backend deve estar configurado para usar os mesmos dados no arquivo `application.properties`:
+  ```
+  spring.datasource.url=jdbc:mysql://localhost:3306/lojacrysleao
+  spring.datasource.username=lojacrysleao_user
+  spring.datasource.password=lojacrysleao123
+  ```
+- Se quiser mudar o nome do banco, usuário ou senha, basta editar as variáveis no início do script e no `application.properties`.
+
+---
+
 Para mais detalhes sobre o projeto, consulte o README principal na raiz.
