@@ -96,24 +96,7 @@ const HomePage: React.FC = () => {
       <section className="hero-carousel">
         <div className="carousel-container">
           <div className="carousel-content">
-            <div className="carousel-text">
-              <h1>✨ Moldes Exclusivos Crys Leão</h1>
-              <p>Descubra nossa coleção especial de moldes para criar bolos extraordinários</p>
-              <div className="carousel-features">
-                <div className="feature">
-                  <span className="feature-icon">🎂</span>
-                  <span>Qualidade Premium</span>
-                </div>
-                <div className="feature">
-                  <span className="feature-icon">⭐</span>
-                  <span>Designs Únicos</span>
-                </div>
-                <div className="feature">
-                  <span className="feature-icon">🚚</span>
-                  <span>Entrega Rápida</span>
-                </div>
-              </div>
-            </div>
+             
 
             <div className="carousel-products">
               <div className="carousel-wrapper">
@@ -165,7 +148,7 @@ const HomePage: React.FC = () => {
       {/* Seção de Produtos em Destaque */}
       <section className="featured-products">
         <div className="container">
-          <h2>🧁 Produtos em Destaque</h2>
+          <h2>Produtos em Destaque</h2>
           <p className="section-subtitle">Descubra nossos moldes mais populares</p>
           
           <div className="products-grid">
