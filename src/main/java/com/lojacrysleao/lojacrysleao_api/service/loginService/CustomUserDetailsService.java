@@ -1,7 +1,7 @@
-package com.lojacrysleao.lojacrysleao_api.service;
+package com.lojacrysleao.lojacrysleao_api.service.loginService;
 
-import com.lojacrysleao.lojacrysleao_api.model.User;
-import com.lojacrysleao.lojacrysleao_api.repository.UserRepository;
+import com.lojacrysleao.lojacrysleao_api.model.user.User;
+import com.lojacrysleao.lojacrysleao_api.repository.user.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

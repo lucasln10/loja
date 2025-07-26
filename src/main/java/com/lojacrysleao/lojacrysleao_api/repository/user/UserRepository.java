@@ -1,7 +1,7 @@
-package com.lojacrysleao.lojacrysleao_api.repository;
+package com.lojacrysleao.lojacrysleao_api.repository.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.lojacrysleao.lojacrysleao_api.model.User;
+import com.lojacrysleao.lojacrysleao_api.model.user.User;
 
 import java.util.Optional;
 

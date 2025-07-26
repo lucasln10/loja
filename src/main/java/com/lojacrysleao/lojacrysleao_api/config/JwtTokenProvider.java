@@ -1,9 +1,9 @@
 package com.lojacrysleao.lojacrysleao_api.config;
 
+import com.lojacrysleao.lojacrysleao_api.model.user.User;
+import com.lojacrysleao.lojacrysleao_api.repository.user.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,27 +14,32 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
-    private String JWT_SECRET;
+    private String jwtSecret;
 
-    private Key key;
+    private final long jwtExpirationInMs = 86400000; // 1 dia
 
-    private final long JWT_EXPIRATION = 86400000; // 1 dia em ms
+    private final UserRepository userRepository;
 
-    public void init() {
-        this.key = Keys.hmacShaKeyFor(JWT_SECRET.getBytes());
+    public JwtTokenProvider(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     private Key getSigningKey() {
-        return key;
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
-    public String generateToken(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    public String generateToken(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new RuntimeException("Usuário não encontrado"));
+
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
+                .setSubject(user.getEmail())
+                .claim("role", user.getRole().name())
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
@@ -50,7 +55,10 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
