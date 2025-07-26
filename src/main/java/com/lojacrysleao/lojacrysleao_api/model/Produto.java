@@ -73,7 +73,7 @@ public class Produto {
         return category;
     }
 
-    public void setCategoria(String category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 }

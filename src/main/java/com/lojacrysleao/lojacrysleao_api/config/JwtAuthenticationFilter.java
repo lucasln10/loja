@@ -1,6 +1,6 @@
 package com.lojacrysleao.lojacrysleao_api.config;
 
-import com.lojacrysleao.lojacrysleao_api.service.CustomUserDetailsService;
+import com.lojacrysleao.lojacrysleao_api.service.loginService.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

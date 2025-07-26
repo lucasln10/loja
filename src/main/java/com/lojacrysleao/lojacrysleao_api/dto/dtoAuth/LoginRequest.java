@@ -1,4 +1,4 @@
-package com.lojacrysleao.lojacrysleao_api.dto;
+package com.lojacrysleao.lojacrysleao_api.dto.dtoAuth;
 
 public class LoginRequest {
 
@@ -13,11 +13,11 @@ public class LoginRequest {
         this.email = email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
