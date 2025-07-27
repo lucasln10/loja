@@ -1,4 +1,4 @@
-package com.lojacrysleao.lojacrysleao_api.controller;
+package com.lojacrysleao.lojacrysleao_api.controller.loja;
 
 import org.springframework.web.bind.annotation.*;
 

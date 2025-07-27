@@ -1,4 +1,4 @@
-package com.lojacrysleao.lojacrysleao_api.service.loginService;
+package com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService;
 
 import com.lojacrysleao.lojacrysleao_api.dto.dtoAuth.RegisterRequest;
 import com.lojacrysleao.lojacrysleao_api.dto.dtoAuth.RegisterResponse;
@@ -30,11 +30,8 @@ public class UserService {
         newUser.setCpf(request.getCpf());
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        Role role = Role.USER;
-        if (request.getRole() != null && request.getRole().equalsIgnoreCase("ADMIN")) {
-            role = Role.ADMIN;
-        }
-        newUser.setRole(role);
+        // SEGURANÇA: Todos os novos usuários são USER por padrão
+        newUser.setRole(Role.USER);
 
         User savedUser = userRepository.save(newUser);
 

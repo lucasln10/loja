@@ -1,6 +1,6 @@
-package com.lojacrysleao.lojacrysleao_api.service.loginService;
+package com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService;
 
-import com.lojacrysleao.lojacrysleao_api.config.JwtTokenProvider;
+import com.lojacrysleao.lojacrysleao_api.config.JWT.JwtTokenProvider;
 import com.lojacrysleao.lojacrysleao_api.dto.dtoAuth.LoginRequest;
 import com.lojacrysleao.lojacrysleao_api.dto.dtoAuth.LoginResponse;
 import com.lojacrysleao.lojacrysleao_api.model.user.User;

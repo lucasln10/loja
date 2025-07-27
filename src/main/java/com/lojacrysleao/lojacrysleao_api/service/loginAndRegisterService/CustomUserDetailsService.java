@@ -1,4 +1,4 @@
-package com.lojacrysleao.lojacrysleao_api.service.loginService;
+package com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService;
 
 import com.lojacrysleao.lojacrysleao_api.model.user.User;
 import com.lojacrysleao.lojacrysleao_api.repository.user.UserRepository;
