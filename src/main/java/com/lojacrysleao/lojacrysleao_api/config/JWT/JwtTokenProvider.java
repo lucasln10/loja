@@ -1,4 +1,4 @@
-package com.lojacrysleao.lojacrysleao_api.config;
+package com.lojacrysleao.lojacrysleao_api.config.JWT;
 
 import com.lojacrysleao.lojacrysleao_api.model.user.User;
 import com.lojacrysleao.lojacrysleao_api.repository.user.UserRepository;
