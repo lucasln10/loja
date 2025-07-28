@@ -1,4 +1,4 @@
-package com.lojacrysleao.lojacrysleao_api.controller.admin;
+package com.lojacrysleao.lojacrysleao_api.controller.adminController;
 
 import com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;

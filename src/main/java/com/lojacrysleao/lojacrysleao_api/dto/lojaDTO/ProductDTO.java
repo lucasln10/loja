@@ -1,6 +1,6 @@
-package com.lojacrysleao.lojacrysleao_api.dto;
+package com.lojacrysleao.lojacrysleao_api.dto.lojaDTO;
 
-public class ProdutoDTO {
+public class ProductDTO {
 
     private Long id;
 
@@ -10,9 +10,10 @@ public class ProdutoDTO {
 
     private int quantity;
 
-    private String decription;
+    private String description;
 
-    private String category;
+    private Long categoryId;
+
 
     public Long getId() {
         return id;
@@ -46,20 +47,20 @@ public class ProdutoDTO {
         this.quantity = quantity;
     }
 
-    public String getDecription() {
-        return decription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDecription(String decription) {
-        this.decription = decription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
 }

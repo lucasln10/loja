@@ -1,13 +1,10 @@
-package com.lojacrysleao.lojacrysleao_api.model;
+package com.lojacrysleao.lojacrysleao_api.model.loja;
 
-import lombok.*;
 import jakarta.persistence.*;
 
 @Entity
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
 @Table(name = "produtos")
-public class Produto {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,8 +22,13 @@ public class Produto {
     @Column(nullable = true)
     private String description;
 
+    /*
+    * furutamete podeos relaconar com a tabela category
+    * fazend o @ManyToMany
+    * ou @ManyToOne
+    * */
     @Column(nullable = true)
-    private String category;
+    private Category category;
 
 
     public Long getId() {
@@ -34,7 +36,7 @@ public class Produto {
     }
 
     public void setId(Long id) {
-        id = id;
+        this.id = id;
     }
 
     public String getName() {
@@ -69,11 +71,11 @@ public class Produto {
         this.description = description;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 }
