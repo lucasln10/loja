@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.lojacrysleao.lojacrysleao_api.model.user.Role;
 import com.lojacrysleao.lojacrysleao_api.model.user.User;
-import com.lojacrysleao.lojacrysleao_api.repository.user.UserRepository;
+import com.lojacrysleao.lojacrysleao_api.repository.userRepository.UserRepository;
 
 @Component
 public class DataInitializer {

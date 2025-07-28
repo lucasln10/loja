@@ -1,10 +1,10 @@
 package com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService;
 
 import com.lojacrysleao.lojacrysleao_api.config.JWT.JwtTokenProvider;
-import com.lojacrysleao.lojacrysleao_api.dto.dtoAuth.LoginRequest;
-import com.lojacrysleao.lojacrysleao_api.dto.dtoAuth.LoginResponse;
+import com.lojacrysleao.lojacrysleao_api.dto.authDTO.LoginRequest;
+import com.lojacrysleao.lojacrysleao_api.dto.authDTO.LoginResponse;
 import com.lojacrysleao.lojacrysleao_api.model.user.User;
-import com.lojacrysleao.lojacrysleao_api.repository.user.UserRepository;
+import com.lojacrysleao.lojacrysleao_api.repository.userRepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

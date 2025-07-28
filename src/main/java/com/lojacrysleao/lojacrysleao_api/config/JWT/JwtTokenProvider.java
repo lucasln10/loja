@@ -1,7 +1,7 @@
 package com.lojacrysleao.lojacrysleao_api.config.JWT;
 
 import com.lojacrysleao.lojacrysleao_api.model.user.User;
-import com.lojacrysleao.lojacrysleao_api.repository.user.UserRepository;
+import com.lojacrysleao.lojacrysleao_api.repository.userRepository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;

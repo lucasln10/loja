@@ -1,4 +1,4 @@
-package com.lojacrysleao.lojacrysleao_api.dto.dtoAuth;
+package com.lojacrysleao.lojacrysleao_api.dto.authDTO;
 
 public class RegisterResponse {
 

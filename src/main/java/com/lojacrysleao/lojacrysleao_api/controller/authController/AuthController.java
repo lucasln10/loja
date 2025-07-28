@@ -1,9 +1,9 @@
-package com.lojacrysleao.lojacrysleao_api.controller.auth;
+package com.lojacrysleao.lojacrysleao_api.controller.authController;
 
-import com.lojacrysleao.lojacrysleao_api.dto.dtoAuth.LoginRequest;
-import com.lojacrysleao.lojacrysleao_api.dto.dtoAuth.LoginResponse;
-import com.lojacrysleao.lojacrysleao_api.dto.dtoAuth.RegisterRequest;
-import com.lojacrysleao.lojacrysleao_api.dto.dtoAuth.RegisterResponse;
+import com.lojacrysleao.lojacrysleao_api.dto.authDTO.LoginRequest;
+import com.lojacrysleao.lojacrysleao_api.dto.authDTO.LoginResponse;
+import com.lojacrysleao.lojacrysleao_api.dto.authDTO.RegisterRequest;
+import com.lojacrysleao.lojacrysleao_api.dto.authDTO.RegisterResponse;
 import com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService.AuthService;
 import com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService.UserService;
 import jakarta.validation.Valid;
