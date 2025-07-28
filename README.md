@@ -72,33 +72,6 @@ npm install axios react-router-dom
 # Iniciar o servidor React
 npm start
 ```
-
-### Método 2: Inicialização com Script (Recomendado)
-
-```bash
-# Na raiz do projeto
-chmod +x start.sh
-./start.sh
-```
-
----
-
-## 🌐 URLs da Aplicação
-
-| Serviço         | URL                            | Descrição                 |
-|----------------|---------------------------------|---------------------------|
-| **Frontend**    | http://localhost:3000           | Interface do usuário React |
-| **Backend API** | http://localhost:8080           | API REST Spring Boot      |
-| **Status API**  | http://localhost:8080/api/public/status | Verificar status da API |
-| **Produtos**    | http://localhost:8080/api/public/produtos | Listar produtos  |
-| **Console H2**  | http://localhost:8080/h2-console | Console do banco H2       |
-
-### 🗄️ Configuração do Console H2
-
-- **JDBC URL:** `jdbc:h2:mem:testdb`
-- **Username:** `sa`
-- **Password:** `password`
-
 ---
 
 ## 📁 Estrutura do Projeto
@@ -107,8 +80,14 @@ chmod +x start.sh
 loja/
 ├── lojacrysleao-api/          # Backend Spring Boot
 │   └── src/main/java/com/lojacrysleao/lojacrysleao_api/
-│       ├── controller/
 │       ├── config/
+|       ├── controller/
+|       ├── exception/
+|       ├── model/
+|       ├── repository/
+|       ├── DTO/
+|       ├── mapper/
+|       ├── service/
 │       └── LojacrysleaoApiApplication.java
 ├── lojacrysleao-frontend/     # Frontend React
 │   ├── src/
@@ -128,7 +107,7 @@ loja/
 - Spring Boot 3.5.3
 - Spring Security (com JWT)
 - Spring Data JPA
-- H2 Database (dev)
+- MySQ
 - Maven
 
 ### Frontend
@@ -146,21 +125,7 @@ O backend está configurado para aceitar requisições do frontend:
 - Origem permitida: `http://localhost:3000`
 - Métodos: `GET, POST, PUT, DELETE, OPTIONS`
 - Headers: Todos permitidos
-
-### Endpoints Públicos
-- `/api/public/**`
-- `/actuator/**`
-
----
-
-## 🧪 Testes rápidos
-
-```bash
-# Testar backend
-curl http://localhost:8080/api/public/status
-curl http://localhost:8080/api/public/produtos
-```
-
+  
 ---
 
 ## 🛑 Parar a aplicação
@@ -233,8 +198,8 @@ npm test
 
 ## 📚 Roadmap Futuro
 
-- [ ] Autenticação completa com JWT
-- [ ] Integração com PostgreSQL
+- [x] Autenticação completa com JWT
+- [x] Integração com MySQL
 - [ ] Docker + Docker Compose
 - [ ] Testes automatizados
 - [ ] Deploy para produção
@@ -242,5 +207,3 @@ npm test
 ---
 
 **💡 Dica:** Em caso de problemas, verifique se ambos os servidores estão ativos e se as portas 3000 e 8080 estão livres.
-
-**🤝 Contribuição:** Faça um fork, crie uma branch, implemente e envie um Pull Request!
