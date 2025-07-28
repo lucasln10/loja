@@ -72,14 +72,6 @@ npm install axios react-router-dom
 # Iniciar o servidor React
 npm start
 ```
-
-### Método 2: Inicialização com Script (Recomendado)
-
-```bash
-# Na raiz do projeto
-chmod +x start.sh
-./start.sh
-```
 ---
 
 ## 📁 Estrutura do Projeto
