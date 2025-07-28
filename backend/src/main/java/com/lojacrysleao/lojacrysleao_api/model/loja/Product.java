@@ -22,12 +22,8 @@ public class Product {
     @Column(nullable = true)
     private String description;
 
-    /*
-    * furutamete podeos relaconar com a tabela category
-    * fazend o @ManyToMany
-    * ou @ManyToOne
-    * */
-    @Column(nullable = true)
+    @ManyToOne
+    @JoinColumn(name = "category_id")
     private Category category;
 
 
