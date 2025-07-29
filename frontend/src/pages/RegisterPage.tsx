@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './RegisterPage.css';
 
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState('');
@@ -30,49 +31,107 @@ const RegisterPage: React.FC = () => {
     }
   };
 
+  const formatCpf = (value: string) => {
+    const cleanValue = value.replace(/\D/g, '');
+    const match = cleanValue.match(/^(\d{3})(\d{3})(\d{3})(\d{2})$/);
+    if (match) {
+      return `${match[1]}.${match[2]}.${match[3]}-${match[4]}`;
+    }
+    return cleanValue;
+  };
+
+  const formatPhone = (value: string) => {
+    const cleanValue = value.replace(/\D/g, '');
+    const match = cleanValue.match(/^(\d{2})(\d{5})(\d{4})$/);
+    if (match) {
+      return `(${match[1]}) ${match[2]}-${match[3]}`;
+    }
+    return cleanValue;
+  };
+
   return (
-    <div>
-      <h2>Cadastro</h2>
-      <form onSubmit={handleRegister}>
-        <input
-          type="text"
-          placeholder="Nome completo"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          required
-        /><br />
-        <input
-          type="email"
-          placeholder="E-mail"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-        /><br />
-        <input
-          type="text"
-          placeholder="Telefone"
-          value={phone}
-          onChange={e => setPhone(e.target.value)}
-          required
-        /><br />
-        <input
-          type="text"
-          placeholder="CPF"
-          value={cpf}
-          onChange={e => setCpf(e.target.value)}
-          required
-        /><br />
-        <input
-          type="password"
-          placeholder="Senha"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-        /><br />
-        <button type="submit">Cadastrar</button>
-      </form>
-      {erro && <p style={{ color: 'red' }}>{erro}</p>}
-      <p>Já tem conta? <a href="/login">Faça login</a></p>
+    <div className="register-page">
+      <div className="register-container">
+        <h2 className="register-title">Criar Conta</h2>
+        <form className="register-form" onSubmit={handleRegister}>
+          <div className="form-group">
+            <label className="form-label" htmlFor="name">Nome Completo</label>
+            <input
+              id="name"
+              type="text"
+              className="form-input"
+              placeholder="Digite seu nome completo"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              required
+            />
+          </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="cpf">CPF</label>
+              <input
+                id="cpf"
+                type="text"
+                className="form-input"
+                placeholder="000.000.000-00"
+                value={cpf}
+                onChange={e => setCpf(formatCpf(e.target.value))}
+                maxLength={14}
+                required
+              />
+            </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label" htmlFor="phone">Telefone</label>
+              <input
+                id="phone"
+                type="text"
+                className="form-input"
+                placeholder="(11) 99999-9999"
+                value={phone}
+                onChange={e => setPhone(formatPhone(e.target.value))}
+                maxLength={15}
+                required
+              />
+            </div>
+          <div className="form-group">
+            <label className="form-label" htmlFor="email">E-mail</label>
+            <input
+              id="email"
+              type="email"
+              className="form-input"
+              placeholder="Digite seu e-mail"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="password">Senha</label>
+            <input
+              id="password"
+              type="password"
+              className="form-input"
+              placeholder="Digite uma senha (mín. 6 caracteres)"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              minLength={6}
+              required
+            />
+          </div>
+
+          <button type="submit" className="register-button">
+            Criar Conta
+          </button>
+        </form>
+
+        {erro && <div className="error-message">{erro}</div>}
+
+        <div className="login-link">
+          <p>Já tem uma conta? <a href="/login">Faça login aqui</a></p>
+        </div>
+      </div>
     </div>
   );
 };
