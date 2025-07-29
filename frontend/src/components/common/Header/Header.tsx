@@ -38,9 +38,19 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
           </div>
           <div className="header-top-actions">
             <span>Seja Bem-vinda(o)!</span>
-            <button className="login-btn">LOGIN</button>
+            <button 
+              className="login-btn"
+              onClick={() => onPageChange('login')}
+            >
+              LOGIN
+            </button>
             <span>ou</span>
-            <button className="register-btn">CADASTRE-SE</button>
+            <button 
+              className="register-btn"
+              onClick={() => onPageChange('registrar')}
+            >
+              CADASTRE-SE
+            </button>
           </div>
         </div>
       </div>

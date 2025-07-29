@@ -36,6 +36,7 @@ function AppContent() {
       'formas-acetato': '/produtos?categoria=formas-acetato',
       'carrinho': '/carrinho',
       'login': '/login',
+      'registrar': '/registrar',
       'sobre': '/sobre',
       'contato': '/contato'
     };
@@ -62,7 +63,9 @@ function AppContent() {
       setCurrentPage('sobre');
     } else if (path === '/contato') {
       setCurrentPage('contato');
-    }
+    } else if (path === '/registrar') {
+      setCurrentPage('registrar');
+    } 
   }, [location]);
 
   return (
