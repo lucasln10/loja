@@ -3,8 +3,17 @@ package com.lojacrysleao.lojacrysleao_api.dto.authDTO;
 public class UserDTO {
 
     private Long id;
+
     private String name;
+
     private String email;
+
+    private String phone;
+
+    private String cpf;
+
+    private String password;
+
     private String role;
 
     public Long getId() {
@@ -37,5 +46,29 @@ public class UserDTO {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
