@@ -101,6 +101,139 @@
   transform: translateY(0);
 }
 
+.register-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Novos estilos para verificação de email */
+.verification-info {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.email-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.verification-info h3 {
+  color: #2C3E50;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.verification-info p {
+  color: #7F8C8D;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.email-highlight {
+  background: #e8f5e8;
+  color: #2e7d32;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-weight: 600;
+  border: 2px solid #4caf50;
+  margin: 1rem 0;
+}
+
+.verification-instructions {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #FA8072;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.verification-instructions h4 {
+  color: #2C3E50;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.verification-instructions ol {
+  color: #2C3E50;
+  margin-bottom: 1rem;
+  padding-left: 1.2rem;
+}
+
+.verification-instructions li {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.verification-instructions p {
+  color: #7F8C8D;
+  font-size: 0.9rem;
+  margin: 0;
+  font-style: italic;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.resend-button, .login-button {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.resend-button {
+  background: #17a2b8;
+  color: white;
+}
+
+.resend-button:hover {
+  background: #138496;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+}
+
+.login-button {
+  background: #FA8072;
+  color: white;
+}
+
+.login-button:hover {
+  background: #ff6a59;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(250, 128, 114, 0.3);
+}
+
+.countdown-info {
+  background: #fff3cd;
+  color: #856404;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #ffc107;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.countdown-info p {
+  margin: 0;
+}
+
+.form-input:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
 .error-message {
   background-color: #ffebee;
   color: #c62828;
@@ -174,5 +307,17 @@
   
   .form-row {
     grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .email-icon {
+    font-size: 3rem;
+  }
+  
+  .verification-info h3 {
+    font-size: 1.3rem;
   }
 }
