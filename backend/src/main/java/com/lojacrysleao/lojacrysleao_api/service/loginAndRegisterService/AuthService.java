@@ -27,11 +27,19 @@ public class AuthService {
     private UserRepository userRepository;
 
     public LoginResponse authenticate(LoginRequest request) {
+        System.out.println("Tentativa de login para: " + request.getEmail());
+        
         // Verifica se o usuário existe e está habilitado
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Email ou senha inválidos"));
+                .orElseThrow(() -> {
+                    System.out.println("Usuário não encontrado: " + request.getEmail());
+                    return new RuntimeException("Email ou senha inválidos");
+                });
+
+        System.out.println("Usuário encontrado: " + user.getName() + ", Role: " + user.getRole() + ", Enable: " + user.isEnable());
 
         if (!user.isEnable()) {
+            System.out.println("Usuário não está habilitado: " + user.getEmail());
             throw new DisabledException("Conta não verificada. Verifique seu email.");
         }
 
@@ -43,16 +51,21 @@ public class AuthService {
                 )
         );
 
+        System.out.println("Autenticação bem-sucedida para: " + request.getEmail());
+
         // Gera o token JWT com base no e-mail
         String token = jwtTokenProvider.generateToken(request.getEmail());
 
-        return new LoginResponse(
+        LoginResponse response = new LoginResponse(
                 token,
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
                 user.getRole().name()
         );
+        
+        System.out.println("Login response gerado: " + response.getUser().getRole());
+        return response;
     }
 
     public UserDTO getCurrentUser() {
