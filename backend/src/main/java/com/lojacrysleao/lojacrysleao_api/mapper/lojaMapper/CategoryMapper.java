@@ -1,4 +1,4 @@
-package com.lojacrysleao.lojacrysleao_api.mapper;
+package com.lojacrysleao.lojacrysleao_api.mapper.lojaMapper;
 
 import com.lojacrysleao.lojacrysleao_api.model.loja.Category;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Product;

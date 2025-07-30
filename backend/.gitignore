@@ -20,6 +20,7 @@ backend/.idea
 
 # Ignora arquivo de propriedades
 backend/src/main/resources/application.properties
+backend/src/main/java/com/lojacrysleao/lojacrysleao_api/config/DataInitializer.java
 
 ### NetBeans ###
 /nbproject/private/

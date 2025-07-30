@@ -7,7 +7,9 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "verify")
+@Table(name = "verify", uniqueConstraints = {
+    @UniqueConstraint(columnNames = "user_id")
+})
 public class VerificationToken {
 
     @Id
@@ -17,7 +19,7 @@ public class VerificationToken {
     private String token;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
 
     private LocalDateTime expiryDate;

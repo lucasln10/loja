@@ -1,7 +1,7 @@
 package com.lojacrysleao.lojacrysleao_api.service.lojaService;
 
 import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.ProductDTO;
-import com.lojacrysleao.lojacrysleao_api.mapper.ProductMapper;
+import com.lojacrysleao.lojacrysleao_api.mapper.lojaMapper.ProductMapper;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Category;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.CategoryRepository;

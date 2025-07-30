@@ -4,12 +4,12 @@ package com.lojacrysleao.lojacrysleao_api.service.lojaService;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.lojacrysleao.lojacrysleao_api.mapper.lojaMapper.CategoryMapper;
+import com.lojacrysleao.lojacrysleao_api.model.loja.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.CategoryDTO;
-import com.lojacrysleao.lojacrysleao_api.mapper.CategoryMapper;
-import com.lojacrysleao.lojacrysleao_api.model.loja.Category;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.CategoryRepository;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.ProductRepository;
 
