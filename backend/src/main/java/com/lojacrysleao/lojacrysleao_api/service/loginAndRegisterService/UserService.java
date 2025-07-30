@@ -7,6 +7,7 @@ import com.lojacrysleao.lojacrysleao_api.dto.verifyDTO.VerificationTokenDTO;
 import com.lojacrysleao.lojacrysleao_api.model.user.Role;
 import com.lojacrysleao.lojacrysleao_api.model.user.User;
 import com.lojacrysleao.lojacrysleao_api.repository.userRepository.UserRepository;
+import com.lojacrysleao.lojacrysleao_api.service.emailService.EmailService;
 import com.lojacrysleao.lojacrysleao_api.service.verifyService.PasswordResetTokenService;
 import com.lojacrysleao.lojacrysleao_api.service.verifyService.VerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,8 @@ public class UserService {
     @Autowired
     private PasswordResetTokenService passwordResetTokenService;
 
-    // @Autowired
-    // private EmailService emailService; // Assumindo que você tenha um serviço de email
+    @Autowired
+    private EmailService emailService;
 
     public RegisterResponse registerUser(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -51,7 +52,7 @@ public class UserService {
 
         User savedUser = userRepository.save(newUser);
 
-        // Envia email de verificação
+
         sendVerificationEmail(savedUser);
 
         return new RegisterResponse(
@@ -130,23 +131,10 @@ public class UserService {
         
         // URL que redireciona para o frontend com o token
         String verifyUrl = "http://localhost:3000/verificar-email?token=" + tokenDTO.getToken();
-        
-        // TODO: Implementar envio de email
-        // emailService.sendEmail(user.getEmail(), "Confirme seu cadastro - Loja Crysleão", 
-        //     "Olá " + user.getName() + ",\n\n" +
-        //     "Bem-vindo à Loja Crysleão!\n" +
-        //     "Para ativar sua conta, clique no link abaixo:\n\n" +
-        //     verifyUrl + "\n\n" +
-        //     "Este link é válido por tempo limitado.\n" +
-        //     "Se você não se cadastrou em nosso site, ignore este e-mail.\n\n" +
-        //     "Atenciosamente,\nEquipe Loja Crysleão");
-        
-        System.out.println("===== EMAIL DE VERIFICAÇÃO =====");
-        System.out.println("Para: " + user.getEmail());
-        System.out.println("Nome: " + user.getName());
-        System.out.println("Link de verificação: " + verifyUrl);
-        System.out.println("Token: " + tokenDTO.getToken());
-        System.out.println("==================================");
+
+        // Usar template HTML bonito ao invés de texto simples
+        String htmlContent = emailService.createVerificationEmailTemplate(user.getName(), verifyUrl);
+        emailService.sendHtmlEmail(user.getEmail(), "Confirme seu cadastro - Loja Crysleão", htmlContent);
     }
 
     /**
@@ -155,23 +143,10 @@ public class UserService {
     private void sendPasswordResetEmail(User user, String token) {
         // URL que redireciona para o frontend com o token
         String resetUrl = "http://localhost:3000/redefinir-senha?token=" + token;
-        
-        // TODO: Implementar envio de email
-        // emailService.sendEmail(user.getEmail(), "Redefina sua senha - Loja Crysleão", 
-        //     "Olá " + user.getName() + ",\n\n" +
-        //     "Você solicitou a redefinição de sua senha.\n" +
-        //     "Clique no link abaixo para redefinir sua senha:\n\n" +
-        //     resetUrl + "\n\n" +
-        //     "Este link é válido por 24 horas.\n" +
-        //     "Se você não solicitou esta redefinição, ignore este e-mail.\n\n" +
-        //     "Atenciosamente,\nEquipe Loja Crysleão");
-        
-        System.out.println("===== EMAIL DE REDEFINIÇÃO DE SENHA =====");
-        System.out.println("Para: " + user.getEmail());
-        System.out.println("Nome: " + user.getName());
-        System.out.println("Link de redefinição: " + resetUrl);
-        System.out.println("Token: " + token);
-        System.out.println("Token válido por: 24 horas");
-        System.out.println("=========================================");
+
+        // Usar template HTML bonito ao invés de texto simples
+        String htmlContent = emailService.createPasswordResetEmailTemplate(user.getName(), resetUrl);
+        emailService.sendHtmlEmail(user.getEmail(), "Redefina sua senha - Loja Crysleão", htmlContent);
+
     }
 }

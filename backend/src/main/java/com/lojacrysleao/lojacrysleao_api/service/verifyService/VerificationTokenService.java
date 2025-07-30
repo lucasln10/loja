@@ -31,17 +31,27 @@ public class VerificationTokenService {
             throw new RuntimeException("Usuário não pode ser nulo");
         }
 
-        // Remove tokens antigos do usuário se existirem
-        verificationTokenRepository.deleteByUserId(user.getId());
+        // Verifica se já existe um token para o usuário
+        Optional<VerificationToken> existingToken = verificationTokenRepository.findByUserId(user.getId());
+        
+        if (existingToken.isPresent()) {
+            // Atualiza o token existente ao invés de criar um novo
+            VerificationToken token = existingToken.get();
+            token.setToken(UUID.randomUUID().toString());
+            token.setExpiryDate(LocalDateTime.now().plusHours(48)); // Token válido por 48 horas
+            
+            VerificationToken savedToken = verificationTokenRepository.save(token);
+            return verificationTokenMapper.toDTO(savedToken);
+        } else {
+            // Cria novo token apenas se não existir
+            VerificationToken token = new VerificationToken();
+            token.setToken(UUID.randomUUID().toString());
+            token.setUser(user);
+            token.setExpiryDate(LocalDateTime.now().plusHours(48)); // Token válido por 48 horas
 
-        // Cria novo token
-        VerificationToken token = new VerificationToken();
-        token.setToken(UUID.randomUUID().toString());
-        token.setUser(user);
-        token.setExpiryDate(LocalDateTime.now().plusHours(48)); // Token válido por 48 horas
-
-        VerificationToken savedToken = verificationTokenRepository.save(token);
-        return verificationTokenMapper.toDTO(savedToken);
+            VerificationToken savedToken = verificationTokenRepository.save(token);
+            return verificationTokenMapper.toDTO(savedToken);
+        }
     }
 
     /**
@@ -156,8 +166,7 @@ public class VerificationTokenService {
 
         User user = existingToken.get().getUser();
         
-        // Remove o token antigo e cria um novo
-        verificationTokenRepository.deleteByUserId(userId);
+        // Simplesmente chama createVerificationToken que agora lida com tokens existentes
         return createVerificationToken(user);
     }
 }
