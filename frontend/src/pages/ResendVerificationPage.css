@@ -1,12 +1,14 @@
-.register-page {
+/* ResendVerificationPage.css */
+.resend-verification-page {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 100vh;
   background: #FFF8DC;
   padding: 2rem;
 }
 
-.register-container {
+.resend-verification-container {
   background: white;
   padding: 2.5rem;
   border-radius: 15px;
@@ -16,18 +18,18 @@
   position: relative;
 }
 
-.register-container::before {
+.resend-verification-container::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 5px;
-  background: #FA8072;
+  background: #17a2b8;
   border-radius: 15px 15px 0 0;
 }
 
-.register-title {
+.resend-verification-title {
   text-align: center;
   color: #2C3E50;
   font-size: 2rem;
@@ -35,7 +37,18 @@
   font-weight: 600;
 }
 
-.register-form {
+.resend-verification-instructions {
+  background-color: #d1ecf1;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #17a2b8;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: #2C3E50;
+  text-align: center;
+}
+
+.resend-verification-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -64,22 +77,23 @@
 
 .form-input:focus {
   outline: none;
-  border-color: #FA8072;
+  border-color: #17a2b8;
   background-color: white;
-  box-shadow: 0 0 0 3px rgba(250, 128, 114, 0.1);
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.1);
+}
+
+.form-input:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
 }
 
 .form-input::placeholder {
   color: #7F8C8D;
 }
 
-.form-row {
-  display: grid;
-  gap: 1rem;
-}
-
-.register-button {
-  background: #FA8072;
+.resend-verification-button {
+  background: #17a2b8;
   color: white;
   border: none;
   padding: 1rem;
@@ -91,14 +105,21 @@
   margin-top: 1rem;
 }
 
-.register-button:hover {
-  background: #ff6a59;
+.resend-verification-button:hover:not(:disabled) {
+  background: #138496;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(250, 128, 114, 0.3);
+  box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
 }
 
-.register-button:active {
+.resend-verification-button:active:not(:disabled) {
   transform: translateY(0);
+}
+
+.resend-verification-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .error-message {
@@ -109,6 +130,7 @@
   border-left: 4px solid #f44336;
   font-size: 0.9rem;
   margin-top: 1rem;
+  text-align: center;
 }
 
 .success-message {
@@ -119,60 +141,46 @@
   border-left: 4px solid #4caf50;
   font-size: 0.9rem;
   margin-top: 1rem;
+  text-align: center;
+  line-height: 1.4;
 }
 
-.login-link {
+.back-links {
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   color: #7F8C8D;
 }
 
-.login-link a {
-  color: #FA8072;
+.back-links p {
+  margin: 0.5rem 0;
+}
+
+.back-links a {
+  color: #17a2b8;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.login-link a:hover {
-  color: #DC143C;
+.back-links a:hover {
+  color: #138496;
   text-decoration: underline;
-}
-
-.form-instructions {
-  background-color: #f8f9fa;
-  padding: 1rem;
-  border-radius: 8px;
-  border-left: 4px solid #FA8072;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-  color: #2C3E50;
-}
-
-.form-instructions ul {
-  margin: 0.5rem 0 0 1rem;
-  padding: 0;
-}
-
-.form-instructions li {
-  margin-bottom: 0.25rem;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .register-page {
+  .resend-verification-page {
     padding: 1rem;
   }
   
-  .register-container {
+  .resend-verification-container {
     padding: 2rem;
   }
   
-  .register-title {
+  .resend-verification-title {
     font-size: 1.5rem;
-  }
-  
-  .form-row {
-    grid-template-columns: 1fr;
   }
 }
