@@ -1,10 +1,13 @@
 package com.lojacrysleao.lojacrysleao_api.controller.adminController;
 
+import com.lojacrysleao.lojacrysleao_api.dto.authDTO.UserDTO;
 import com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -27,5 +30,11 @@ public class AdminController {
         return ResponseEntity.ok("Usuário rebaixado para USER com sucesso");
     }
 
+    @GetMapping("/users")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> users = adminService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
 
 }

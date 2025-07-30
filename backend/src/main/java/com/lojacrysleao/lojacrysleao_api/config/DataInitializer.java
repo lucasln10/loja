@@ -25,17 +25,23 @@ public class DataInitializer {
     }
 
     private void createDefaultAdmin() {
+        System.out.println("Verificando se admin padrão existe...");
         // Verifica se já existe um admin
         if (userRepository.findByEmail("admin@lojacrysleao.com").isEmpty()) {
+            System.out.println("Admin não encontrado, criando...");
             User admin = new User();
             admin.setName("Administrador");
             admin.setEmail("admin@lojacrysleao.com");
             admin.setPhone("11999999999");
             admin.setCpf("00000000000");
-            admin.setPassword(passwordEncoder.encode("@dm1nL0j4Crysl340"));
+            admin.setPassword(passwordEncoder.encode("admin123456"));
             admin.setRole(Role.ADMIN);
+            admin.setEnable(true); // Admin deve estar habilitado por padrão
             
-            userRepository.save(admin);
+            User savedAdmin = userRepository.save(admin);
+            System.out.println("Admin padrão criado com sucesso! ID: " + savedAdmin.getId());
+        } else {
+            System.out.println("Admin padrão já existe!");
         }
     }
 }

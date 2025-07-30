@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthContext';
 import Header from './components/common/Header/Header';
 import Footer from './components/common/Footer/Footer';
 
@@ -12,6 +13,7 @@ import ContactPage from './pages/ContactPage';
 import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import AdminPage from './pages/AdminPage';
 import RecoverPasswordPage from './pages/RecoverPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
@@ -46,7 +48,8 @@ function AppContent() {
       'verificar-email': '/verificar-email',
       'reenviar-verificacao': '/reenviar-verificacao',
       'sobre': '/sobre',
-      'contato': '/contato'
+      'contato': '/contato',
+      'admin': '/admin'
     };
 
     const route = pageToRoute[page] || '/';
@@ -73,6 +76,8 @@ function AppContent() {
       setCurrentPage('contato');
     } else if (path === '/registrar') {
       setCurrentPage('registrar');
+    } else if (path === '/admin') {
+      setCurrentPage('admin');
     } else if (path === '/recuperar-senha') {
       setCurrentPage('recuperar-senha');
     } else if (path === '/redefinir-senha') {
@@ -101,6 +106,7 @@ function AppContent() {
           <Route path="/contato" element={<ContactPage />} />
           <Route path="/carrinho" element={<CartPage />} />
           <Route path="/home" element={<HomePage />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </main>
       <Footer />
@@ -110,11 +116,13 @@ function AppContent() {
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 
