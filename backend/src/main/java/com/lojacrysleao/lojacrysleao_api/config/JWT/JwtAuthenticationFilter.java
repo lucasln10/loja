@@ -31,6 +31,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        // Pula a autenticação JWT para endpoints públicos
+        String path = request.getRequestURI();
+        if (path.startsWith("/actuator/") || 
+            path.startsWith("/h2-console/") ||
+            path.startsWith("/api/public/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = getTokenFromRequest(request);
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
