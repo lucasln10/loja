@@ -15,7 +15,7 @@ const RecoverPasswordPage: React.FC = () => {
     setSucesso('');
 
     try {
-      await axios.post('http://localhost:8080/api/auth/recover-password', {
+      await axios.post('http://localhost:8080/api/auth/forgot-password', {
         email
       });
 

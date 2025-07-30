@@ -13,6 +13,9 @@ import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import RecoverPasswordPage from './pages/RecoverPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import VerifyEmailPage from './pages/VerifyEmailPage';
+import ResendVerificationPage from './pages/ResendVerificationPage';
 
 import './App.css';
 
@@ -39,6 +42,9 @@ function AppContent() {
       'login': '/login',
       'registrar': '/registrar',
       'recuperar-senha': '/recuperar-senha',
+      'redefinir-senha': '/redefinir-senha',
+      'verificar-email': '/verificar-email',
+      'reenviar-verificacao': '/reenviar-verificacao',
       'sobre': '/sobre',
       'contato': '/contato'
     };
@@ -69,6 +75,12 @@ function AppContent() {
       setCurrentPage('registrar');
     } else if (path === '/recuperar-senha') {
       setCurrentPage('recuperar-senha');
+    } else if (path === '/redefinir-senha') {
+      setCurrentPage('redefinir-senha');
+    } else if (path === '/verificar-email') {
+      setCurrentPage('verificar-email');
+    } else if (path === '/reenviar-verificacao') {
+      setCurrentPage('reenviar-verificacao');
     } 
   }, [location]);
 
@@ -81,6 +93,9 @@ function AppContent() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registrar" element={<RegisterPage />} />
           <Route path="/recuperar-senha" element={<RecoverPasswordPage />} />
+          <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
+          <Route path="/verificar-email" element={<VerifyEmailPage />} />
+          <Route path="/reenviar-verificacao" element={<ResendVerificationPage />} />
           <Route path="/produtos" element={<ProductsPage />} />
           <Route path="/sobre" element={<AboutPage />} />
           <Route path="/contato" element={<ContactPage />} />

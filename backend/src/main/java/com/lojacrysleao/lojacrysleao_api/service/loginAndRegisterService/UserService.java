@@ -94,6 +94,9 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
+        // Remove tokens antigos antes de criar um novo
+        passwordResetTokenService.deleteTokensByUserId(user.getId());
+        
         PasswordResetTokenDTO tokenDTO = passwordResetTokenService.createPasswordResetToken(user);
         sendPasswordResetEmail(user, tokenDTO.getToken());
     }
@@ -102,11 +105,21 @@ public class UserService {
      * Redefine a senha do usuário
      */
     public void resetPassword(Long userId, String newPassword) {
+        if (newPassword == null || newPassword.trim().isEmpty()) {
+            throw new RuntimeException("Nova senha não pode ser vazia");
+        }
+        
+        if (newPassword.length() < 6) {
+            throw new RuntimeException("A senha deve ter pelo menos 6 caracteres");
+        }
+        
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
         
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+        
+        System.out.println("Senha redefinida com sucesso para o usuário: " + user.getEmail());
     }
 
     /**
@@ -115,27 +128,50 @@ public class UserService {
     private void sendVerificationEmail(User user) {
         VerificationTokenDTO tokenDTO = verificationTokenService.createVerificationToken(user);
         
-        String verifyUrl = "http://localhost:8080/api/auth/verify-email?token=" + tokenDTO.getToken();
+        // URL que redireciona para o frontend com o token
+        String verifyUrl = "http://localhost:3000/verificar-email?token=" + tokenDTO.getToken();
         
         // TODO: Implementar envio de email
-        // emailService.sendEmail(user.getEmail(), "Confirme seu cadastro", 
-        //     "Clique aqui para verificar sua conta: " + verifyUrl);
+        // emailService.sendEmail(user.getEmail(), "Confirme seu cadastro - Loja Crysleão", 
+        //     "Olá " + user.getName() + ",\n\n" +
+        //     "Bem-vindo à Loja Crysleão!\n" +
+        //     "Para ativar sua conta, clique no link abaixo:\n\n" +
+        //     verifyUrl + "\n\n" +
+        //     "Este link é válido por tempo limitado.\n" +
+        //     "Se você não se cadastrou em nosso site, ignore este e-mail.\n\n" +
+        //     "Atenciosamente,\nEquipe Loja Crysleão");
         
-        System.out.println("Email de verificação enviado para: " + user.getEmail());
+        System.out.println("===== EMAIL DE VERIFICAÇÃO =====");
+        System.out.println("Para: " + user.getEmail());
+        System.out.println("Nome: " + user.getName());
         System.out.println("Link de verificação: " + verifyUrl);
+        System.out.println("Token: " + tokenDTO.getToken());
+        System.out.println("==================================");
     }
 
     /**
      * Envia email de redefinição de senha (método privado auxiliar)
      */
     private void sendPasswordResetEmail(User user, String token) {
-        String resetUrl = "http://localhost:8080/api/auth/reset-password?token=" + token;
+        // URL que redireciona para o frontend com o token
+        String resetUrl = "http://localhost:3000/redefinir-senha?token=" + token;
         
         // TODO: Implementar envio de email
-        // emailService.sendEmail(user.getEmail(), "Redefina sua senha", 
-        //     "Clique aqui para redefinir sua senha: " + resetUrl);
+        // emailService.sendEmail(user.getEmail(), "Redefina sua senha - Loja Crysleão", 
+        //     "Olá " + user.getName() + ",\n\n" +
+        //     "Você solicitou a redefinição de sua senha.\n" +
+        //     "Clique no link abaixo para redefinir sua senha:\n\n" +
+        //     resetUrl + "\n\n" +
+        //     "Este link é válido por 24 horas.\n" +
+        //     "Se você não solicitou esta redefinição, ignore este e-mail.\n\n" +
+        //     "Atenciosamente,\nEquipe Loja Crysleão");
         
-        System.out.println("Email de redefinição enviado para: " + user.getEmail());
+        System.out.println("===== EMAIL DE REDEFINIÇÃO DE SENHA =====");
+        System.out.println("Para: " + user.getEmail());
+        System.out.println("Nome: " + user.getName());
         System.out.println("Link de redefinição: " + resetUrl);
+        System.out.println("Token: " + token);
+        System.out.println("Token válido por: 24 horas");
+        System.out.println("=========================================");
     }
 }

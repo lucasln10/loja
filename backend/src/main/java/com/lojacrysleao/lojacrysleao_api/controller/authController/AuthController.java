@@ -82,10 +82,14 @@ public class AuthController {
     public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> request) {
         try {
             String email = request.get("email");
+            if (email == null || email.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("E-mail é obrigatório");
+            }
             userService.requestPasswordReset(email);
-            return ResponseEntity.ok("E-mail para redefinir senha enviado!");
+            return ResponseEntity.ok("Se o e-mail estiver cadastrado, você receberá instruções para redefinir sua senha.");
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            // Por segurança, sempre retorna sucesso mesmo se o email não existir
+            return ResponseEntity.ok("Se o e-mail estiver cadastrado, você receberá instruções para redefinir sua senha.");
         }
     }
 
@@ -93,6 +97,13 @@ public class AuthController {
     public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestBody Map<String, String> request) {
         try {
             String newPassword = request.get("password");
+            if (newPassword == null || newPassword.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Nova senha é obrigatória");
+            }
+            if (newPassword.length() < 6) {
+                return ResponseEntity.badRequest().body("A senha deve ter pelo menos 6 caracteres");
+            }
+            
             PasswordResetTokenDTO tokenDTO = passwordResetTokenService.validateToken(token);
             userService.resetPassword(tokenDTO.getUserId(), newPassword);
             passwordResetTokenService.deleteToken(token);
@@ -103,13 +114,22 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/validate-reset-token")
-    public ResponseEntity<String> validateResetToken(@RequestParam String token) {
+    @GetMapping("/validate-reset-token")
+    public ResponseEntity<Map<String, String>> validateResetToken(@RequestParam String token) {
         try {
-            passwordResetTokenService.validateToken(token);
-            return ResponseEntity.ok("Token válido");
+            PasswordResetTokenDTO tokenDTO = passwordResetTokenService.validateToken(token);
+            Map<String, String> response = Map.of(
+                "status", "valid",
+                "message", "Token válido",
+                "email", tokenDTO.getUserEmail() != null ? tokenDTO.getUserEmail() : ""
+            );
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            Map<String, String> response = Map.of(
+                "status", "invalid",
+                "message", e.getMessage()
+            );
+            return ResponseEntity.badRequest().body(response);
         }
     }
 }
