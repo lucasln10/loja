@@ -12,6 +12,7 @@ import ContactPage from './pages/ContactPage';
 import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import RecoverPasswordPage from './pages/RecoverPasswordPage';
 
 import './App.css';
 
@@ -37,6 +38,7 @@ function AppContent() {
       'carrinho': '/carrinho',
       'login': '/login',
       'registrar': '/registrar',
+      'recuperar-senha': '/recuperar-senha',
       'sobre': '/sobre',
       'contato': '/contato'
     };
@@ -65,6 +67,8 @@ function AppContent() {
       setCurrentPage('contato');
     } else if (path === '/registrar') {
       setCurrentPage('registrar');
+    } else if (path === '/recuperar-senha') {
+      setCurrentPage('recuperar-senha');
     } 
   }, [location]);
 
@@ -76,6 +80,7 @@ function AppContent() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registrar" element={<RegisterPage />} />
+          <Route path="/recuperar-senha" element={<RecoverPasswordPage />} />
           <Route path="/produtos" element={<ProductsPage />} />
           <Route path="/sobre" element={<AboutPage />} />
           <Route path="/contato" element={<ContactPage />} />

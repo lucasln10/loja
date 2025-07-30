@@ -64,6 +64,9 @@ const LoginPage: React.FC = () => {
         {erro && <div className="error-message">{erro}</div>}
         
         <div className="register-link">
+          <p><a href="/recuperar-senha">Esqueci minha senha</a></p>
+        </div>
+        <div className="register-link">
           <p>Não tem uma conta? <a href="/registrar">Cadastre-se aqui</a></p>
         </div>
       </div>
