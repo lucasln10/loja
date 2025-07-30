@@ -11,8 +11,8 @@
   padding: 2.5rem;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  max-width: 50vh;
+  height: 50vh;
+  width: 50vh;
   position: relative;
 }
 
@@ -108,7 +108,7 @@
 
 .register-link {
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   color: #7F8C8D;
 }
 
