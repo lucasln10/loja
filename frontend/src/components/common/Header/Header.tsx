@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCart } from '../../../context/CartContext';
+import { useAuth } from '../../../context/AuthContext';
 import './Header.css';
 
 interface HeaderProps {
@@ -11,6 +12,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { state } = useCart();
+  const { user, isAuthenticated, isAdmin, logout } = useAuth();
 
   const navigationItems = [
     { id: 'promocoes', label: 'PROMOÇÕES' },
@@ -37,20 +39,45 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
             <span className="shipping-conditions">CONFIRA CONDIÇÕES</span>
           </div>
           <div className="header-top-actions">
-            <span>Seja Bem-vinda(o)!</span>
-            <button 
-              className="login-btn"
-              onClick={() => onPageChange('login')}
-            >
-              LOGIN
-            </button>
-            <span>ou</span>
-            <button 
-              className="register-btn"
-              onClick={() => onPageChange('registrar')}
-            >
-              CADASTRE-SE
-            </button>
+            {isAuthenticated ? (
+              <>
+                <span>Olá, {user?.name}!</span>
+                {isAdmin && (
+                  <button 
+                    className="admin-btn"
+                    onClick={() => onPageChange('admin')}
+                  >
+                    ADMIN
+                  </button>
+                )}
+                <button 
+                  className="logout-btn"
+                  onClick={() => {
+                    logout();
+                    onPageChange('home');
+                  }}
+                >
+                  SAIR
+                </button>
+              </>
+            ) : (
+              <>
+                <span>Seja Bem-vinda(o)!</span>
+                <button 
+                  className="login-btn"
+                  onClick={() => onPageChange('login')}
+                >
+                  LOGIN
+                </button>
+                <span>ou</span>
+                <button 
+                  className="register-btn"
+                  onClick={() => onPageChange('registrar')}
+                >
+                  CADASTRE-SE
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

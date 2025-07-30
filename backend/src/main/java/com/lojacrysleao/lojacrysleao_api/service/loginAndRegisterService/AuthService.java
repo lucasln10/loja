@@ -3,12 +3,14 @@ package com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService;
 import com.lojacrysleao.lojacrysleao_api.config.JWT.JwtTokenProvider;
 import com.lojacrysleao.lojacrysleao_api.dto.authDTO.LoginRequest;
 import com.lojacrysleao.lojacrysleao_api.dto.authDTO.LoginResponse;
+import com.lojacrysleao.lojacrysleao_api.dto.authDTO.UserDTO;
 import com.lojacrysleao.lojacrysleao_api.model.user.User;
 import com.lojacrysleao.lojacrysleao_api.repository.userRepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +47,21 @@ public class AuthService {
 
         return new LoginResponse(
                 token,
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole().name()
+        );
+    }
+
+    public UserDTO getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        
+        return new UserDTO(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import './LoginPage.css';
 
@@ -8,6 +9,7 @@ const LoginPage: React.FC = () => {
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,9 +19,17 @@ const LoginPage: React.FC = () => {
         password: senha
       });
 
-      localStorage.setItem('token', response.data.accessToken);
+      const { accessToken, user } = response.data;
+      login(accessToken, user);
+      
       alert('Login realizado com sucesso!');
-      navigate('/home');
+      
+      // Redirecionar para admin se for admin, senão para home
+      if (user.role === 'ADMIN') {
+        navigate('/admin');
+      } else {
+        navigate('/home');
+      }
     } catch (err) {
       setErro('E-mail ou senha inválidos');
     }

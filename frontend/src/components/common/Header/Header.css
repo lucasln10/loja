@@ -49,7 +49,9 @@
 }
 
 .login-btn,
-.register-btn {
+.register-btn,
+.admin-btn,
+.logout-btn {
   background: none;
   border: none;
   color: #DC143C;
@@ -60,8 +62,19 @@
 }
 
 .login-btn:hover,
-.register-btn:hover {
+.register-btn:hover,
+.admin-btn:hover,
+.logout-btn:hover {
   color: #B71C1C;
+}
+
+.admin-btn {
+  color: #667eea !important;
+  font-weight: 700;
+}
+
+.admin-btn:hover {
+  color: #5a6fd8 !important;
 }
 
 /* Barra principal */
