@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { useCart } from '../../../context/CartContext';
 import { useAuth } from '../../../context/AuthContext';
 import './Header.css';
+import { IoBagHandleSharp } from "react-icons/io5";
 
 interface HeaderProps {
   currentPage: string;
   onPageChange: (page: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
+
+
+const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { state } = useCart();
@@ -134,7 +137,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
               className="cart-button"
               onClick={() => onPageChange('carrinho')}
             >
-              <span className="cart-icon">🛒</span>
+              <span className="cart-icon">{(IoBagHandleSharp as any)()}</span>
               {state.itemCount > 0 && (
                 <span className="cart-badge">{state.itemCount}</span>
               )}
