@@ -2,67 +2,37 @@
 
     public class LoginResponse {
 
-        private String token;
-        private Long id;
-        private String name;
-        private String email;
-        private String role;
+        private String accessToken;
+        private UserDTO user;
 
         // Construtor padrão
         public LoginResponse() {
         }
 
         // Construtor com apenas token
-        public LoginResponse(String token) {
-            this.token = token;
+        public LoginResponse(String accessToken) {
+            this.accessToken = accessToken;
         }
 
         // Construtor completo
-        public LoginResponse(String token, Long id, String name, String email, String role) {
-            this.token = token;
-            this.id = id;
-            this.name = name;
-            this.email = email;
-            this.role = role;
+        public LoginResponse(String accessToken, Long id, String name, String email, String role) {
+            this.accessToken = accessToken;
+            this.user = new UserDTO(id, name, email, role);
         }
 
-        public String getToken() {
-            return token;
+        public String getAccessToken() {
+            return accessToken;
         }
 
-        public void setToken(String token) {
-            this.token = token;
+        public void setAccessToken(String accessToken) {
+            this.accessToken = accessToken;
         }
 
-        public Long getId() {
-            return id;
+        public UserDTO getUser() {
+            return user;
         }
 
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getRole() {
-            return role;
-        }
-
-        public void setRole(String role) {
-            this.role = role;
+        public void setUser(UserDTO user) {
+            this.user = user;
         }
     }

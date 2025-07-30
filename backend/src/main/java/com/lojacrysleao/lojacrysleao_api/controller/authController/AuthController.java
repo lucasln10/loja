@@ -4,6 +4,7 @@ import com.lojacrysleao.lojacrysleao_api.dto.authDTO.LoginRequest;
 import com.lojacrysleao.lojacrysleao_api.dto.authDTO.LoginResponse;
 import com.lojacrysleao.lojacrysleao_api.dto.authDTO.RegisterRequest;
 import com.lojacrysleao.lojacrysleao_api.dto.authDTO.RegisterResponse;
+import com.lojacrysleao.lojacrysleao_api.dto.authDTO.UserDTO;
 import com.lojacrysleao.lojacrysleao_api.dto.verifyDTO.PasswordResetTokenDTO;
 import com.lojacrysleao.lojacrysleao_api.dto.verifyDTO.VerificationTokenDTO;
 import com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService.AuthService;
@@ -52,6 +53,12 @@ public class AuthController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(null);
         }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getCurrentUser() {
+        UserDTO userDTO = authService.getCurrentUser();
+        return ResponseEntity.ok(userDTO);
     }
 
     @GetMapping("/verify-email")

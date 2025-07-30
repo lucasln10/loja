@@ -16,6 +16,18 @@ public class UserDTO {
 
     private String role;
 
+    // Default constructor
+    public UserDTO() {
+    }
+
+    // Constructor with parameters
+    public UserDTO(Long id, String name, String email, String role) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.role = role;
+    }
+
     public Long getId() {
         return id;
     }
