@@ -39,17 +39,20 @@ build/
 # =====================================
 # ARQUIVOS SENSÍVEIS - NÃO COMMITTAR
 # =====================================
-# Configurações de banco e propriedades
-src/main/resources/application.properties
-backend/src/main/resources/application.properties
+# Configurações específicas de ambiente
 **/application-dev.properties
 **/application-prod.properties
 **/application-local.properties
+**/application.properties.local
 
-# Inicializadores de dados
-src/main/java/**/config/DataInitializer.java
-backend/src/main/java/**/config/DataInitializer.java
-**/DataInitializer.java
+# Inicializadores de dados específicos
+**/DataInitializer.java.local
+
+# Configurações de banco e propriedades (opcional - descomente se necessário)
+# src/main/resources/application.properties
+# backend/src/main/resources/application.properties
+# src/main/java/**/config/DataInitializer.java
+# backend/src/main/java/**/config/DataInitializer.java
 
 # Arquivos de configuração sensíveis
 *.env
