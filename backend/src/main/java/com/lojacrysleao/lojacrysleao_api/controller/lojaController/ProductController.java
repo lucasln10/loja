@@ -1,10 +1,52 @@
 package com.lojacrysleao.lojacrysleao_api.controller.lojaController;
 
+import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.ProductDTO;
+import com.lojacrysleao.lojacrysleao_api.service.lojaService.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/products")
 public class ProductController {
+
+    @Autowired
+    private ProductService productService;
+
+    @GetMapping
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        List<ProductDTO> products = productService.listAll();
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
+        ProductDTO product = productService.findById(id);
+        return ResponseEntity.ok(product);
+    }
+
+    @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
+        ProductDTO createdProduct = productService.create(productDTO);
+        return ResponseEntity.ok(createdProduct);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
+        productDTO.setId(id);
+        ProductDTO updatedProduct = productService.update(productDTO);
+        return ResponseEntity.ok(updatedProduct);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
+        productService.delete(id);
+        return ResponseEntity.ok("Produto excluído com sucesso");
+    }
 }

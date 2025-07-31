@@ -14,6 +14,7 @@ public class ProductDTO {
 
     private Long categoryId;
 
+    private String imageUrl;
 
     public Long getId() {
         return id;
@@ -63,4 +64,11 @@ public class ProductDTO {
         this.categoryId = categoryId;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

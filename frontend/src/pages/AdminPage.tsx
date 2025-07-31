@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import ProductManager from '../components/admin/ProductManager';
 import './AdminPage.css';
 
 interface Product {
@@ -261,84 +262,7 @@ const AdminPage: React.FC = () => {
         )}
 
         {activeTab === 'products' && (
-          <div className="products-section">
-            <h2>Gerenciar Produtos</h2>
-            
-            <div className="add-form">
-              <h3>Adicionar Novo Produto</h3>
-              <form onSubmit={handleAddProduct}>
-                <div className="form-row">
-                  <input
-                    type="text"
-                    placeholder="Nome do produto"
-                    value={newProduct.name}
-                    onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
-                    required
-                  />
-                  <input
-                    type="number"
-                    placeholder="Preço"
-                    value={newProduct.price}
-                    onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
-                    required
-                  />
-                </div>
-                <div className="form-row">
-                  <select
-                    value={newProduct.categoryId}
-                    onChange={(e) => setNewProduct({...newProduct, categoryId: e.target.value})}
-                    required
-                  >
-                    <option value="">Selecione uma categoria</option>
-                    {categories.map(cat => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
-                    ))}
-                  </select>
-                  <input
-                    type="number"
-                    placeholder="Estoque"
-                    value={newProduct.stock}
-                    onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})}
-                    required
-                  />
-                </div>
-                <textarea
-                  placeholder="Descrição"
-                  value={newProduct.description}
-                  onChange={(e) => setNewProduct({...newProduct, description: e.target.value})}
-                  required
-                />
-                <input
-                  type="url"
-                  placeholder="URL da imagem (opcional)"
-                  value={newProduct.imageUrl}
-                  onChange={(e) => setNewProduct({...newProduct, imageUrl: e.target.value})}
-                />
-                <button type="submit">Adicionar Produto</button>
-              </form>
-            </div>
-
-            <div className="products-list">
-              <h3>Produtos Existentes</h3>
-              <div className="products-grid">
-                {products.map(product => (
-                  <div key={product.id} className="product-card">
-                    <h4>{product.name}</h4>
-                    <p><strong>Categoria:</strong> {product.category.name}</p>
-                    <p><strong>Preço:</strong> R$ {product.price.toFixed(2)}</p>
-                    <p><strong>Estoque:</strong> {product.stock}</p>
-                    <p>{product.description}</p>
-                    <button 
-                      onClick={() => handleDeleteProduct(product.id)}
-                      className="delete-btn"
-                    >
-                      Excluir
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <ProductManager authToken={localStorage.getItem('token') || ''} />
         )}
 
         {activeTab === 'categories' && (
