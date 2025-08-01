@@ -1,6 +1,9 @@
 package com.lojacrysleao.lojacrysleao_api.service.verifyService;
 
 import com.lojacrysleao.lojacrysleao_api.dto.verifyDTO.PasswordResetTokenDTO;
+import com.lojacrysleao.lojacrysleao_api.exception.BadRequestException;
+import com.lojacrysleao.lojacrysleao_api.exception.ResourceNotFoundException;
+import com.lojacrysleao.lojacrysleao_api.exception.ValidationException;
 import com.lojacrysleao.lojacrysleao_api.mapper.verifyMapper.PasswordResetTokenMapper;
 import com.lojacrysleao.lojacrysleao_api.model.user.User;
 import com.lojacrysleao.lojacrysleao_api.model.verify.PasswordResetToken;
@@ -28,7 +31,7 @@ public class PasswordResetTokenService {
      */
     public PasswordResetTokenDTO createPasswordResetToken(User user) {
         if (user == null) {
-            throw new RuntimeException("Usuário não pode ser nulo");
+            throw new BadRequestException("Usuário não pode ser nulo");
         }
 
         // Remove tokens antigos do usuário se existirem
@@ -49,7 +52,7 @@ public class PasswordResetTokenService {
      */
     public PasswordResetTokenDTO findByToken(String token) {
         if (token == null || token.trim().isEmpty()) {
-            throw new RuntimeException("Token não pode ser nulo ou vazio");
+            throw new BadRequestException("Token não pode ser nulo ou vazio");
         }
 
         Optional<PasswordResetToken> tokenEntity = passwordResetTokenRepository.findByToken(token);
@@ -61,7 +64,7 @@ public class PasswordResetTokenService {
      */
     public PasswordResetTokenDTO findByUserId(Long userId) {
         if (userId == null) {
-            throw new RuntimeException("ID do usuário não pode ser nulo");
+            throw new BadRequestException("ID do usuário não pode ser nulo");
         }
 
         Optional<PasswordResetToken> tokenEntity = passwordResetTokenRepository.findByUserId(userId);
@@ -86,17 +89,17 @@ public class PasswordResetTokenService {
      */
     public PasswordResetTokenDTO validateToken(String token) {
         if (token == null || token.trim().isEmpty()) {
-            throw new RuntimeException("Token não pode ser nulo ou vazio");
+            throw new BadRequestException("Token não pode ser nulo ou vazio");
         }
 
         PasswordResetTokenDTO tokenDTO = findByToken(token);
         
         if (tokenDTO == null) {
-            throw new RuntimeException("Token não encontrado");
+            throw new ResourceNotFoundException("Token não encontrado");
         }
 
         if (tokenDTO.getExpiryDate().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Token expirado");
+            throw new ValidationException("Token expirado");
         }
 
         return tokenDTO;
@@ -107,7 +110,7 @@ public class PasswordResetTokenService {
      */
     public void deleteToken(String token) {
         if (token == null || token.trim().isEmpty()) {
-            throw new RuntimeException("Token não pode ser nulo ou vazio");
+            throw new BadRequestException("Token não pode ser nulo ou vazio");
         }
 
         Optional<PasswordResetToken> tokenEntity = passwordResetTokenRepository.findByToken(token);
@@ -121,7 +124,7 @@ public class PasswordResetTokenService {
      */
     public void deleteTokensByUserId(Long userId) {
         if (userId == null) {
-            throw new RuntimeException("ID do usuário não pode ser nulo");
+            throw new BadRequestException("ID do usuário não pode ser nulo");
         }
 
         passwordResetTokenRepository.deleteByUserId(userId);

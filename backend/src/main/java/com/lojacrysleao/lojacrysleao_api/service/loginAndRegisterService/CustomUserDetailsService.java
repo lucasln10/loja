@@ -1,5 +1,6 @@
 package com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService;
 
+import com.lojacrysleao.lojacrysleao_api.exception.BadRequestException;
 import com.lojacrysleao.lojacrysleao_api.model.user.User;
 import com.lojacrysleao.lojacrysleao_api.repository.userRepository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,10 +22,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow( () -> new UsernameNotFoundException("Usuário não encontrado"));
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(), user.getPassword(), Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
+            return new org.springframework.security.core.userdetails.User(
+                    user.getEmail(), user.getPassword(), Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
     }
 }

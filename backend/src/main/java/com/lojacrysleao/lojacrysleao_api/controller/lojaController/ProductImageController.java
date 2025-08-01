@@ -27,13 +27,9 @@ public class ProductImageController {
     @PostMapping("/upload")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
-        try {
-            String filename = imageService.uploadImage(file);
-            String imageUrl = "/api/products/images/" + filename;
-            return ResponseEntity.ok(imageUrl);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro ao enviar imagem: " + e.getMessage());
-        }
+        String filename = imageService.uploadImage(file);
+        String imageUrl = "/api/products/images/" + filename;
+        return ResponseEntity.ok(imageUrl);
     }
 
     @GetMapping("/{filename}")

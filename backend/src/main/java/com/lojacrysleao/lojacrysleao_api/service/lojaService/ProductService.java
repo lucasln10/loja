@@ -1,6 +1,8 @@
 package com.lojacrysleao.lojacrysleao_api.service.lojaService;
 
 import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.ProductDTO;
+import com.lojacrysleao.lojacrysleao_api.exception.BadRequestException;
+import com.lojacrysleao.lojacrysleao_api.exception.ResourceNotFoundException;
 import com.lojacrysleao.lojacrysleao_api.mapper.lojaMapper.ProductMapper;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Category;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
@@ -27,11 +29,15 @@ public class ProductService {
 
     public ProductDTO create(ProductDTO dto) {
         if (dto == null) {
-            throw new RuntimeException("ProductDTO nao pode ser nulo.");
+            throw new BadRequestException("ProductDTO não pode ser nulo");
+        }
+        
+        if (dto.getCategoryId() == null) {
+            throw new BadRequestException("ID da categoria é obrigatório");
         }
         
         Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Categoria nao encontrada."));  
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));  
 
         Product product = productMapper.toEntity(dto, category);
         Product saved = productRepository.save(product);
@@ -47,24 +53,28 @@ public class ProductService {
 
     public ProductDTO findById(Long id) {
         if (id == null) {
-            throw new RuntimeException("ID nao pode ser nulo.");
+            throw new BadRequestException("ID não pode ser nulo");
         }
         
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto nao encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto com ID " + id + " não encontrado"));
         return productMapper.toDTO(product);
     }
 
     public ProductDTO update(ProductDTO dto) {
         if (dto == null || dto.getId() == null) {
-            throw new RuntimeException("ProductDTO ou ID nao podem ser nulos.");
+            throw new BadRequestException("ProductDTO e ID não podem ser nulos");
+        }
+
+        if (dto.getCategoryId() == null) {
+            throw new BadRequestException("ID da categoria é obrigatório");
         }
 
         productRepository.findById(dto.getId())
-                .orElseThrow(() -> new RuntimeException("Produto nao encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto com ID " + dto.getId() + " não encontrado"));
         
         Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Categoria nao encontrada."));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
 
         Product product = productMapper.toEntity(dto, category);
         Product saved = productRepository.save(product);

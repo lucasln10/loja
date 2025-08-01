@@ -1,5 +1,7 @@
 package com.lojacrysleao.lojacrysleao_api.service.uploadService;
 
+import com.lojacrysleao.lojacrysleao_api.exception.BadRequestException;
+import com.lojacrysleao.lojacrysleao_api.exception.ValidationException;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,27 +23,33 @@ public class ImageServiceImpl implements ImageService {
     public static final String UPLOAD_DIR = "/home/hlxt/loja-gitlab/loja/backend/uploads"; // Diretório local para desenvolvimento
 
     @Override
-    public String uploadImage(MultipartFile file) throws Exception {
-        if (file.isEmpty()) {
-            throw new IllegalArgumentException("O arquivo está vazio");
+    public String uploadImage(MultipartFile file) {
+        try {
+            if (file.isEmpty()) {
+                throw new BadRequestException("O arquivo está vazio");
+            }
+
+            String contentType = file.getContentType();
+            if (!ALLOWED_CONTENT_TYPES.contains(contentType)) {
+                throw new ValidationException("Tipo de arquivo inválido: " + contentType);
+            }
+
+            String extension = contentType.substring(contentType.indexOf("/") + 1);
+            String filename = UUID.randomUUID().toString() + "." + extension;
+
+            File outputFile = new File(UPLOAD_DIR + File.separator + filename);
+
+            Thumbnails.of(file.getInputStream())
+                    .size(800, 800) // largura e altura
+                    .outputFormat(extension) // força salvar como o mesmo tipo (jpg, png, webp)
+                    .toFile(outputFile);
+
+            return filename;
+        } catch (BadRequestException | ValidationException e) {
+            throw e; // Re-throw custom exceptions
+        } catch (Exception e) {
+            throw new BadRequestException("Não foi possível processar a imagem: " + e.getMessage());
         }
-
-        String contentType = file.getContentType();
-        if (!ALLOWED_CONTENT_TYPES.contains(contentType)) {
-            throw new IllegalArgumentException("Tipo de arquivo inválido: " + contentType);
-        }
-
-        String extension = contentType.substring(contentType.indexOf("/") + 1);
-        String filename = UUID.randomUUID().toString() + "." + extension;
-
-        File outputFile = new File(UPLOAD_DIR + File.separator + filename);
-
-        Thumbnails.of(file.getInputStream())
-                .size(800, 800) // largura e altura
-                .outputFormat(extension) // força salvar como o mesmo tipo (jpg, png, webp)
-                .toFile(outputFile);
-
-        return filename;
     }
 
     private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
