@@ -49,10 +49,10 @@ build/
 **/DataInitializer.java.local
 
 # Configurações de banco e propriedades (opcional - descomente se necessário)
-# src/main/resources/application.properties
-# backend/src/main/resources/application.properties
-# src/main/java/**/config/DataInitializer.java
-# backend/src/main/java/**/config/DataInitializer.java
+src/main/resources/application.properties
+backend/src/main/resources/application.properties
+src/main/java/**/config/DataInitializer.java
+backend/src/main/java/**/config/DataInitializer.java
 
 # Arquivos de configuração sensíveis
 *.env

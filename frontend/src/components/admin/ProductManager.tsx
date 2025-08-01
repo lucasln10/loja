@@ -27,6 +27,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -107,6 +108,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
   const uploadImage = async (): Promise<string | null> => {
     if (!imageFile) return null;
 
+    setIsUploadingImage(true);
     const formDataImage = new FormData();
     formDataImage.append('file', imageFile);
 
@@ -128,6 +130,8 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
     } catch (error) {
       console.error('Erro no upload:', error);
       return null;
+    } finally {
+      setIsUploadingImage(false);
     }
   };
 
@@ -218,6 +222,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
     setSelectedProduct(null);
     setImageFile(null);
     setImagePreview(null);
+    setIsUploadingImage(false);
   };
 
   const getCategoryName = (categoryId: number) => {
@@ -306,16 +311,93 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
 
             <div className="form-group">
               <label>Imagem do Produto</label>
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleImageChange}
-              />
-              {imagePreview && (
-                <div className="image-preview">
-                  <img src={imagePreview} alt="Preview" />
-                </div>
-              )}
+              <div 
+                className={`image-upload-zone ${imagePreview ? 'has-image' : ''}`}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.add('drag-over');
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.remove('drag-over');
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.remove('drag-over');
+                  const files = Array.from(e.dataTransfer.files);
+                  const file = files[0];
+                  if (file && file.type.startsWith('image/')) {
+                    setImageFile(file);
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                      setImagePreview(e.target?.result as string);
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                onClick={() => document.getElementById('image-input')?.click()}
+              >
+                <input
+                  id="image-input"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleImageChange}
+                  style={{ display: 'none' }}
+                />
+                
+                {imagePreview ? (
+                  <div className="image-preview-container">
+                    <img src={imagePreview} alt="Preview" className="image-preview-img" />
+                    <div className="image-overlay">
+                      {isUploadingImage ? (
+                        <div className="upload-loading">
+                          <div className="loading-spinner"></div>
+                          <p>Enviando imagem...</p>
+                        </div>
+                      ) : (
+                        <div className="image-actions">
+                          <button
+                            type="button"
+                            className="btn-change-image"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              document.getElementById('image-input')?.click();
+                            }}
+                          >
+                            📷 Alterar
+                          </button>
+                          <button
+                            type="button"
+                            className="btn-remove-image"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setImagePreview(null);
+                              setImageFile(null);
+                              setFormData(prev => ({...prev, imageUrl: ''}));
+                            }}
+                          >
+                            🗑️ Remover
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="upload-placeholder">
+                    <div className="upload-icon">📷</div>
+                    <div className="upload-text">
+                      <p><strong>Clique para selecionar</strong> ou arraste uma imagem aqui</p>
+                      <p className="upload-hint">JPG, PNG ou WEBP • Máx. 10MB</p>
+                    </div>
+                  </div>
+                )}
+                
+                {imageFile && !isUploadingImage && (
+                  <div className="file-selected-indicator">
+                    <span>📎 {imageFile.name} - Clique em "Salvar" para enviar</span>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="form-actions">
