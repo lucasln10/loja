@@ -3,6 +3,8 @@ import { useCart } from '../../../context/CartContext';
 import { useAuth } from '../../../context/AuthContext';
 import './Header.css';
 import { IoBagHandleSharp } from "react-icons/io5";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+
 
 interface HeaderProps {
   currentPage: string;
@@ -12,7 +14,6 @@ interface HeaderProps {
 
 
 const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {  
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { state } = useCart();
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
@@ -120,7 +121,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
               className="search-input"
             />
             <button type="submit" className="search-button">
-              🔍
+              <span className="search-icon">{(FaMagnifyingGlass as any)()}</span>
             </button>
           </form>
 
@@ -149,16 +150,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
       {/* Barra de navegação com categorias */}
       <div className="header-nav">
         <div className="header-nav-container">
-          <nav className={`nav ${isMenuOpen ? 'nav--open' : ''}`}>
+          <nav className="nav">
             <ul className="nav-list">
               {navigationItems.map(item => (
                 <li key={item.id} className="nav-item">
                   <button
                     className={`nav-link ${currentPage === item.id ? 'nav-link--active' : ''}`}
-                    onClick={() => {
-                      onPageChange(item.id);
-                      setIsMenuOpen(false);
-                    }}
+                    onClick={() => onPageChange(item.id)}
                   >
                     {item.label}
                   </button>
@@ -166,15 +164,6 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
               ))}
             </ul>
           </nav>
-
-          <button
-            className="menu-toggle"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
         </div>
       </div>
     </header>

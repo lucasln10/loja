@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import ProductCard from '../components/home/ProductCard/ProductCard';
 import { Product } from '../types';
 import './HomePage.css';
+import { FaTruckFast } from "react-icons/fa6";
+import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import { TbBrandCake } from "react-icons/tb";
+
+
+
 
 const HomePage: React.FC = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [startScrollLeft, setStartScrollLeft] = useState(0);
+  const [dragDistance, setDragDistance] = useState(0);
   // Produtos para o carrossel - usando emojis como fallback
   const carouselProducts: Product[] = [
     {
@@ -50,6 +60,114 @@ const HomePage: React.FC = () => {
     }
   ];
 
+  // Função para ir para um slide específico
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+    if (carouselRef.current) {
+      carouselRef.current.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      carouselRef.current.style.transform = `translateX(-${index * 20}%)`;
+    }
+  };
+
+  // Funções de navegação do carrossel
+  const nextSlide = () => {
+    const nextIndex = (currentIndex + 1) % carouselProducts.length;
+    goToSlide(nextIndex);
+  };
+
+  const prevSlide = () => {
+    const prevIndex = currentIndex === 0 ? carouselProducts.length - 1 : currentIndex - 1;
+    goToSlide(prevIndex);
+  };
+
+  // Eventos de mouse/touch para arrastar
+  const handleStart = (clientX: number) => {
+    setIsDragging(true);
+    setStartX(clientX);
+    setStartScrollLeft(currentIndex);
+    setDragDistance(0);
+    
+    if (carouselRef.current) {
+      carouselRef.current.style.transition = 'none';
+    }
+  };
+
+  const handleMove = (clientX: number) => {
+    if (!isDragging || !carouselRef.current) return;
+    
+    const distance = clientX - startX;
+    const slideWidth = carouselRef.current.offsetWidth / 5; // Largura de cada slide (20%)
+    const dragPercentage = (distance / slideWidth) * 20; // Converte para porcentagem
+    
+    setDragDistance(distance);
+    
+    // Aplicar transformação durante o arraste
+    const translateX = -(startScrollLeft * 20) + dragPercentage;
+    carouselRef.current.style.transform = `translateX(${translateX}%)`;
+  };
+
+  const handleEnd = () => {
+    if (!isDragging || !carouselRef.current) return;
+    
+    setIsDragging(false);
+    
+    if (carouselRef.current) {
+      carouselRef.current.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    }
+    
+    const slideWidth = carouselRef.current.offsetWidth / 5;
+    const threshold = slideWidth * 0.2; // 20% da largura do slide
+    
+    let newIndex = currentIndex;
+    
+    if (Math.abs(dragDistance) > threshold) {
+      if (dragDistance > 0) {
+        // Arrastou para a direita - slide anterior
+        newIndex = currentIndex === 0 ? carouselProducts.length - 1 : currentIndex - 1;
+      } else {
+        // Arrastou para a esquerda - próximo slide
+        newIndex = (currentIndex + 1) % carouselProducts.length;
+      }
+    }
+    
+    goToSlide(newIndex);
+  };
+
+  // Eventos de mouse
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleStart(e.clientX);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleMove(e.clientX);
+  };
+
+  const handleMouseUp = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleEnd();
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      handleEnd();
+    }
+  };
+
+  // Eventos de touch para dispositivos móveis
+  const handleTouchStart = (e: React.TouchEvent) => {
+    handleStart(e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    handleMove(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    handleEnd();
+  };
+
   // Produtos em destaque (diferentes do carrossel)
   const featuredProducts: Product[] = [
     {
@@ -78,68 +196,52 @@ const HomePage: React.FC = () => {
     }
   ];
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % carouselProducts.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + carouselProducts.length) % carouselProducts.length);
-  };
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-  };
-
   return (
     <div className="home-page">
       {/* Carrossel de Produtos */}
       <section className="hero-carousel">
         <div className="carousel-container">
-          <div className="carousel-content">
-             
-
-            <div className="carousel-products">
-              <div className="carousel-wrapper">
-                <div 
-                  className="carousel-track"
-                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                >
-                  {carouselProducts.map((product) => (
-                    <div key={product.id} className="carousel-slide">
-                      <div className="carousel-product-card">
-                        <div className="carousel-product-image">
-                          <img src={product.image} alt={product.name} />
-                          <div className="product-badge">{product.category}</div>
-                        </div>
-                        <div className="carousel-product-info">
-                          <h3>{product.name}</h3>
-                          <p>{product.description}</p>
-                          <div className="product-price">R$ {product.price.toFixed(2)}</div>
-                        </div>
-                      </div>
+          <div className="carousel-products">
+            <button className="carousel-btn carousel-btn-prev" onClick={prevSlide}>
+              ‹
+            </button>
+            <div className="carousel-wrapper">
+              <div 
+                className="carousel-track"
+                ref={carouselRef}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseLeave}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                style={{
+                  transform: `translateX(-${currentIndex * 20}%)`
+                }}
+              >
+                {carouselProducts.map((product) => (
+                  <div key={product.id} className="carousel-slide">
+                    <div className="carousel-product-image">
+                      <img src={product.image} alt={product.name} />
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Controles do Carrossel */}
-              <button className="carousel-btn carousel-btn-prev" onClick={prevSlide}>
-                ❮
-              </button>
-              <button className="carousel-btn carousel-btn-next" onClick={nextSlide}>
-                ❯
-              </button>
-
-              {/* Indicadores */}
-              <div className="carousel-indicators">
-                {carouselProducts.map((_, index) => (
-                  <button
-                    key={index}
-                    className={`carousel-indicator ${index === currentSlide ? 'active' : ''}`}
-                    onClick={() => goToSlide(index)}
-                  />
+                  </div>
                 ))}
               </div>
+            </div>
+            <button className="carousel-btn carousel-btn-next" onClick={nextSlide}>
+              ›
+            </button>
+            
+            {/* Dots de navegação */}
+            <div className="carousel-dots">
+              {carouselProducts.map((_, index) => (
+                <div
+                  key={index}
+                  className={`carousel-dot ${index === currentIndex ? 'active' : ''}`}
+                  onClick={() => goToSlide(index)}
+                />
+              ))}
             </div>
           </div>
         </div>
@@ -168,22 +270,22 @@ const HomePage: React.FC = () => {
       {/* Seção Por que escolher */}
       <section className="why-choose-us">
         <div className="container">
-          <h2>💝 Por que escolher a Crys Leão?</h2>
+          <h2>Por que escolher a Crys Leão?</h2>
           <div className="benefits-grid">
             <div className="benefit-card">
-              <div className="benefit-icon">🎨</div>
+              <div className="benefit-icon">{(TbBrandCake as any)()}</div>
               <h3>Design Exclusivo</h3>
               <p>Moldes únicos criados especialmente para deixar seus bolos extraordinários</p>
             </div>
             <div className="benefit-card">
-              <div className="benefit-icon">🛡️</div>
+              <div className="benefit-icon">{(IoShieldCheckmarkOutline as any)()}</div>
               <h3>Qualidade Garantida</h3>
               <p>Materiais de primeira linha que garantem durabilidade e resultados perfeitos</p>
             </div>
             <div className="benefit-card">
-              <div className="benefit-icon">💖</div>
-              <h3>Feito com Amor</h3>
-              <p>Cada molde é pensado para ajudar você a criar momentos especiais</p>
+              <div className="benefit-icon">{(FaTruckFast as any)()}</div>
+              <h3>Entrega Rápida</h3>
+              <p>Receba seus moldes rapidamente e com segurança em sua casa</p>
             </div>
           </div>
         </div>
