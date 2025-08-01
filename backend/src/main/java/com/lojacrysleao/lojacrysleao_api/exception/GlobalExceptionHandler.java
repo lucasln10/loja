@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleExternalServiceException(ExternalServiceException ex, HttpServletRequest request) {
         ErrorResponseDTO response = new ErrorResponseDTO(
                 HttpStatus.SERVICE_UNAVAILABLE.value(),
-                "Failures in external integrations (e.g. email)",
+                "Failures in external integrations",
                 ex.getMessage(),
                 request.getRequestURI()
         );

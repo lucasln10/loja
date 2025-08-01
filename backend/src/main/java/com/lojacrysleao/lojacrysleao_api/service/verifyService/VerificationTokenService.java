@@ -1,6 +1,9 @@
 package com.lojacrysleao.lojacrysleao_api.service.verifyService;
 
 import com.lojacrysleao.lojacrysleao_api.dto.verifyDTO.VerificationTokenDTO;
+import com.lojacrysleao.lojacrysleao_api.exception.BadRequestException;
+import com.lojacrysleao.lojacrysleao_api.exception.ResourceNotFoundException;
+import com.lojacrysleao.lojacrysleao_api.exception.ValidationException;
 import com.lojacrysleao.lojacrysleao_api.mapper.verifyMapper.VerificationTokenMapper;
 import com.lojacrysleao.lojacrysleao_api.model.user.User;
 import com.lojacrysleao.lojacrysleao_api.model.verify.VerificationToken;
@@ -28,7 +31,7 @@ public class VerificationTokenService {
      */
     public VerificationTokenDTO createVerificationToken(User user) {
         if (user == null) {
-            throw new RuntimeException("Usuário não pode ser nulo");
+            throw new BadRequestException("Usuário não pode ser nulo");
         }
 
         // Verifica se já existe um token para o usuário
@@ -59,7 +62,7 @@ public class VerificationTokenService {
      */
     public VerificationTokenDTO findByToken(String token) {
         if (token == null || token.trim().isEmpty()) {
-            throw new RuntimeException("Token não pode ser nulo ou vazio");
+            throw new BadRequestException("Token não pode ser nulo ou vazio");
         }
 
         Optional<VerificationToken> tokenEntity = verificationTokenRepository.findByToken(token);
@@ -71,7 +74,7 @@ public class VerificationTokenService {
      */
     public VerificationTokenDTO findByUserId(Long userId) {
         if (userId == null) {
-            throw new RuntimeException("ID do usuário não pode ser nulo");
+            throw new BadRequestException("ID do usuário não pode ser nulo");
         }
 
         Optional<VerificationToken> tokenEntity = verificationTokenRepository.findByUserId(userId);
@@ -96,17 +99,17 @@ public class VerificationTokenService {
      */
     public VerificationTokenDTO validateToken(String token) {
         if (token == null || token.trim().isEmpty()) {
-            throw new RuntimeException("Token não pode ser nulo ou vazio");
+            throw new BadRequestException("Token não pode ser nulo ou vazio");
         }
 
         VerificationTokenDTO tokenDTO = findByToken(token);
         
         if (tokenDTO == null) {
-            throw new RuntimeException("Token não encontrado");
+            throw new ResourceNotFoundException("Token não encontrado");
         }
 
         if (tokenDTO.getExpiryDate().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Token expirado");
+            throw new ValidationException("Token expirado");
         }
 
         return tokenDTO;
@@ -117,7 +120,7 @@ public class VerificationTokenService {
      */
     public void deleteToken(String token) {
         if (token == null || token.trim().isEmpty()) {
-            throw new RuntimeException("Token não pode ser nulo ou vazio");
+            throw new BadRequestException("Token não pode ser nulo ou vazio");
         }
 
         Optional<VerificationToken> tokenEntity = verificationTokenRepository.findByToken(token);
@@ -131,7 +134,7 @@ public class VerificationTokenService {
      */
     public void deleteTokensByUserId(Long userId) {
         if (userId == null) {
-            throw new RuntimeException("ID do usuário não pode ser nulo");
+            throw new BadRequestException("ID do usuário não pode ser nulo");
         }
 
         verificationTokenRepository.deleteByUserId(userId);
@@ -154,14 +157,14 @@ public class VerificationTokenService {
      */
     public VerificationTokenDTO regenerateToken(Long userId) {
         if (userId == null) {
-            throw new RuntimeException("ID do usuário não pode ser nulo");
+            throw new BadRequestException("ID do usuário não pode ser nulo");
         }
 
         // Busca o token existente para obter o usuário
         Optional<VerificationToken> existingToken = verificationTokenRepository.findByUserId(userId);
         
         if (existingToken.isEmpty()) {
-            throw new RuntimeException("Usuário não possui token de verificação");
+            throw new ResourceNotFoundException("Usuário não possui token de verificação");
         }
 
         User user = existingToken.get().getUser();

@@ -1,5 +1,7 @@
 package com.lojacrysleao.lojacrysleao_api.service.emailService;
 
+import com.lojacrysleao.lojacrysleao_api.exception.BadRequestException;
+import com.lojacrysleao.lojacrysleao_api.exception.ExternalServiceException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,38 +17,58 @@ public class EmailService {
     private JavaMailSender mailSender;
 
     public void sendEmail(String to, String subject, String body) {
+        if (to == null || to.trim().isEmpty()) {
+            throw new BadRequestException("Endereço de email de destino é obrigatório");
+        }
+        
+        if (subject == null || subject.trim().isEmpty()) {
+            throw new BadRequestException("Assunto do email é obrigatório");
+        }
+        
+        if (body == null || body.trim().isEmpty()) {
+            throw new BadRequestException("Corpo do email é obrigatório");
+        }
+        
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(to);
             message.setSubject(subject);
             message.setText(body);
-            message.setFrom("noreply@lojacrysleao.com");
+            message.setFrom("naorespondacrysleao@gmail.com");
 
             mailSender.send(message);
-            System.out.println("Email enviado com sucesso para: " + to);
         } catch (Exception e) {
-            System.err.println("Erro ao enviar email para " + to + ": " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Falha ao enviar email: " + e.getMessage());
+            throw new ExternalServiceException("Falha ao enviar email: " + e.getMessage());
         }
     }
 
     public void sendHtmlEmail(String to, String subject, String htmlBody) {
+        if (to == null || to.trim().isEmpty()) {
+            throw new BadRequestException("Endereço de email de destino é obrigatório");
+        }
+        
+        if (subject == null || subject.trim().isEmpty()) {
+            throw new BadRequestException("Assunto do email é obrigatório");
+        }
+        
+        if (htmlBody == null || htmlBody.trim().isEmpty()) {
+            throw new BadRequestException("Corpo HTML do email é obrigatório");
+        }
+        
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(htmlBody, true); // true indica que é HTML
-            helper.setFrom("noreply@lojacrysleao.com");
+            helper.setText(htmlBody, true);
+            helper.setFrom("naorespondacrysleao@gmail.com");
 
             mailSender.send(message);
-            System.out.println("Email HTML enviado com sucesso para: " + to);
         } catch (MessagingException e) {
-            System.err.println("Erro ao enviar email HTML para " + to + ": " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Falha ao enviar email HTML: " + e.getMessage());
+            throw new ExternalServiceException("Falha ao enviar email HTML: " + e.getMessage());
+        } catch (Exception e) {
+            throw new ExternalServiceException("Falha inesperada ao enviar email: " + e.getMessage());
         }
     }
 
