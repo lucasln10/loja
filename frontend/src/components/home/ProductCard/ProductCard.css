@@ -1,10 +1,11 @@
 .product-card {
   background: white;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(220, 20, 60, 0.1);
-  transition: all 0.3s ease;
-  position: relative;
+  border-radius: 10px;
+  border: 1px dashed #FA8072;
+  padding: 11px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-align: center;
 }
 
 .product-card:hover {
@@ -68,7 +69,7 @@
 }
 
 .product-category {
-  background: linear-gradient(135deg, #FA8072, #DC143C);
+  background: #FA8072;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
@@ -123,7 +124,7 @@
 }
 
 .add-to-cart-btn {
-  background: linear-gradient(135deg, #DC143C, #FA8072);
+  background: #DC143C;
   border: none;
   color: white;
   padding: 0.75rem 1.25rem;

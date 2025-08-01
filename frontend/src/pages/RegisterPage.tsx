@@ -116,34 +116,32 @@ const RegisterPage: React.FC = () => {
                   disabled={cadastrando}
                 />
               </div>
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label" htmlFor="phone">Telefone</label>
-                  <input
-                    id="phone"
-                    type="text"
-                    className="form-input"
-                    placeholder="(11) 99999-9999"
-                    value={phone}
-                    onChange={e => setPhone(formatPhone(e.target.value))}
-                    maxLength={15}
-                    required
-                    disabled={cadastrando}
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label" htmlFor="email">E-mail</label>
-                  <input
-                    id="email"
-                    type="email"
-                    className="form-input"
-                    placeholder="Digite seu e-mail"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    required
-                    disabled={cadastrando}
-                  />
-                </div>
+              <div className="form-group">
+                <label className="form-label" htmlFor="phone">Telefone</label>
+                <input
+                  id="phone"
+                  type="text"
+                  className="form-input"
+                  placeholder="(11) 99999-9999"
+                  value={phone}
+                  onChange={e => setPhone(formatPhone(e.target.value))}
+                  maxLength={15}
+                  required
+                  disabled={cadastrando}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label" htmlFor="email">E-mail</label>
+                <input
+                  id="email"
+                  type="email"
+                  className="form-input"
+                  placeholder="Digite seu e-mail"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  disabled={cadastrando}
+                />
               </div>
 
               <div className="form-group">

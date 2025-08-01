@@ -71,18 +71,17 @@
 
 .footer-links li {
   margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
 }
 
 .footer-links a {
   color: white;
   text-decoration: none;
-  transition: color 0.3s ease;
-
-  
 }
 
-.footer-links a:hover {
-  color: #800000;
+.footer-links li:hover {
+  text-decoration: underline;
+  transform: translateX(5px);
 }
 
 .contact-info p {
@@ -102,10 +101,13 @@
   text-decoration: none;
   transition: all 0.3s ease;
   padding: 0.5rem 0;
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem;
 }
 
 .social-link:hover {
-  color: #800000;
+  text-decoration: underline;
   transform: translateX(5px);
 }
 

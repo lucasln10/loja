@@ -27,7 +27,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           }}
         />
         <div className="product-overlay">
-          <button className="quick-view-btn">👁️ Ver Detalhes</button>
+          <button className="quick-view-btn">Ver Detalhes</button>
         </div>
       </div>
       

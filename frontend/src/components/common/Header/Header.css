@@ -88,8 +88,9 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: auto 1fr auto;
-  gap: 1rem;
+  gap: 2rem;
   align-items: center;
+  padding: 0 2rem;
 }
 
 .logo {
@@ -189,10 +190,12 @@
   border: 2px solid #E0E0E0;
   border-radius: 0 25px 25px 0;
   padding: 1rem 1.5rem;
-  color: white;
   cursor: pointer;
-  font-size: 1.2rem;
-  transition: background 0.3s ease;
+}
+
+.search-icon{
+  font-size: 1rem;
+  color: #FA8072;
 }
 
 .search-button:hover {
@@ -327,24 +330,6 @@
   border-bottom-color: white;
 }
 
-.menu-toggle {
-  display: none;
-  flex-direction: column;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  gap: 4px;
-}
-
-.menu-toggle span {
-  width: 25px;
-  height: 3px;
-  background: white;
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-
 /* Mobile Responsive */
 @media (max-width: 1024px) {
   .nav-list {
@@ -365,10 +350,11 @@
   }
 
   .header-main-container {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
     padding: 0 1rem;
-    text-align: center;
+    align-items: center;
   }
 
   .logo-icon {
@@ -384,14 +370,6 @@
     font-size: 0.8rem;
   }
 
-  .search-form {
-    max-width: 100%;
-  }
-
-  .header-main-actions {
-    justify-content: center;
-  }
-
   .contact-details {
     display: none;
   }
@@ -400,45 +378,23 @@
     justify-content: center;
   }
 
-  .nav {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: linear-gradient(135deg, #DC143C 0%, #FA8072 100%);
-    backdrop-filter: blur(10px);
-    transform: translateY(-100%);
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-  }
-
-  .nav--open {
-    transform: translateY(0);
-    opacity: 1;
-    visibility: visible;
+  .search-form {
+    max-width: 300px;
   }
 
   .nav-list {
-    flex-direction: column;
-    padding: 2rem;
-    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .nav-link {
-    justify-content: center;
-    width: 100%;
-  }
-
-  .menu-toggle {
-    display: flex;
+    font-size: 0.8rem;
+    padding: 0.8rem 1rem;
   }
 
   .header-nav-container {
-    position: relative;
     padding: 0 1rem;
-    justify-content: flex-end;
-    min-height: 60px;
+    justify-content: center;
   }
 
   .cart-text {
@@ -459,5 +415,23 @@
   .cart-button {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
+  }
+
+  .search-form {
+    max-width: 250px;
+  }
+
+  .header-main-container {
+    gap: 0.5rem;
+  }
+
+  .nav-list {
+    flex-wrap: wrap;
+    gap: 0.2rem;
+  }
+
+  .nav-link {
+    font-size: 0.7rem;
+    padding: 0.6rem 0.8rem;
   }
 }

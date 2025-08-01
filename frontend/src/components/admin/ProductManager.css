@@ -156,20 +156,6 @@
   gap: 20px;
 }
 
-.product-card {
-  border: 2px solid #e1e5e9;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  background: white;
-}
-
-.product-card:hover {
-  border-color: #4f46e5;
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
 .product-image {
   width: 100%;
   height: 200px;
@@ -202,7 +188,6 @@
 }
 
 .product-category {
-  color: #6b7280;
   font-size: 0.85rem;
   margin: 0 0 8px 0;
   font-weight: 500;

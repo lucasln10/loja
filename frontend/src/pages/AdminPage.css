@@ -212,7 +212,6 @@
   gap: 20px;
 }
 
-.product-card,
 .category-card {
   background: white;
   border-radius: 12px;
@@ -222,24 +221,9 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.product-card:hover,
 .category-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-}
-
-.product-card h4,
-.category-card h4 {
-  margin: 0 0 10px 0;
-  color: #333;
-  font-size: 1.2rem;
-}
-
-.product-card p,
-.category-card p {
-  margin: 5px 0;
-  color: #666;
-  line-height: 1.5;
 }
 
 .delete-btn {
