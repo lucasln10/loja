@@ -1,5 +1,8 @@
 package com.lojacrysleao.lojacrysleao_api.dto.lojaDTO;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class ProductDTO {
 
     private Long id;
@@ -14,7 +17,9 @@ public class ProductDTO {
 
     private Long categoryId;
 
-    private String imageUrl;
+    private String imageUrl; // Mantido para compatibilidade
+    
+    private List<String> imageUrls = new ArrayList<>(); // Lista de URLs das imagens
 
     public Long getId() {
         return id;
@@ -70,5 +75,13 @@ public class ProductDTO {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
     }
 }

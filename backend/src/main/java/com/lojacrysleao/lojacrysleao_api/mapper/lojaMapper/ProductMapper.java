@@ -1,9 +1,13 @@
 package com.lojacrysleao.lojacrysleao_api.mapper.lojaMapper;
 
 import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
+import com.lojacrysleao.lojacrysleao_api.model.loja.ProductImage;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Category;
 import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.ProductDTO;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ProductMapper {
@@ -20,6 +24,17 @@ public class ProductMapper {
         dto.setQuantity(product.getQuantity());
         dto.setDescription(product.getDescription());
         dto.setCategoryId(product.getCategory() != null ? product.getCategory().getId() : null);
+        
+        // Mapear as URLs das imagens
+        if (product.getImages() != null && !product.getImages().isEmpty()) {
+            List<String> imageUrls = product.getImages().stream()
+                    .map(ProductImage::getImageUrl)
+                    .collect(Collectors.toList());
+            dto.setImageUrls(imageUrls);
+            
+            // Manter compatibilidade - primeira imagem como imageUrl principal
+            dto.setImageUrl(product.getPrimaryImageUrl());
+        }
 
         return dto;
     }

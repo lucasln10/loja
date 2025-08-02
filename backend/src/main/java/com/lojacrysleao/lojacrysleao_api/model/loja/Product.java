@@ -1,6 +1,8 @@
 package com.lojacrysleao.lojacrysleao_api.model.loja;
 
 import jakarta.persistence.*;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "produtos")
@@ -25,6 +27,9 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductImage> images = new ArrayList<>();
 
 
     public Long getId() {
@@ -73,5 +78,22 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public List<ProductImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ProductImage> images) {
+        this.images = images;
+    }
+
+    // Método helper para obter a imagem principal
+    public String getPrimaryImageUrl() {
+        return images.stream()
+                .filter(ProductImage::isPrimary)
+                .findFirst()
+                .map(ProductImage::getImageUrl)
+                .orElse(images.isEmpty() ? null : images.get(0).getImageUrl());
     }
 }

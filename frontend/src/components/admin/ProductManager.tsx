@@ -15,6 +15,7 @@ interface Product {
   quantity: number;
   categoryId: number;
   imageUrl?: string;
+  imageUrls?: string[]; // Array de URLs das imagens
 }
 
 interface ProductManagerProps {
@@ -28,8 +29,8 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   const API_BASE_URL = 'http://localhost:8080/api';
 
@@ -44,7 +45,8 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
     price: 0,
     quantity: 0,
     categoryId: 0,
-    imageUrl: ''
+    imageUrl: '',
+    imageUrls: []
   });
 
   // Carregar produtos e categorias
@@ -92,44 +94,55 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      
-      // Criar preview da imagem
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      handleFileSelect(files);
     }
   };
 
-  const uploadImage = async (): Promise<string | null> => {
-    if (!imageFile) return null;
+  // Função para lidar com a seleção de múltiplos arquivos
+  const handleFileSelect = (files: FileList) => {
+    const fileArray = Array.from(files);
+    setImageFiles(prev => [...prev, ...fileArray]);
+
+    // Criar previews para os novos arquivos
+    fileArray.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreviews(prev => [...prev, e.target?.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Função para upload de múltiplas imagens
+  const uploadMultipleImages = async (productId: number): Promise<string[]> => {
+    if (imageFiles.length === 0) return [];
 
     setIsUploadingImage(true);
-    const formDataImage = new FormData();
-    formDataImage.append('file', imageFile);
+    const formDataImages = new FormData();
+    imageFiles.forEach(file => {
+      formDataImages.append('files', file);
+    });
 
     try {
-      const response = await fetch(`${API_BASE_URL}/products/images/upload`, {
+      const response = await fetch(`${API_BASE_URL}/products/images/upload-multiple/${productId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${authToken}`,
         },
-        body: formDataImage
+        body: formDataImages
       });
 
       if (response.ok) {
-        const imageUrl = await response.text();
-        return imageUrl;
+        const imageUrls = await response.json();
+        return imageUrls;
       } else {
-        throw new Error('Erro ao fazer upload da imagem');
+        throw new Error('Erro ao fazer upload das imagens');
       }
     } catch (error) {
       console.error('Erro no upload:', error);
-      return null;
+      return [];
     } finally {
       setIsUploadingImage(false);
     }
@@ -140,19 +153,10 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
     setIsLoading(true);
 
     try {
-      let imageUrl = formData.imageUrl;
-
-      // Fazer upload da imagem se uma nova foi selecionada
-      if (imageFile) {
-        const uploadedImageUrl = await uploadImage();
-        if (uploadedImageUrl) {
-          imageUrl = uploadedImageUrl;
-        }
-      }
-
-      const productData = {
-        ...formData,
-        imageUrl
+      // Primeiro, criar ou atualizar o produto
+      const productData = { 
+        ...formData, 
+        imageUrl: formData.imageUrls?.[0] || '' // Usar primeira imagem como principal para compatibilidade
       };
 
       const url = isEditing 
@@ -168,6 +172,13 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
       });
 
       if (response.ok) {
+        const savedProduct = await response.json();
+        
+        // Se há imagens para upload, fazer o upload após salvar o produto
+        if (imageFiles.length > 0 && savedProduct.id) {
+          await uploadMultipleImages(savedProduct.id);
+        }
+
         await loadProducts();
         resetForm();
         alert(isEditing ? 'Produto atualizado com sucesso!' : 'Produto criado com sucesso!');
@@ -186,8 +197,18 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
     setFormData(product);
     setSelectedProduct(product);
     setIsEditing(true);
-    setImagePreview(product.imageUrl ? `${API_BASE_URL}${product.imageUrl}` : null);
-    setImageFile(null);
+    
+    // Caregar previews das imagens existentes
+    if (product.imageUrls && product.imageUrls.length > 0) {
+      const previews = product.imageUrls.map(url => `${API_BASE_URL}${url}`);
+      setImagePreviews(previews);
+    } else if (product.imageUrl) {
+      setImagePreviews([`${API_BASE_URL}${product.imageUrl}`]);
+    } else {
+      setImagePreviews([]);
+    }
+    
+    setImageFiles([]);
   };
 
   const handleDelete = async (id: number) => {
@@ -216,12 +237,13 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
       price: 0,
       quantity: 0,
       categoryId: 0,
-      imageUrl: ''
+      imageUrl: '',
+      imageUrls: []
     });
     setIsEditing(false);
     setSelectedProduct(null);
-    setImageFile(null);
-    setImagePreview(null);
+    setImageFiles([]);
+    setImagePreviews([]);
     setIsUploadingImage(false);
   };
 
@@ -310,9 +332,9 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
             </div>
 
             <div className="form-group">
-              <label>Imagem do Produto</label>
+              <label>Imagens do Produto (múltiplas)</label>
               <div 
-                className={`image-upload-zone ${imagePreview ? 'has-image' : ''}`}
+                className={`image-upload-zone ${imagePreviews.length > 0 ? 'has-image' : ''}`}
                 onDragOver={(e) => {
                   e.preventDefault();
                   e.currentTarget.classList.add('drag-over');
@@ -324,15 +346,9 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
                 onDrop={(e) => {
                   e.preventDefault();
                   e.currentTarget.classList.remove('drag-over');
-                  const files = Array.from(e.dataTransfer.files);
-                  const file = files[0];
-                  if (file && file.type.startsWith('image/')) {
-                    setImageFile(file);
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                      setImagePreview(e.target?.result as string);
-                    };
-                    reader.readAsDataURL(file);
+                  const files = e.dataTransfer.files;
+                  if (files.length > 0) {
+                    handleFileSelect(files);
                   }
                 }}
                 onClick={() => document.getElementById('image-input')?.click()}
@@ -341,60 +357,65 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
                   id="image-input"
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
+                  multiple
                   onChange={handleImageChange}
                   style={{ display: 'none' }}
                 />
                 
-                {imagePreview ? (
-                  <div className="image-preview-container">
-                    <img src={imagePreview} alt="Preview" className="image-preview-img" />
-                    <div className="image-overlay">
-                      {isUploadingImage ? (
-                        <div className="upload-loading">
-                          <div className="loading-spinner"></div>
-                          <p>Enviando imagem...</p>
-                        </div>
-                      ) : (
-                        <div className="image-actions">
-                          <button
-                            type="button"
-                            className="btn-change-image"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              document.getElementById('image-input')?.click();
-                            }}
-                          >
-                            📷 Alterar
-                          </button>
+                {imagePreviews.length > 0 ? (
+                  <div className="images-preview-container">
+                    <div className="images-grid">
+                      {imagePreviews.map((preview, index) => (
+                        <div key={index} className="image-preview-item">
+                          <img src={preview} alt={`Preview ${index + 1}`} className="image-preview-img" />
                           <button
                             type="button"
                             className="btn-remove-image"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setImagePreview(null);
-                              setImageFile(null);
-                              setFormData(prev => ({...prev, imageUrl: ''}));
+                              setImagePreviews(prev => prev.filter((_, i) => i !== index));
+                              setImageFiles(prev => prev.filter((_, i) => i !== index));
                             }}
                           >
-                            🗑️ Remover
+                            ❌
                           </button>
+                          {index === 0 && <span className="primary-badge">Principal</span>}
                         </div>
-                      )}
+                      ))}
+                    </div>
+                    <div className="upload-actions">
+                      <button
+                        type="button"
+                        className="btn-add-more"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          document.getElementById('image-input')?.click();
+                        }}
+                      >
+                        ➕ Adicionar mais
+                      </button>
                     </div>
                   </div>
                 ) : (
                   <div className="upload-placeholder">
                     <div className="upload-icon">📷</div>
                     <div className="upload-text">
-                      <p><strong>Clique para selecionar</strong> ou arraste uma imagem aqui</p>
-                      <p className="upload-hint">JPG, PNG ou WEBP • Máx. 10MB</p>
+                      <p><strong>Clique para selecionar</strong> ou arraste múltiplas imagens aqui</p>
+                      <p className="upload-hint">JPG, PNG ou WEBP • Máx. 10MB cada • Múltiplas imagens permitidas</p>
                     </div>
                   </div>
                 )}
                 
-                {imageFile && !isUploadingImage && (
+                {imageFiles.length > 0 && !isUploadingImage && (
                   <div className="file-selected-indicator">
-                    <span>📎 {imageFile.name} - Clique em "Salvar" para enviar</span>
+                    <span>📎 {imageFiles.length} imagem(ns) selecionada(s) - Clique em "Salvar" para enviar</span>
+                  </div>
+                )}
+
+                {isUploadingImage && (
+                  <div className="upload-loading">
+                    <div className="loading-spinner"></div>
+                    <p>Enviando imagens...</p>
                   </div>
                 )}
               </div>
@@ -430,7 +451,22 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
             {products.map(product => (
               <div key={product.id} className="product-card">
                 <div className="product-image">
-                  {product.imageUrl ? (
+                  {product.imageUrls && product.imageUrls.length > 0 ? (
+                    <div className="product-images-container">
+                      <img 
+                        src={`${API_BASE_URL}${product.imageUrls[0]}`} 
+                        alt={product.name}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/placeholder-image.png';
+                        }}
+                      />
+                      {product.imageUrls.length > 1 && (
+                        <div className="image-count-badge">
+                          +{product.imageUrls.length - 1}
+                        </div>
+                      )}
+                    </div>
+                  ) : product.imageUrl ? (
                     <img 
                       src={`${API_BASE_URL}${product.imageUrl}`} 
                       alt={product.name}
