@@ -93,7 +93,6 @@
 .social-links {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
 .social-link {
@@ -103,7 +102,7 @@
   padding: 0.5rem 0;
   list-style: none;
   padding: 0;
-  margin: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .social-link:hover {

@@ -4,14 +4,11 @@
 
 /* Hero Carousel Section */
 .hero-carousel {
-  background: #fdc6c0;
+  background: #FA8072;
   padding: 0;
-  min-height: 60vh;
   display: flex;
   align-items: center;
   overflow: hidden;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
 }
 
 .carousel-container {
@@ -72,28 +69,11 @@
 
 .carousel-slide {
   flex-shrink: 0;
-  width: 20%; /* 100% / 5 slides = 20% cada */
-  height: 100%;
   position: relative;
-}
-
-.carousel-product-image {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-}
-
-.carousel-product-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.carousel-product-image:hover img {
-  transform: scale(1.05);
 }
 
 /* Controles do Carrossel */
@@ -272,55 +252,71 @@
   line-height: 1.6;
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .hero-carousel {
-    padding: 0;
-    min-height: 40vh;
-  }
-  
-  .carousel-wrapper {
-    height: 40vh;
-  }
-  
-  .carousel-slide {
-    width: 100vw;
-  }
-  
-  .carousel-product-image {
-    height: 100%;
-  }
+/* Swiper customization */
+.hero-carousel .swiper {
+  height: 60vh;
+  width: 100%;
+}
 
-  .carousel-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-  }
+.hero-carousel .swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.carousel-product-image {
+  width: 30%;
+  height: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  overflow: hidden;
+}
 
-  .carousel-btn-prev {
-    left: 10px;
-  }
+.carousel-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 15px;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
 
-  .carousel-btn-next {
-    right: 10px;
-  }
+.carousel-product-image:hover img {
+  transform: scale(1.05);
+}
+.swiper-pagination-fraction, 
+.swiper-pagination-custom, 
+.swiper-horizontal > .swiper-pagination-bullets, 
+.swiper-pagination-bullets.swiper-pagination-horizontal{
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+.swiper-pagination{
+  position: static !important;
+}
+/* Swiper navigation buttons */
+.hero-carousel .swiper-button-next,
+.hero-carousel .swiper-button-prev {
+  color: #DC143C;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
 
-  .carousel-dots {
-    bottom: 15px;
-    gap: 10px;
-  }
+.hero-carousel .swiper-button-next:after,
+.hero-carousel .swiper-button-prev:after {
+  font-size: 20px;
+  font-weight: bold;
+}
 
-  .carousel-dot {
-    width: 10px;
-    height: 10px;
-  }
+/* Swiper pagination */
+.hero-carousel .swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.7);
+  opacity: 1;
+}
 
-  .products-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .featured-products h2,
-  .why-choose-us h2 {
-    font-size: 2.2rem;
-  }
+.hero-carousel .swiper-pagination-bullet-active {
+  background: #DC143C;
 }

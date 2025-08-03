@@ -34,6 +34,7 @@ function AppContent() {
     // Mapeamento das páginas para rotas
     const pageToRoute: { [key: string]: string } = {
       'home': '/',
+      'produtos': '/produtos',
       'promocoes': '/produtos?categoria=promocoes',
       'cortadores': '/produtos?categoria=cortadores',
       'moldes-silicone': '/produtos?categoria=moldes-silicone',

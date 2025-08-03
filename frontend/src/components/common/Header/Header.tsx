@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../context/CartContext';
 import { useAuth } from '../../../context/AuthContext';
+import { categoryService, CategoryDTO } from '../../../services/categoryService';
 import './Header.css';
 import { IoBagHandleSharp } from "react-icons/io5";
 import { FaMagnifyingGlass } from "react-icons/fa6";
@@ -11,25 +13,52 @@ interface HeaderProps {
   onPageChange: (page: string) => void;
 }
 
-
-
 const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {  
   const [searchQuery, setSearchQuery] = useState('');
+  const [categories, setCategories] = useState<CategoryDTO[]>([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const { state } = useCart();
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const navigationItems = [
-    { id: 'promocoes', label: 'PROMOÇÕES' },
-    { id: 'cortadores', label: 'CORTADORES' },
-    { id: 'moldes-silicone', label: 'MOLDES DE SILICONE' },
-    { id: 'polymer-clay', label: 'POLYMER CLAY' },
-    { id: 'utensilios', label: 'UTENSÍLIOS' },
-    { id: 'formas-acetato', label: 'FORMAS DE ACETATO' },
-  ];
+  // Carregar categorias da API
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const categoriesData = await categoryService.getAllCategories();
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error('Erro ao carregar categorias:', error);
+        // Fallback para categorias estáticas se a API falhar
+        setCategories([
+          { id: 1, name: 'PROMOÇÕES' },
+          { id: 2, name: 'CORTADORES' },
+          { id: 3, name: 'MOLDES DE SILICONE' },
+          { id: 4, name: 'POLYMER CLAY' },
+          { id: 5, name: 'UTENSÍLIOS' },
+          { id: 6, name: 'FORMAS DE ACETATO' },
+        ]);
+      } finally {
+        setIsLoadingCategories(false);
+      }
+    };
+
+    loadCategories();
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Buscar por:', searchQuery);
+  };
+
+  // Função para navegar para categorias
+  const handleCategoryNavigation = (categoryId: number, categoryName: string) => {
+    const categorySlug = categoryName.toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^\w\-]+/g, '');
+    
+    onPageChange(categorySlug);
+    navigate(`/produtos?categoria=${categoryId}&nome=${categorySlug}`);
   };
 
   return (
@@ -58,7 +87,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
                   className="logout-btn"
                   onClick={() => {
                     logout();
-                    onPageChange('home');
+                    navigate('/');
                   }}
                 >
                   SAIR
@@ -69,14 +98,14 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
                 <span>Seja Bem-vinda(o)!</span>
                 <button 
                   className="login-btn"
-                  onClick={() => onPageChange('login')}
+                  onClick={() => navigate('/login')}
                 >
                   LOGIN
                 </button>
                 <span>ou</span>
                 <button 
                   className="register-btn"
-                  onClick={() => onPageChange('registrar')}
+                  onClick={() => navigate('/registrar')}
                 >
                   CADASTRE-SE
                 </button>
@@ -89,7 +118,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
       {/* Barra principal com logo, busca e contato */}
       <div className="header-main">
         <div className="header-main-container">
-          <div className="logo" onClick={() => onPageChange('home')}>
+          <div className="logo" onClick={() => navigate('/')}>
             <div className="logo-icon">
               <img 
                 src="/images/logo.webp" 
@@ -136,7 +165,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
 
             <button
               className="cart-button"
-              onClick={() => onPageChange('carrinho')}
+              onClick={() => navigate('/carrinho')}
             >
               <span className="cart-icon">{(IoBagHandleSharp as any)()}</span>
               {state.itemCount > 0 && (
@@ -147,21 +176,27 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
         </div>
       </div>
 
-      {/* Barra de navegação com categorias */}
+      {/* Barra de navegação com categorias dinâmicas */}
       <div className="header-nav">
         <div className="header-nav-container">
           <nav className="nav">
             <ul className="nav-list">
-              {navigationItems.map(item => (
-                <li key={item.id} className="nav-item">
-                  <button
-                    className={`nav-link ${currentPage === item.id ? 'nav-link--active' : ''}`}
-                    onClick={() => onPageChange(item.id)}
-                  >
-                    {item.label}
-                  </button>
+              {isLoadingCategories ? (
+                <li className="nav-item">
+                  <span className="nav-link">Carregando...</span>
                 </li>
-              ))}
+              ) : (
+                categories.map(category => (
+                  <li key={category.id} className="nav-item">
+                    <button
+                      className={`nav-link ${currentPage === category.name.toLowerCase().replace(/\s+/g, '-') ? 'nav-link--active' : ''}`}
+                      onClick={() => handleCategoryNavigation(category.id!, category.name)}
+                    >
+                      {category.name}
+                    </button>
+                  </li>
+                ))
+              )}
             </ul>
           </nav>
         </div>

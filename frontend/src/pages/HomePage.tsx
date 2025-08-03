@@ -1,83 +1,160 @@
-import React, { useRef, useState } from 'react';
-import ProductCard from '../components/home/ProductCard/ProductCard';
+import React, { useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Adicione esta importação
 import { Product } from '../types';
-import './HomePage.css';
+import { productService } from '../services/productService';
 import { FaTruckFast } from "react-icons/fa6";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { TbBrandCake } from "react-icons/tb";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination } from 'swiper/modules';
 
-
-
+import ProductCard from '../components/home/ProductCard/ProductCard';
+import './HomePage.css';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 const HomePage: React.FC = () => {
+  const navigate = useNavigate(); // Adicione esta linha
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startScrollLeft, setStartScrollLeft] = useState(0);
   const [dragDistance, setDragDistance] = useState(0);
-  // Produtos para o carrossel - usando emojis como fallback
-  const carouselProducts: Product[] = [
+  const [carouselProducts, setCarouselProducts] = useState<Product[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Função para produtos estáticos como fallback
+  const getStaticProducts = (): Product[] => [
     {
       id: 1,
       name: 'Molde Coração Romântico',
       price: 45.90,
-      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRkE4MDcyIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+4p2kIE1vbGRlIENvcmHDp8OjbzwvdGV4dD48L3N2Zz4=',
+      image: '/images/logo.webp', // ✅ Usar a logo real
       description: 'Perfeito para bolos de aniversário e celebrações românticas',
-      category: 'Românticos'
+      category: 'Românticos',
+      quantity: 10
     },
     {
       id: 2,
-      name: 'Molde Flor Delicada',
-      price: 52.90,
-      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjREMxNDNDIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+MuCBNb2xkZSBGbG9yPC90ZXh0Pjwvc3ZnPg==',
-      description: 'Design elegante em formato de flor para ocasiões especiais',
-      category: 'Florais'
+      name: 'Molde Estrela Mágica',
+      price: 38.50,
+      image: '/images/logo.webp', // ✅ Usar a logo real
+      description: 'Formato de estrela para bolos especiais e festividades',
+      category: 'Estrelas',
+      quantity: 15
     },
     {
       id: 3,
-      name: 'Molde Estrela Mágica',
-      price: 38.90,
-      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRkE4MDcyIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+4q2QIE1vbGRlIEVzdHJlbGE8L3RleHQ+PC9zdmc+',
-      description: 'Ideal para festas infantis e comemorações festivas',
-      category: 'Infantis'
+      name: 'Molde Flor Delicada',
+      price: 42.00,
+      image: '/images/logo.webp', // ✅ Usar a logo real
+      description: 'Design floral elegante para bolos sofisticados',
+      category: 'Florais',
+      quantity: 8
     },
     {
       id: 4,
       name: 'Molde Borboleta Encantada',
-      price: 48.90,
-      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjREMxNDNDIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+mmiBCb3Jib2xldGE8L3RleHQ+PC9zdmc+',
-      description: 'Delicado molde em formato de borboleta para ocasiões especiais',
-      category: 'Florais'
+      price: 47.90,
+      image: '/images/logo.webp', // ✅ Usar a logo real
+      description: 'Formato de borboleta para decorações delicadas',
+      category: 'Animais',
+      quantity: 12
     },
     {
       id: 5,
-      name: 'Molde Castelo Princesa',
-      price: 65.90,
-      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRkE4MDcyIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+PsApDYXN0ZWxvPC90ZXh0Pjwvc3ZnPg==',
-      description: 'Molde mágico de castelo para festas de princesas',
-      category: 'Infantis'
+      name: 'Molde Lua Crescente',
+      price: 39.90,
+      image: '/images/logo.webp', // ✅ Usar a logo real
+      description: 'Design lunar para bolos temáticos noturnos',
+      category: 'Celestiais',
+      quantity: 6
     }
   ];
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        console.log('Iniciando carregamento de produtos...');
+        
+        const [carousel, featured] = await Promise.all([
+          productService.getCarouselProducts(),
+          productService.getFeaturedProducts()
+        ]);
+        
+        console.log('Produtos carregados:', { carousel, featured });
+        
+        // Se não conseguiu carregar produtos da API, usa estáticos
+        if (carousel.length === 0 && featured.length === 0) {
+          console.log('Nenhum produto encontrado na API, usando produtos estáticos');
+          const staticProducts = getStaticProducts();
+          setCarouselProducts(staticProducts);
+          setFeaturedProducts(staticProducts.slice(0, 3));
+        } else {
+          setCarouselProducts(carousel);
+          setFeaturedProducts(featured);
+        }
+      } catch (err) {
+        console.error('Erro ao carregar produtos:', err);
+        setError('Erro ao carregar produtos. Usando produtos de exemplo.');
+        
+        // Sempre usa produtos estáticos como fallback
+        const staticProducts = getStaticProducts();
+        setCarouselProducts(staticProducts);
+        setFeaturedProducts(staticProducts.slice(0, 3));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  // Adicionar este useEffect para debug
+  useEffect(() => {
+    console.log('Estado atual:', {
+      isLoading,
+      error,
+      carouselProductsLength: carouselProducts.length,
+      featuredProductsLength: featuredProducts.length
+    });
+  }, [isLoading, error, carouselProducts, featuredProducts]);
+
+  // Adicione este useEffect após os existentes
+  useEffect(() => {
+    console.log('Produtos do carrossel:', carouselProducts);
+    carouselProducts.forEach((product, index) => {
+      console.log(`Produto ${index + 1}:`, {
+        name: product.name,
+        image: product.image
+      });
+    });
+  }, [carouselProducts]);
 
   // Função para ir para um slide específico
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
     if (carouselRef.current) {
       carouselRef.current.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-      carouselRef.current.style.transform = `translateX(-${index * 20}%)`;
     }
   };
 
   // Funções de navegação do carrossel
   const nextSlide = () => {
-    const nextIndex = (currentIndex + 1) % carouselProducts.length;
-    goToSlide(nextIndex);
+    const newIndex = (currentIndex + 1) % carouselProducts.length;
+    goToSlide(newIndex);
   };
 
   const prevSlide = () => {
-    const prevIndex = currentIndex === 0 ? carouselProducts.length - 1 : currentIndex - 1;
-    goToSlide(prevIndex);
+    const newIndex = currentIndex === 0 ? carouselProducts.length - 1 : currentIndex - 1;
+    goToSlide(newIndex);
   };
 
   // Eventos de mouse/touch para arrastar
@@ -96,13 +173,13 @@ const HomePage: React.FC = () => {
     if (!isDragging || !carouselRef.current) return;
     
     const distance = clientX - startX;
-    const slideWidth = carouselRef.current.offsetWidth / 5; // Largura de cada slide (20%)
-    const dragPercentage = (distance / slideWidth) * 20; // Converte para porcentagem
+    const slideWidth = carouselRef.current.offsetWidth;
+    const dragPercentage = (distance / slideWidth) * 100;
     
     setDragDistance(distance);
     
     // Aplicar transformação durante o arraste
-    const translateX = -(startScrollLeft * 20) + dragPercentage;
+    const translateX = -(startScrollLeft * (100 / carouselProducts.length)) + (dragPercentage / carouselProducts.length);
     carouselRef.current.style.transform = `translateX(${translateX}%)`;
   };
 
@@ -115,22 +192,23 @@ const HomePage: React.FC = () => {
       carouselRef.current.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
     }
     
-    const slideWidth = carouselRef.current.offsetWidth / 5;
+    const slideWidth = carouselRef.current.offsetWidth;
     const threshold = slideWidth * 0.2; // 20% da largura do slide
     
     let newIndex = currentIndex;
     
     if (Math.abs(dragDistance) > threshold) {
       if (dragDistance > 0) {
-        // Arrastou para a direita - slide anterior
+        // Arrastar para direita (slide anterior)
         newIndex = currentIndex === 0 ? carouselProducts.length - 1 : currentIndex - 1;
       } else {
-        // Arrastou para a esquerda - próximo slide
+        // Arrastar para esquerda (próximo slide)
         newIndex = (currentIndex + 1) % carouselProducts.length;
       }
     }
     
-    goToSlide(newIndex);
+    setCurrentIndex(newIndex);
+    setDragDistance(0);
   };
 
   // Eventos de mouse
@@ -140,22 +218,18 @@ const HomePage: React.FC = () => {
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    e.preventDefault();
     handleMove(e.clientX);
   };
 
-  const handleMouseUp = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleMouseUp = () => {
     handleEnd();
   };
 
   const handleMouseLeave = () => {
-    if (isDragging) {
-      handleEnd();
-    }
+    handleEnd();
   };
 
-  // Eventos de touch para dispositivos móveis
+  // Eventos de touch
   const handleTouchStart = (e: React.TouchEvent) => {
     handleStart(e.touches[0].clientX);
   };
@@ -168,82 +242,55 @@ const HomePage: React.FC = () => {
     handleEnd();
   };
 
-  // Produtos em destaque (diferentes do carrossel)
-  const featuredProducts: Product[] = [
-    {
-      id: 6,
-      name: 'Molde Rosa Vintage',
-      price: 42.90,
-      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRkE4MDcyIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+MuSBSb3NhPC90ZXh0Pjwvc3ZnPg==',
-      description: 'Estilo vintage com detalhes refinados',
-      category: 'Vintage'
-    },
-    {
-      id: 7,
-      name: 'Molde Geométrico Moderno',
-      price: 55.90,
-      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjREMxNDNDIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+4pe9IEdlb23DqXRyaWNvPC90ZXh0Pjwvc3ZnPg==',
-      description: 'Design contemporâneo para bolos modernos',
-      category: 'Modernos'
-    },
-    {
-      id: 8,
-      name: 'Molde Folhas Naturais',
-      price: 39.90,
-      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRkE4MDcyIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+NgyBGb2xoYXM8L3RleHQ+PC9zdmc+',
-      description: 'Inspirado na natureza com detalhes realistas',
-      category: 'Naturais'
-    }
-  ];
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="home-page">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Carregando produtos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="home-page">
+        <div className="error-container">
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>
+            Tentar Novamente
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="home-page">
       {/* Carrossel de Produtos */}
       <section className="hero-carousel">
         <div className="carousel-container">
-          <div className="carousel-products">
-            <button className="carousel-btn carousel-btn-prev" onClick={prevSlide}>
-              ‹
-            </button>
-            <div className="carousel-wrapper">
-              <div 
-                className="carousel-track"
-                ref={carouselRef}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseLeave}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                style={{
-                  transform: `translateX(-${currentIndex * 20}%)`
-                }}
-              >
-                {carouselProducts.map((product) => (
-                  <div key={product.id} className="carousel-slide">
-                    <div className="carousel-product-image">
-                      <img src={product.image} alt={product.name} />
-                    </div>
+          <Swiper
+            modules={[Navigation, Pagination]}
+            navigation
+            pagination={{ clickable: true }}
+            loop={true}
+            slidesPerView={1}
+            style={{ width: '100%', height: '100%' }}
+          >
+            {carouselProducts.map((product) => (
+              <SwiperSlide key={product.id}>
+                <div className="carousel-slide">
+                  <div className="carousel-product-image">
+                    <img src={product.image} alt={product.name} />
                   </div>
-                ))}
-              </div>
-            </div>
-            <button className="carousel-btn carousel-btn-next" onClick={nextSlide}>
-              ›
-            </button>
-            
-            {/* Dots de navegação */}
-            <div className="carousel-dots">
-              {carouselProducts.map((_, index) => (
-                <div
-                  key={index}
-                  className={`carousel-dot ${index === currentIndex ? 'active' : ''}`}
-                  onClick={() => goToSlide(index)}
-                />
-              ))}
-            </div>
-          </div>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
       </section>
 
@@ -260,14 +307,13 @@ const HomePage: React.FC = () => {
           </div>
           
           <div className="view-all-container">
-            <button className="view-all-btn">
+            <button className="view-all-btn" onClick={() => navigate('/produtos')}>
               Ver Todos os Produtos →
             </button>
           </div>
         </div>
       </section>
 
-      {/* Seção Por que escolher */}
       <section className="why-choose-us">
         <div className="container">
           <h2>Por que escolher a Crys Leão?</h2>
@@ -290,6 +336,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
+
     </div>
   );
 };

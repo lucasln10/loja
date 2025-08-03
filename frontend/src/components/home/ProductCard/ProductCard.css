@@ -124,9 +124,9 @@
 }
 
 .add-to-cart-btn {
-  background: #DC143C;
-  border: none;
-  color: white;
+  background: white;
+  border: 1px solid #DC143C;
+  color: #DC143C;
   padding: 0.75rem 1.25rem;
   border-radius: 25px;
   display: flex;
@@ -140,8 +140,8 @@
 }
 
 .add-to-cart-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+  background: #DC143C;
+  color: white;
 }
 
 .btn-icon {

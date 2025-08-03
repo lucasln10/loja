@@ -1,6 +1,9 @@
 import React from 'react';
 import { useCart } from '../../../context/CartContext';
 import { Product } from '../../../types';
+import { IoBagHandleSharp } from "react-icons/io5";
+
+
 import './ProductCard.css';
 
 interface ProductCardProps {
@@ -23,7 +26,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           className="product-image"
           onError={(e) => {
             // Fallback para uma imagem SVG simples
-            e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRkE4MDcyIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+HtyBNb2xkZTwvdGV4dD48L3N2Zz4=';
+            e.currentTarget.src = 'images/logoSemFundo.svg';
           }}
         />
         <div className="product-overlay">
@@ -46,7 +49,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className="add-to-cart-btn"
             onClick={handleAddToCart}
           >
-            <span className="btn-icon">🛒</span>
+            <span className="btn-icon">{(IoBagHandleSharp as any)()}</span>
             <span className="btn-text">Adicionar</span>
           </button>
         </div>
