@@ -14,8 +14,9 @@ interface Product {
     id: number;
     name: string;
   };
-  stock: number;
+  quantity: number; // Corrigido: quantity em vez de stock
   imageUrl?: string;
+  imageUrls?: string[]; // Adicionado suporte para múltiplas imagens
 }
 
 interface Category {
@@ -103,7 +104,7 @@ const AdminPage: React.FC = () => {
         description: newProduct.description,
         price: parseFloat(newProduct.price),
         categoryId: parseInt(newProduct.categoryId),
-        stock: parseInt(newProduct.stock),
+        quantity: parseInt(newProduct.stock), // Corrigido: quantity em vez de stock
         imageUrl: newProduct.imageUrl
       });
 

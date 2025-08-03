@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
   // Produtos para o carrossel - usando emojis como fallback
   const carouselProducts: Product[] = [
     {
-      id: '1',
+      id: 1,
       name: 'Molde Coração Romântico',
       price: 45.90,
       image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRkE4MDcyIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+4p2kIE1vbGRlIENvcmHDp8OjbzwvdGV4dD48L3N2Zz4=',
@@ -27,7 +27,7 @@ const HomePage: React.FC = () => {
       category: 'Românticos'
     },
     {
-      id: '2',
+      id: 2,
       name: 'Molde Flor Delicada',
       price: 52.90,
       image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjREMxNDNDIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+MuCBNb2xkZSBGbG9yPC90ZXh0Pjwvc3ZnPg==',
@@ -35,7 +35,7 @@ const HomePage: React.FC = () => {
       category: 'Florais'
     },
     {
-      id: '3',
+      id: 3,
       name: 'Molde Estrela Mágica',
       price: 38.90,
       image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRkE4MDcyIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+4q2QIE1vbGRlIEVzdHJlbGE8L3RleHQ+PC9zdmc+',
@@ -43,7 +43,7 @@ const HomePage: React.FC = () => {
       category: 'Infantis'
     },
     {
-      id: '4',
+      id: 4,
       name: 'Molde Borboleta Encantada',
       price: 48.90,
       image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjREMxNDNDIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+mmiBCb3Jib2xldGE8L3RleHQ+PC9zdmc+',
@@ -51,7 +51,7 @@ const HomePage: React.FC = () => {
       category: 'Florais'
     },
     {
-      id: '5',
+      id: 5,
       name: 'Molde Castelo Princesa',
       price: 65.90,
       image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRkE4MDcyIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+PsApDYXN0ZWxvPC90ZXh0Pjwvc3ZnPg==',
@@ -171,7 +171,7 @@ const HomePage: React.FC = () => {
   // Produtos em destaque (diferentes do carrossel)
   const featuredProducts: Product[] = [
     {
-      id: '6',
+      id: 6,
       name: 'Molde Rosa Vintage',
       price: 42.90,
       image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRkE4MDcyIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+MuSBSb3NhPC90ZXh0Pjwvc3ZnPg==',
@@ -179,7 +179,7 @@ const HomePage: React.FC = () => {
       category: 'Vintage'
     },
     {
-      id: '7',
+      id: 7,
       name: 'Molde Geométrico Moderno',
       price: 55.90,
       image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjREMxNDNDIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+4pe9IEdlb23DqXRyaWNvPC90ZXh0Pjwvc3ZnPg==',
@@ -187,7 +187,7 @@ const HomePage: React.FC = () => {
       category: 'Modernos'
     },
     {
-      id: '8',
+      id: 8,
       name: 'Molde Folhas Naturais',
       price: 39.90,
       image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRkE4MDcyIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+NgyBGb2xoYXM8L3RleHQ+PC9zdmc+',

@@ -6,7 +6,7 @@ import { FaShoppingCart } from "react-icons/fa";
 const CartPage: React.FC = () => {
   const { state, removeFromCart, updateQuantity, clearCart } = useCart();
 
-  const handleQuantityChange = (id: string, newQuantity: number) => {
+  const handleQuantityChange = (id: number, newQuantity: number) => {
     if (newQuantity < 1) {
       removeFromCart(id);
     } else {

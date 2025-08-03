@@ -1,4 +1,4 @@
-package com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService;
+package com.lojacrysleao.lojacrysleao_api.service.adminService;
 
 import com.lojacrysleao.lojacrysleao_api.dto.authDTO.UserDTO;
 import com.lojacrysleao.lojacrysleao_api.exception.BadRequestException;
