@@ -5,6 +5,7 @@ export interface Product {
   image: string;
   description: string;
   category: string;
+  quantity?: number; // Adicionando quantity como opcional
 }
 
 export interface AdminProduct {

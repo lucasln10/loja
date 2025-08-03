@@ -2,12 +2,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #FFF8DC;
   padding: 2rem;
 }
 
 .register-container {
-  background: white;
   padding: 2.5rem;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
