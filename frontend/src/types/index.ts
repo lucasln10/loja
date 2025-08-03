@@ -1,10 +1,21 @@
 export interface Product {
-  id: string;
+  id: number;
   name: string;
   price: number;
   image: string;
   description: string;
   category: string;
+}
+
+export interface AdminProduct {
+  id?: number;
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  categoryId: number;
+  imageUrl?: string;
+  imageUrls?: string[];
 }
 
 export interface CartItem extends Product {
@@ -19,6 +30,6 @@ export interface CartState {
 
 export type CartAction = 
   | { type: 'ADD_ITEM'; payload: Product }
-  | { type: 'REMOVE_ITEM'; payload: string }
-  | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
+  | { type: 'REMOVE_ITEM'; payload: number }
+  | { type: 'UPDATE_QUANTITY'; payload: { id: number; quantity: number } }
   | { type: 'CLEAR_CART' };

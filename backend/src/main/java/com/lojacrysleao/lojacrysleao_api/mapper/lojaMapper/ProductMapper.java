@@ -31,8 +31,7 @@ public class ProductMapper {
                     .map(ProductImage::getImageUrl)
                     .collect(Collectors.toList());
             dto.setImageUrls(imageUrls);
-            
-            // Manter compatibilidade - primeira imagem como imageUrl principal
+            //primeira imagem como imageUrl principal
             dto.setImageUrl(product.getPrimaryImageUrl());
         }
 
@@ -50,7 +49,7 @@ public class ProductMapper {
         product.setPrice(dto.getPrice());
         product.setQuantity(dto.getQuantity());
         product.setDescription(dto.getDescription());
-
+        
         return product;
     }
 

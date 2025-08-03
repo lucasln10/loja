@@ -1,7 +1,7 @@
 package com.lojacrysleao.lojacrysleao_api.controller.adminController;
 
 import com.lojacrysleao.lojacrysleao_api.dto.authDTO.UserDTO;
-import com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService.AdminService;
+import com.lojacrysleao.lojacrysleao_api.service.adminService.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

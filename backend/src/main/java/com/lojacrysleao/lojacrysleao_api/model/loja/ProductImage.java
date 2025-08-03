@@ -1,7 +1,11 @@
 package com.lojacrysleao.lojacrysleao_api.model.loja;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "product_images")
 public class ProductImage {
@@ -35,52 +39,11 @@ public class ProductImage {
         this.product = product;
     }
 
-    // Getters e Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    public boolean isPrimary() {
-        return isPrimary;
-    }
-
-    public void setPrimary(boolean primary) {
-        isPrimary = primary;
-    }
-
-    public int getDisplayOrder() {
-        return displayOrder;
-    }
-
-    public void setDisplayOrder(int displayOrder) {
-        this.displayOrder = displayOrder;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 }

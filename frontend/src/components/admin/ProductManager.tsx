@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AdminProduct } from '../../types';
 import './ProductManager.css';
 
 interface Category {
@@ -7,25 +8,14 @@ interface Category {
   description?: string;
 }
 
-interface Product {
-  id?: number;
-  name: string;
-  description: string;
-  price: number;
-  quantity: number;
-  categoryId: number;
-  imageUrl?: string;
-  imageUrls?: string[]; // Array de URLs das imagens
-}
-
 interface ProductManagerProps {
   authToken: string;
 }
 
 const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<AdminProduct[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<AdminProduct | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -39,7 +29,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
     'Content-Type': 'application/json',
   };
 
-  const [formData, setFormData] = useState<Product>({
+  const [formData, setFormData] = useState<AdminProduct>({
     name: '',
     description: '',
     price: 0,
@@ -193,17 +183,17 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
     }
   };
 
-  const handleEdit = (product: Product) => {
+  const handleEdit = (product: AdminProduct) => {
     setFormData(product);
     setSelectedProduct(product);
     setIsEditing(true);
     
     // Caregar previews das imagens existentes
     if (product.imageUrls && product.imageUrls.length > 0) {
-      const previews = product.imageUrls.map(url => `${API_BASE_URL}${url}`);
+      const previews = product.imageUrls.map(url => `http://localhost:8080${url}`);
       setImagePreviews(previews);
     } else if (product.imageUrl) {
-      setImagePreviews([`${API_BASE_URL}${product.imageUrl}`]);
+      setImagePreviews([`http://localhost:8080${product.imageUrl}`]);
     } else {
       setImagePreviews([]);
     }
@@ -454,7 +444,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
                   {product.imageUrls && product.imageUrls.length > 0 ? (
                     <div className="product-images-container">
                       <img 
-                        src={`${API_BASE_URL}${product.imageUrls[0]}`} 
+                        src={`http://localhost:8080${product.imageUrls[0]}`} 
                         alt={product.name}
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = '/placeholder-image.png';
@@ -468,7 +458,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
                     </div>
                   ) : product.imageUrl ? (
                     <img 
-                      src={`${API_BASE_URL}${product.imageUrl}`} 
+                      src={`http://localhost:8080${product.imageUrl}`} 
                       alt={product.name}
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = '/placeholder-image.png';

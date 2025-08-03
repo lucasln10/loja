@@ -1,9 +1,14 @@
 package com.lojacrysleao.lojacrysleao_api.model.loja;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 import java.util.ArrayList;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "produtos")
 public class Product {
@@ -30,63 +35,6 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductImage> images = new ArrayList<>();
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public List<ProductImage> getImages() {
-        return images;
-    }
-
-    public void setImages(List<ProductImage> images) {
-        this.images = images;
-    }
 
     // Método helper para obter a imagem principal
     public String getPrimaryImageUrl() {
