@@ -24,7 +24,7 @@ public class ProductMapper {
         dto.setQuantity(product.getQuantity());
         dto.setDescription(product.getDescription());
         dto.setCategoryId(product.getCategory() != null ? product.getCategory().getId() : null);
-        
+
         // Mapear as URLs das imagens
         if (product.getImages() != null && !product.getImages().isEmpty()) {
             List<String> imageUrls = product.getImages().stream()

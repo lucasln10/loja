@@ -1,5 +1,7 @@
 package com.lojacrysleao.lojacrysleao_api.model.loja;
 
+import com.fasterxml.jackson.databind.annotation.EnumNaming;
+import com.lojacrysleao.lojacrysleao_api.model.storage.Storage;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +37,11 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductImage> images = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "storage_id")
+    private Storage storage;
+
 
     // Método helper para obter a imagem principal
     public String getPrimaryImageUrl() {
