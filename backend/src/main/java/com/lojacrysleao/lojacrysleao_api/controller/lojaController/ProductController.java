@@ -32,6 +32,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
         ProductDTO createdProduct = productService.create(productDTO);
+        
         return ResponseEntity.ok(createdProduct);
     }
 
