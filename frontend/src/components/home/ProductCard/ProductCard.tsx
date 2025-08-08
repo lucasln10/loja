@@ -1,8 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../context/CartContext';
 import { Product } from '../../../types';
 import { IoBagHandleSharp } from "react-icons/io5";
-
 
 import './ProductCard.css';
 
@@ -12,13 +12,24 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useCart();
+  const navigate = useNavigate();
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Previne a navegação quando clicar em "Adicionar"
     addToCart(product);
   };
 
+  const handleViewDetails = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Previne a navegação dupla
+    navigate(`/produto/${product.id}`);
+  };
+
+  const handleProductClick = () => {
+    navigate(`/produto/${product.id}`);
+  };
+
   return (
-    <div className="product-card">
+    <div className="product-card" onClick={handleProductClick}>
       <div className="product-image-container">
         <img 
           src={product.image} 
@@ -30,7 +41,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           }}
         />
         <div className="product-overlay">
-          <button className="quick-view-btn">Ver Detalhes</button>
+          <button className="quick-view-btn" onClick={handleViewDetails}>Ver Detalhes</button>
         </div>
       </div>
       

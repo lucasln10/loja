@@ -31,6 +31,9 @@ public class Product {
     @Column(nullable = true)
     private String description;
 
+    @Column(nullable = true, length = 2000)
+    private String detailedDescription;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;

@@ -150,7 +150,6 @@
 /* Featured Products */
 .featured-products {
   padding: 5rem 2rem;
-  background: linear-gradient(to bottom, #FFF8DC 0%, #FFFFFF 100%);
 }
 
 .container {
@@ -185,9 +184,9 @@
 }
 
 .view-all-btn {
-  background: #DC143C;
-  color: white;
-  border: none;
+  background: white;
+  border: 1px solid #DC143C;
+  color: #DC143C;
   padding: 1rem 2rem;
   font-size: 1.1rem;
   font-weight: 600;
@@ -197,6 +196,8 @@
 }
 
 .view-all-btn:hover {
+  background: #DC143C;
+  color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
 }
@@ -309,6 +310,14 @@
 .hero-carousel .swiper-button-prev:after {
   font-size: 20px;
   font-weight: bold;
+}
+
+.hero-carousel .swiper-button-next:hover,
+.hero-carousel .swiper-button-prev:hover {
+  background: #DC143C;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
 }
 
 /* Swiper pagination */

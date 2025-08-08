@@ -23,6 +23,7 @@ public class ProductMapper {
         dto.setPrice(product.getPrice());
         dto.setQuantity(product.getQuantity());
         dto.setDescription(product.getDescription());
+        dto.setDetailedDescription(product.getDetailedDescription());
         dto.setCategoryId(product.getCategory() != null ? product.getCategory().getId() : null);
 
         // Mapear as URLs das imagens
@@ -49,6 +50,7 @@ public class ProductMapper {
         product.setPrice(dto.getPrice());
         product.setQuantity(dto.getQuantity());
         product.setDescription(dto.getDescription());
+        product.setDetailedDescription(dto.getDetailedDescription());
         
         return product;
     }

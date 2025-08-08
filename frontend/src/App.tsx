@@ -5,6 +5,7 @@ import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/common/Header/Header';
 import Footer from './components/common/Footer/Footer';
+import ScrollToTop from './components/common/ScrollToTop/ScrollToTop';
 
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
@@ -18,6 +19,7 @@ import RecoverPasswordPage from './pages/RecoverPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import ResendVerificationPage from './pages/ResendVerificationPage';
+import ProductDetailPage from './pages/ProductDetailPage';
 
 import './App.css';
 
@@ -92,6 +94,7 @@ function AppContent() {
 
   return (
     <div className="App">
+      <ScrollToTop />
       <Header currentPage={currentPage} onPageChange={handlePageChange} />
       <main className="main-content">
         <Routes>
@@ -103,6 +106,7 @@ function AppContent() {
           <Route path="/verificar-email" element={<VerifyEmailPage />} />
           <Route path="/reenviar-verificacao" element={<ResendVerificationPage />} />
           <Route path="/produtos" element={<ProductsPage />} />
+          <Route path="/produto/:id" element={<ProductDetailPage />} />
           <Route path="/sobre" element={<AboutPage />} />
           <Route path="/contato" element={<ContactPage />} />
           <Route path="/carrinho" element={<CartPage />} />

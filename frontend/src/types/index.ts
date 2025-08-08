@@ -4,14 +4,17 @@ export interface Product {
   price: number;
   image: string;
   description: string;
+  detailedDescription?: string;
   category: string;
-  quantity?: number; // Adicionando quantity como opcional
+  categoryId?: number;
+  quantity?: number;
 }
 
 export interface AdminProduct {
   id?: number;
   name: string;
   description: string;
+  detailedDescription?: string;
   price: number;
   quantity: number;
   categoryId: number;

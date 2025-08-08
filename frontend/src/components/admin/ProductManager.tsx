@@ -32,6 +32,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
   const [formData, setFormData] = useState<AdminProduct>({
     name: '',
     description: '',
+    detailedDescription: '',
     price: 0,
     quantity: 0,
     categoryId: 0,
@@ -318,6 +319,18 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
                 value={formData.description}
                 onChange={handleInputChange}
                 rows={3}
+                placeholder="Descrição curta do produto"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Descrição Detalhada</label>
+              <textarea
+                name="detailedDescription"
+                value={formData.detailedDescription || ''}
+                onChange={handleInputChange}
+                rows={6}
+                placeholder="Descrição completa e detalhada do produto (aparecerá na página de detalhes)"
               />
             </div>
 

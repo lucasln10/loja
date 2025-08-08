@@ -9,6 +9,7 @@ export interface ProductDTO {
   price: number;
   quantity: number;
   description: string;
+  detailedDescription?: string;
   categoryId: number;
   imageUrl?: string;
   imageUrls?: string[];
@@ -40,8 +41,44 @@ const getProductImage = (dto: ProductDTO): string => {
 };
 
 export const productService = {
-  // GET /api/products - Buscar todos os produtos
+  // Novo método: Buscar produtos com nomes de categorias
+  async getAllProductsWithCategories(): Promise<Product[]> {
+    try {
+      // Buscar produtos e categorias em paralelo
+      const [productsDTO, categories] = await Promise.all([
+        fetch(`${API_BASE_URL}/api/products`).then(res => res.json()),
+        fetch(`${API_BASE_URL}/api/categories`).then(res => res.json())
+      ]);
+
+      // Criar mapa de categorias para busca rápida
+      const categoryMap = new Map(categories.map((cat: CategoryDTO) => [cat.id, cat.name]));
+
+      // Converter produtos com nomes de categorias
+      return productsDTO.map((dto: ProductDTO) => ({
+        id: dto.id || 0,
+        name: dto.name,
+        price: dto.price,
+        image: getProductImage(dto),
+        description: dto.description || '',
+        detailedDescription: dto.detailedDescription || '',
+        category: categoryMap.get(dto.categoryId) || 'Sem categoria',
+        categoryId: dto.categoryId,
+        quantity: dto.quantity
+      }));
+    } catch (error) {
+      console.error('Erro ao buscar produtos com categorias:', error);
+      throw error;
+    }
+  },
   async getAllProducts(): Promise<Product[]> {
+    try {
+      return this.getAllProductsWithCategories();
+    } catch (error) {
+      console.error('Erro ao buscar produtos:', error);
+      return this.getAllProductsSimple();
+    }
+  },
+  async getAllProductsSimple(): Promise<Product[]> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/products`, {
         method: 'GET',
@@ -53,17 +90,16 @@ export const productService = {
       if (!response.ok) {
         throw new Error(`Erro HTTP: ${response.status}`);
       }
-      
       const productsDTO: ProductDTO[] = await response.json();
-      
-      // Converter DTO do backend para o tipo Product do frontend
       return productsDTO.map(dto => ({
-        id: dto.id || 0, // ✅ Mantém como number
+        id: dto.id || 0,
         name: dto.name,
         price: dto.price,
         image: getProductImage(dto),
         description: dto.description || '',
-        category: 'Produto',
+        detailedDescription: dto.detailedDescription || '',
+        category: 'Produto', // Será substituído quando necessário
+        categoryId: dto.categoryId, // ✅ Incluir categoryId
         quantity: dto.quantity
       }));
     } catch (error) {
@@ -94,7 +130,9 @@ export const productService = {
         price: dto.price,
         image: getProductImage(dto),
         description: dto.description || '',
-        category: 'Produto',
+        detailedDescription: dto.detailedDescription || '',
+        category: 'Produto', // Será substituído na página de detalhes
+        categoryId: dto.categoryId, // ✅ Incluir categoryId
         quantity: dto.quantity
       };
     } catch (error) {
@@ -261,10 +299,21 @@ export const productService = {
       // const response = await fetch(`${API_BASE_URL}/api/products/category/${categoryId}`);
       
       // Por enquanto, busca todos e filtra no frontend:
-      const allProducts = await this.getAllProducts();
-      return allProducts; // Você pode implementar filtro quando tiver categoryId nos produtos
+      const allProducts = await this.getAllProductsWithCategories();
+      return allProducts.filter(product => product.categoryId === categoryId);
     } catch (error) {
       console.error('Erro ao buscar produtos por categoria:', error);
+      throw error;
+    }
+  },
+  async getProductsByCategoryName(categoryName: string): Promise<Product[]> {
+    try {
+      const allProducts = await this.getAllProductsWithCategories();
+      return allProducts.filter(product => 
+        product.category.toLowerCase() === categoryName.toLowerCase()
+      );
+    } catch (error) {
+      console.error('Erro ao buscar produtos por nome da categoria:', error);
       throw error;
     }
   },
