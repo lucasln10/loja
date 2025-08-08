@@ -94,6 +94,8 @@ public class ProductService {
         Storage storage = storageMapper.toEntity(saved);
         storageRepository.save(storage);
 
+        saved.setStorage(storage);
+
         return productMapper.toDTO(saved);
     }
 
