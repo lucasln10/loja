@@ -21,6 +21,8 @@ public class ProductDTO {
 
     private String description;
 
+    private String detailedDescription;
+
     private Long categoryId;
 
     private String imageUrl;

@@ -130,6 +130,34 @@
   transform: scale(1.1);
 }
 
+.logo:hover .logo-text h1 {
+  background-position: 0% 0;
+  animation: fillText 1.5s ease-in-out;
+}
+
+.logo:hover .logo-text p {
+  background-position: 0% 0;
+  animation: fillSubText 1.8s ease-in-out 0.2s both;
+}
+
+@keyframes fillText {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+@keyframes fillSubText {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
+}
+
 .logo-fallback {
   display: none;
   font-size: 2.5rem;
@@ -142,18 +170,45 @@
 
 .logo-text h1 {
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 3rem;
   font-weight: 700;
-  font-family: 'arial', sans-serif;
+  font-family: 'Allura', cursive;
   color: #FFFF;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: linear-gradient(
+    to right,
+    #FFF 0%,
+    #FFF 50%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0.7) 100%
+  );
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .logo-text p {
   margin: 0;
   font-size: 0.9rem;
-  opacity: 0.9;
   font-style: italic;
   color: #FFFF;
+  transition: all 0.3s ease;
+  background: linear-gradient(
+    to right,
+    #FFF 0%,
+    #FFF 50%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0.7) 100%
+  );
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Barra de Pesquisa */
@@ -191,15 +246,14 @@
   border-radius: 0 25px 25px 0;
   padding: 1rem 1.5rem;
   cursor: pointer;
-}
-
-.search-icon{
   font-size: 1rem;
   color: #FA8072;
 }
 
 .search-button:hover {
-  background: #ffded9;
+  background: #DC143C;
+  color: white;
+  box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
 }
 
 /* Ações do header principal */
@@ -251,8 +305,9 @@
 }
 
 .cart-button:hover {
-  background: #ffded9;
-  transform: translateY(-2px);
+  background: #DC143C;
+  color: white;
+  box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
 }
 
 .cart-icon {
@@ -365,7 +420,7 @@
   }
 
   .logo-text h1 {
-    font-size: 1.4rem;
+    font-size: 2rem;
   }
 
   .logo-text p {

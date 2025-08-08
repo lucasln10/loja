@@ -136,7 +136,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
             </div>
             <div className="logo-text">
               <h1>Crys Leão</h1>
-              <p>Moldes para Doces Personalizados</p>
+              <p>Moldes para Doces Personalizados e Biscuit</p>
             </div>
           </div>
 

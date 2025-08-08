@@ -4,6 +4,7 @@ import { categoryService, CategoryDTO } from '../services/categoryService';
 import { productService } from '../services/productService';
 import ProductCard from '../components/home/ProductCard/ProductCard';
 import { Product } from '../types';
+import { useScrollToTopOnNavigation } from '../hooks/useScrollToTop';
 import './ProductsPage.css';
 
 const ProductsPage: React.FC = () => {
@@ -12,6 +13,9 @@ const ProductsPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [currentCategory, setCurrentCategory] = useState<CategoryDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Hook específico para navegação - monitora mudanças na URL
+  useScrollToTopOnNavigation([searchParams.toString()]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -30,10 +34,21 @@ const ProductsPage: React.FC = () => {
           const category = categoriesData.find(cat => cat.id === categoryId);
           setCurrentCategory(category || null);
           
-          // Carregar produtos da categoria específica
-          // Por enquanto, carrega todos os produtos (você pode filtrar no backend)
+          // Carregar todos os produtos e filtrar pela categoria
           const allProducts = await productService.getAllProducts();
-          setProducts(allProducts);
+          console.log('📊 Todos os produtos carregados:', allProducts);
+          console.log('🎯 Filtrando pela categoria ID:', categoryId);
+          
+          // Filtrar produtos que pertencem à categoria selecionada
+          const filteredProducts = allProducts.filter(product => {
+            // Assumindo que o produto tem um campo categoryId ou similar
+            const productCategoryId = (product as any).categoryId;
+            console.log(`Produto ${product.name}: categoryId = ${productCategoryId}, comparando com ${categoryId}`);
+            return productCategoryId === categoryId;
+          });
+          
+          console.log('✅ Produtos filtrados:', filteredProducts);
+          setProducts(filteredProducts);
         } else {
           // Carregar todos os produtos
           const allProducts = await productService.getAllProducts();
@@ -93,12 +108,12 @@ const ProductsPage: React.FC = () => {
         )}
 
         {/* Debug info - remova em produção */}
-        <div className="debug-info">
+        {/* <div className="debug-info">
           <p>Categoria ID: {searchParams.get('categoria') || 'Todas'}</p>
           <p>Categoria Nome: {searchParams.get('nome') || 'Todas'}</p>
           <p>Produtos encontrados: {products.length}</p>
           <p>Categorias disponíveis: {categories.length}</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
