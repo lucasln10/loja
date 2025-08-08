@@ -29,6 +29,9 @@ public class ProductService {
     @Autowired
     private StorageRepository storageRepository;
 
+    @Autowired
+    private StorageMapper  storageMapper;
+
 
     public ProductDTO create(ProductDTO dto) {
         if (dto == null) {
@@ -45,10 +48,8 @@ public class ProductService {
         Product product = productMapper.toEntity(dto, category);
         Product saved = productRepository.save(product);
 
-        StorageDTO storageDTO = new StorageDTO();
-        storageDTO.setProductId(saved.getId());
-        storageDTO.setQuantity(dto.getQuantity());
-        storageRepository.save(storageDTO);
+        Storage storage = storageMapper.toEntity(saved);
+        storageRepository.save(storage);
 
         return productMapper.toDTO(saved);
     }
@@ -88,10 +89,8 @@ public class ProductService {
         Product product = productMapper.toEntity(dto, category);
         Product saved = productRepository.update(product);
 
-        StorageDTO storageDTO = new StorageDTO();
-        storageDTO.setProductId(saved.getId());
-        storageDTO.setQuantity(dto.getQuantity());
-        storageRepository.update(storageDTO);
+        Storage storage = storageMapper.toEntity(saved);
+        storageRepository.save(storage);
 
         return productMapper.toDTO(saved);
     }

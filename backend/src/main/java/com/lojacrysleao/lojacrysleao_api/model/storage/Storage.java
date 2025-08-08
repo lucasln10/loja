@@ -14,16 +14,12 @@ public class Storage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
-    private double price;
+    @OneToMany(mappedBy = "storage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Product product_id;
 
     private int quantity;
 
     private int reservation;
-
-    @OneToMany(mappedBy = "storage", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> products;
 
 
     public Long getId() {
@@ -32,22 +28,6 @@ public class Storage {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
     }
 
     public int getQuantity() {
@@ -66,11 +46,12 @@ public class Storage {
         this.reservation = reservation;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public Product getProduct_id() {
+        return product_id;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setProduct_id(Product product_id) {
+        this.product_id = product_id;
     }
+
 }
