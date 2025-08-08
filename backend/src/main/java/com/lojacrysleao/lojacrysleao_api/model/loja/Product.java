@@ -42,7 +42,7 @@ public class Product {
     private List<ProductImage> images = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "storage_id")
+    @JoinColumn(name = "storage_id", nullable = false)
     private Storage storage;
 
 

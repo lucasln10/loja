@@ -22,7 +22,7 @@ public class Storage {
 
     private int reservation;
 
-    @OneToMany(mappedBy = "storage", nullble = false)
+    @OneToMany(mappedBy = "storage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products;
 
 
