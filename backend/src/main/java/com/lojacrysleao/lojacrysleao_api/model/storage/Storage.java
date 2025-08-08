@@ -7,7 +7,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "estoque")
+@Table(name = "storage")
 public class Storage {
 
     @Id
@@ -22,7 +22,7 @@ public class Storage {
 
     private int reservation;
 
-    @OneToMany(mappedBy = "storage")
+    @OneToMany(mappedBy = "storage", nullble = false)
     private List<Product> products;
 
 

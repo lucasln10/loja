@@ -26,6 +26,9 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
+    private StorageRepository storageRepository;
+
 
     public ProductDTO create(ProductDTO dto) {
         if (dto == null) {
@@ -41,6 +44,12 @@ public class ProductService {
 
         Product product = productMapper.toEntity(dto, category);
         Product saved = productRepository.save(product);
+
+        StorageDTO storageDTO = new StorageDTO();
+        storageDTO.setProductId(saved.getId());
+        storageDTO.setQuantity(dto.getQuantity());
+        storageRepository.save(storageDTO);
+
         return productMapper.toDTO(saved);
     }
 
@@ -77,7 +86,13 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
 
         Product product = productMapper.toEntity(dto, category);
-        Product saved = productRepository.save(product);
+        Product saved = productRepository.update(product);
+
+        StorageDTO storageDTO = new StorageDTO();
+        storageDTO.setProductId(saved.getId());
+        storageDTO.setQuantity(dto.getQuantity());
+        storageRepository.update(storageDTO);
+
         return productMapper.toDTO(saved);
     }
 
