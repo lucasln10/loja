@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'; // Adicione esta importação
 import { Product } from '../types';
 import { productService } from '../services/productService';
 import { FaTruckFast } from "react-icons/fa6";
-import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import { IoShieldCheckmark } from "react-icons/io5";
 import { TbBrandCake } from "react-icons/tb";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
@@ -319,17 +319,17 @@ const HomePage: React.FC = () => {
           <h2>Por que escolher a Crys Leão?</h2>
           <div className="benefits-grid">
             <div className="benefit-card">
-              <div className="benefit-icon">{(TbBrandCake as any)()}</div>
+              <div className="benefit-icon"><TbBrandCake /></div>
               <h3>Design Exclusivo</h3>
               <p>Moldes únicos criados especialmente para deixar seus bolos extraordinários</p>
             </div>
             <div className="benefit-card">
-              <div className="benefit-icon">{(IoShieldCheckmarkOutline as any)()}</div>
+              <div className="benefit-icon"><IoShieldCheckmark /></div>
               <h3>Qualidade Garantida</h3>
               <p>Materiais de primeira linha que garantem durabilidade e resultados perfeitos</p>
             </div>
             <div className="benefit-card">
-              <div className="benefit-icon">{(FaTruckFast as any)()}</div>
+              <div className="benefit-icon"><FaTruckFast /></div>
               <h3>Entrega Rápida</h3>
               <p>Receba seus moldes rapidamente e com segurança em sua casa</p>
             </div>
