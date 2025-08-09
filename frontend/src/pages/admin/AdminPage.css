@@ -1,19 +1,21 @@
 .admin-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: white;
   padding: 20px;
 }
 
 .admin-header {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 20px 30px;
-  margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
+  background: white;
+  border-radius: 10px;
+  padding: 20px 30px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
   align-items: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  cursor: pointer;
 }
 
 .admin-header h1 {
@@ -35,7 +37,7 @@
 }
 
 .logout-btn {
-  background: #ff4757;
+  background: #DC143C;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -43,11 +45,6 @@
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
-}
-
-.logout-btn:hover {
-  background: #ff3742;
-  transform: translateY(-2px);
 }
 
 .admin-nav {
@@ -75,11 +72,11 @@
 
 .admin-nav button:hover {
   background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+  color: #DC143C;
 }
 
 .admin-nav button.active {
-  background: #667eea;
+  background: #DC143C;
   color: white;
 }
 
@@ -100,7 +97,7 @@
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #DC143C;
   color: white;
   padding: 25px;
   border-radius: 15px;
@@ -157,7 +154,7 @@
 .add-form select:focus,
 .add-form textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #DC143C;
 }
 
 .add-form textarea {
@@ -166,7 +163,7 @@
 }
 
 .add-form button {
-  background: #667eea;
+  background: #DC143C;
   color: white;
   border: none;
   padding: 12px 30px;
@@ -179,7 +176,7 @@
 }
 
 .add-form button:hover {
-  background: #5a6fd8;
+  background: #DC143C;
   transform: translateY(-2px);
 }
 
@@ -227,7 +224,7 @@
 }
 
 .delete-btn {
-  background: #ff4757;
+  background: #DC143C;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -238,7 +235,7 @@
 }
 
 .delete-btn:hover {
-  background: #ff3742;
+  background: #DC143C;
   transform: translateY(-2px);
 }
 
@@ -365,7 +362,7 @@
 }
 
 .role-badge.admin {
-  background: #667eea;
+  background: #DC143C;
   color: white;
 }
 
@@ -376,7 +373,7 @@
 
 .promote-btn,
 .demote-btn {
-  background: #667eea;
+  background: #DC143C;
   color: white;
   border: none;
   padding: 8px 16px;

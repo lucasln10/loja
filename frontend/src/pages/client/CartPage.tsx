@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../../context/CartContext';
 import './CartPage.css';
 import { FaCartShopping } from "react-icons/fa6";
 
