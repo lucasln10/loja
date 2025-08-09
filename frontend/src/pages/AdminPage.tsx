@@ -22,7 +22,6 @@ interface Product {
 interface Category {
   id: number;
   name: string;
-  description?: string;
 }
 
 interface User {
@@ -39,6 +38,7 @@ const AdminPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [usersError, setUsersError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   // Estados para formulários
@@ -52,9 +52,10 @@ const AdminPage: React.FC = () => {
   });
 
   const [newCategory, setNewCategory] = useState({
-    name: '',
-    description: ''
+    name: ''
   });
+
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
   // Verificar se o usuário é admin
   useEffect(() => {
@@ -80,17 +81,45 @@ const AdminPage: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [productsRes, categoriesRes, usersRes] = await Promise.all([
+      const token = localStorage.getItem('token');
+      const authCfg = token ? { headers: { Authorization: `Bearer ${token}` } } : undefined;
+      const results = await Promise.allSettled([
         axios.get('http://localhost:8080/api/products'),
-        axios.get('http://localhost:8080/api/categories'),
-        axios.get('http://localhost:8080/api/admin/users')
+        // usar fetch sem Authorization para evitar 401 por token inválido em endpoint público
+        fetch('http://localhost:8080/api/categories'),
+        axios.get('http://localhost:8080/api/admin/users', authCfg)
       ]);
 
-      setProducts(productsRes.data);
-      setCategories(categoriesRes.data);
-      setUsers(usersRes.data);
+      const [productsRes, categoriesRes, usersRes] = results;
+
+      if (productsRes.status === 'fulfilled') {
+        setProducts(productsRes.value.data);
+      } else {
+        console.warn('Falha ao carregar produtos:', productsRes.reason);
+      }
+
+      if (categoriesRes.status === 'fulfilled') {
+        const resp = categoriesRes.value as Response;
+        if (resp.ok) {
+          const data = await resp.json();
+          setCategories(data);
+          console.debug('Categorias carregadas:', data);
+        } else {
+          console.warn('Falha ao carregar categorias: HTTP', resp.status);
+        }
+      } else {
+        console.warn('Falha ao carregar categorias:', categoriesRes.reason);
+      }
+
+      if (usersRes.status === 'fulfilled') {
+        setUsers(usersRes.value.data);
+        setUsersError(null);
+      } else {
+        console.warn('Falha ao carregar usuários (ignorado para exibir categorias):', usersRes.reason);
+        setUsersError('Não foi possível carregar os usuários (verifique se está logado como ADMIN).');
+      }
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
+      console.error('Erro inesperado ao carregar dados:', error);
     } finally {
       setLoading(false);
     }
@@ -127,21 +156,53 @@ const AdminPage: React.FC = () => {
   const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8080/api/categories', {
-        name: newCategory.name,
-        description: newCategory.description
-      });
+      const token = localStorage.getItem('token');
+      await axios.post(
+        'http://localhost:8080/api/categories',
+        {
+      name: newCategory.name
+        },
+        token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
+      );
 
-      setNewCategory({
-        name: '',
-        description: ''
-      });
+    setNewCategory({ name: '' });
       
       loadData();
       alert('Categoria adicionada com sucesso!');
     } catch (error) {
       alert('Erro ao adicionar categoria');
     }
+  };
+
+  const handleEditCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCategory) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(
+        `http://localhost:8080/api/categories/${editingCategory.id}`,
+        {
+          id: editingCategory.id,
+          name: editingCategory.name
+        },
+        token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
+      );
+
+      setEditingCategory(null);
+      loadData();
+      alert('Categoria atualizada com sucesso!');
+    } catch (error) {
+      alert('Erro ao atualizar categoria');
+    }
+  };
+
+  const startEditingCategory = (category: Category) => {
+    setEditingCategory({ ...category });
+  };
+
+  const cancelEditingCategory = () => {
+    setEditingCategory(null);
   };
 
   const handleDeleteProduct = async (productId: number) => {
@@ -159,7 +220,11 @@ const AdminPage: React.FC = () => {
   const handleDeleteCategory = async (categoryId: number) => {
     if (window.confirm('Tem certeza que deseja excluir esta categoria?')) {
       try {
-        await axios.delete(`http://localhost:8080/api/categories/${categoryId}`);
+        const token = localStorage.getItem('token');
+        await axios.delete(
+          `http://localhost:8080/api/categories/${categoryId}`,
+          token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
+        );
         loadData();
         alert('Categoria excluída com sucesso!');
       } catch (error) {
@@ -170,7 +235,12 @@ const AdminPage: React.FC = () => {
 
   const handlePromoteUser = async (userId: number) => {
     try {
-      await axios.post(`http://localhost:8080/api/admin/promote/${userId}`);
+      const token = localStorage.getItem('token');
+      await axios.post(
+        `http://localhost:8080/api/admin/promote/${userId}`,
+        undefined,
+        token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
+      );
       loadData();
       alert('Usuário promovido para ADMIN com sucesso!');
     } catch (error) {
@@ -180,7 +250,12 @@ const AdminPage: React.FC = () => {
 
   const handleDemoteUser = async (userId: number) => {
     try {
-      await axios.post(`http://localhost:8080/api/admin/demote/${userId}`);
+      const token = localStorage.getItem('token');
+      await axios.post(
+        `http://localhost:8080/api/admin/demote/${userId}`,
+        undefined,
+        token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
+      );
       loadData();
       alert('Usuário rebaixado para USER com sucesso!');
     } catch (error) {
@@ -280,31 +355,58 @@ const AdminPage: React.FC = () => {
                   onChange={(e) => setNewCategory({...newCategory, name: e.target.value})}
                   required
                 />
-                <textarea
-                  placeholder="Descrição (opcional)"
-                  value={newCategory.description}
-                  onChange={(e) => setNewCategory({...newCategory, description: e.target.value})}
-                />
                 <button type="submit">Adicionar Categoria</button>
               </form>
             </div>
 
+            {editingCategory && (
+              <div className="edit-form">
+                <h3>Editar Categoria</h3>
+                <form onSubmit={handleEditCategory}>
+                  <input
+                    type="text"
+                    placeholder="Nome da categoria"
+                    value={editingCategory.name}
+                    onChange={(e) => setEditingCategory({...editingCategory, name: e.target.value})}
+                    required
+                  />
+                  <div className="form-buttons">
+                    <button type="submit">Salvar Alterações</button>
+                    <button type="button" onClick={cancelEditingCategory}>Cancelar</button>
+                  </div>
+                </form>
+              </div>
+            )}
+
             <div className="categories-list">
-              <h3>Categorias Existentes</h3>
+              <h3>Categorias Existentes ({categories.length})</h3>
               <div className="categories-grid">
                 {categories.map(category => (
                   <div key={category.id} className="category-card">
                     <h4>{category.name}</h4>
-                    {category.description && <p>{category.description}</p>}
-                    <button 
-                      onClick={() => handleDeleteCategory(category.id)}
-                      className="delete-btn"
-                    >
-                      Excluir
-                    </button>
+                    <div className="category-actions">
+                      <button 
+                        onClick={() => startEditingCategory(category)}
+                        className="edit-btn"
+                      >
+                        Editar
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteCategory(category.id)}
+                        className="delete-btn"
+                      >
+                        Excluir
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
+
+              {categories.length === 0 && (
+                <div className="no-categories">
+                  <p>Nenhuma categoria cadastrada ainda.</p>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -312,6 +414,11 @@ const AdminPage: React.FC = () => {
         {activeTab === 'users' && (
           <div className="users-section">
             <h2>Gerenciar Usuários</h2>
+            {usersError && (
+              <div style={{ background: '#fff3cd', color: '#856404', padding: '10px 15px', borderRadius: 8, marginBottom: 15 }}>
+                {usersError}
+              </div>
+            )}
             
             <div className="users-list">
               <table className="users-table">
