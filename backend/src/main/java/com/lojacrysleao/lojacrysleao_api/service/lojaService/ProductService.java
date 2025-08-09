@@ -51,9 +51,7 @@ public class ProductService {
         Product product = productMapper.toEntity(dto, category);
         Product savedProduct = productRepository.save(product);
 
-        Storage storage = storageService.create(savedProduct);
-        savedProduct.setStorage_id(storage);
-        productRepository.save(savedProduct);
+        storageService.create(savedProduct);
 
         return productMapper.toDTO(savedProduct);
     }
@@ -93,9 +91,7 @@ public class ProductService {
         Product product = productMapper.toEntity(dto, category);
         Product savedProduct = productRepository.save(product);
 
-        Storage storage = storageService.update(savedProduct);
-        savedProduct.setStorage_id(storage);
-        productRepository.save(savedProduct);
+        storageService.update(savedProduct);
 
         return productMapper.toDTO(savedProduct);
     }

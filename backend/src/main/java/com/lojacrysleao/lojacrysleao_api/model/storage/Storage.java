@@ -3,8 +3,6 @@ package com.lojacrysleao.lojacrysleao_api.model.storage;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
 import jakarta.persistence.*;
 
-import java.util.List;
-
 
 @Entity
 @Table(name = "storage")
@@ -16,7 +14,7 @@ public class Storage {
 
     @OneToOne
     @JoinColumn(name = "product_id", nullable = false, unique = true)
-    private Long product_id;
+    private Product product;
 
     private int quantity;
 
@@ -47,12 +45,12 @@ public class Storage {
         this.reservation = reservation;
     }
 
-    public Long getProduct_id() {
-        return product_id;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProduct_id(Long product_id) {
-        this.product_id = product_id;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
 }

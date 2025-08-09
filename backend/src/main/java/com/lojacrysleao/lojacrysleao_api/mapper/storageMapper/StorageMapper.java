@@ -15,7 +15,7 @@ public class StorageMapper {
 
         StorageDTO dto = new StorageDTO();
         dto.setId(storage.getId());
-        dto.setProduct_id(storage.getProduct_id() != null ? storage.getProduct_id().getId() : null);
+        dto.setProduct_id(storage.getProduct() != null ? storage.getProduct().getId() : null);
         dto.setQuantity(storage.getQuantity());
         dto.setReservation(storage.getReservation());
 
@@ -28,7 +28,7 @@ public class StorageMapper {
         }
 
         Storage storage = new Storage();
-        storage.setProduct_id(product);
+        storage.setProduct(product);
         storage.setQuantity(product.getQuantity());
         storage.setReservation(0);
 

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface StorageRepository extends JpaRepository<Storage, Long> {
-    Optional<Storage> findByProduct_Id(Long productId);
+    Optional<Storage> findByProductId(Long productId);
 }

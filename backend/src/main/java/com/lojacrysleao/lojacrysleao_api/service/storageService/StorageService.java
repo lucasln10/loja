@@ -28,7 +28,7 @@ public class StorageService {
         }
 
         Storage storage = new Storage();
-        storage.setProduct_id(product.getId());
+        storage.setProduct(product);
         storage.setQuantity(product.getQuantity());
         storage.setReservation(0);
 
@@ -40,7 +40,7 @@ public class StorageService {
             throw new BadRequestException("Product ID não podem ser nulos");
         }
 
-        Storage storage = storageRepository.findByProduct_Id(productId)
+        Storage storage = storageRepository.findByProductId(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Estoque não encontrado para o produto ID " + productId));
 
         return storageMapper.toDTO(storage);
@@ -55,7 +55,7 @@ public class StorageService {
                 .orElseThrow(() -> new ResourceNotFoundException("Produto com ID " + product.getId() + " não encontrado"));
 
         Storage storage = new Storage();
-        storage.setProduct_id(product.getId());
+        storage.setProduct(product);
         storage.setQuantity(product.getQuantity());
         storage.setReservation(0);
 
