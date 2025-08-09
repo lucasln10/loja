@@ -7,19 +7,19 @@ import Header from './components/common/Header/Header';
 import Footer from './components/common/Footer/Footer';
 import ScrollToTop from './components/common/ScrollToTop/ScrollToTop';
 
-import HomePage from './pages/HomePage';
-import ProductsPage from './pages/ProductsPage';
-import AboutPage from './pages/AboutPage';
-import ContactPage from './pages/ContactPage';
-import CartPage from './pages/CartPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import AdminPage from './pages/AdminPage';
-import RecoverPasswordPage from './pages/RecoverPasswordPage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
-import VerifyEmailPage from './pages/VerifyEmailPage';
-import ResendVerificationPage from './pages/ResendVerificationPage';
-import ProductDetailPage from './pages/ProductDetailPage';
+import HomePage from './pages/client/HomePage';
+import ProductsPage from './pages/client/ProductsPage';
+import AboutPage from './pages/client/AboutPage';
+import ContactPage from './pages/client/ContactPage';
+import CartPage from './pages/client/CartPage';
+import LoginPage from './pages/auth/LoginPage';
+import RegisterPage from './pages/auth/RegisterPage';
+import AdminPage from './pages/admin/AdminPage';
+import RecoverPasswordPage from './pages/auth/RecoverPasswordPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import VerifyEmailPage from './pages/auth/VerifyEmailPage';
+import ResendVerificationPage from './pages/auth/ResendVerificationPage';
+import ProductDetailPage from './pages/client/ProductDetailPage';
 
 import './App.css';
 

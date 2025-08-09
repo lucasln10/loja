@@ -59,13 +59,14 @@
   cursor: pointer;
   text-decoration: underline;
   font-size: 0.9rem;
+  transition: all 0.3s ease;
 }
 
 .login-btn:hover,
 .register-btn:hover,
 .admin-btn:hover,
 .logout-btn:hover {
-  color: #B71C1C;
+  transform: scale(1.05);
 }
 
 .admin-btn {

@@ -1,14 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Adicione esta importação
-import { Product } from '../types';
-import { productService } from '../services/productService';
+import { useNavigate } from 'react-router-dom';
+import { Product } from '../../types';
+import { productService } from '../../services/productService';
 import { FaTruckFast } from "react-icons/fa6";
 import { IoShieldCheckmark } from "react-icons/io5";
 import { TbBrandCake } from "react-icons/tb";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
 
-import ProductCard from '../components/home/ProductCard/ProductCard';
+import ProductCard from '../../components/home/ProductCard/ProductCard';
 import './HomePage.css';
 import 'swiper/css';
 import 'swiper/css/navigation';

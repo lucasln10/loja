@@ -310,11 +310,11 @@ export const productService = {
     try {
       const allProducts = await this.getAllProductsWithCategories();
       return allProducts.filter(product => 
-        product.category.toLowerCase() === categoryName.toLowerCase()
+        product.category && product.category.toLowerCase() === categoryName.toLowerCase()
       );
     } catch (error) {
       console.error('Erro ao buscar produtos por nome da categoria:', error);
-      throw error;
+      return [];
     }
   },
 };
