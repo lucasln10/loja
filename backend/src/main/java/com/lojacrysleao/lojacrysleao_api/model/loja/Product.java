@@ -45,6 +45,7 @@ public class Product {
     @JoinColumn(name = "storage_id", nullable = false)
     private Storage storage_id;
 
+    //criar coluna para deixar produto ativou ou desativado e criar a funcao e rota para essa funcao
 
     // Método helper para obter a imagem principal
     public String getPrimaryImageUrl() {

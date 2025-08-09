@@ -15,8 +15,8 @@ public class Storage {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product_id;
+    @JoinColumn(name = "product_id", nullable = false, unique = true)
+    private Long product_id;
 
     private int quantity;
 
@@ -47,11 +47,11 @@ public class Storage {
         this.reservation = reservation;
     }
 
-    public Product getProduct_id() {
+    public Long getProduct_id() {
         return product_id;
     }
 
-    public void setProduct_id(Product product_id) {
+    public void setProduct_id(Long product_id) {
         this.product_id = product_id;
     }
 
