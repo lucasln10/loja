@@ -5,18 +5,18 @@ package com.lojacrysleao.lojacrysleao_api.service.storageService;
 public class StorageService {
 
     @Autowired
-    private StorageMapper storageMapper;
-
-    @Autowired
     private StorageRepository storageRepository;
 
-    public StorageDTO createStorage(StorageDTO dto) {
-        if (dto == null) {
+    @Autowired
+    private StorageMapper  storageMapper;
+
+    public StorageDTO createStorage(Product product) {
+        if (product == null) {
             throw new BadRequestException("O Produto não pode ser nulo");
         }
 
-        Storage storage = storageMapper.toEntity(saved);
-        storageRepository.save(storage);
+        Storage storage = storageMapper.toEntity(product); //PRODUTO
+        storageRepository.save(storage); //SALVA STORAGE COM ID DO PRODUTO NA TABELA
 
         return storage;
     }

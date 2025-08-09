@@ -27,10 +27,7 @@ public class ProductService {
     private ProductMapper productMapper;
 
     @Autowired
-    private StorageRepository storageRepository;
-
-    @Autowired
-    private StorageMapper  storageMapper;
+    private StorageService storageService;
 
 
     public ProductDTO create(ProductDTO dto) {
@@ -45,13 +42,13 @@ public class ProductService {
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));  
 
-        Product product = productMapper.toEntity(dto, category);
-        Product saved = productRepository.save(product);
+        Product saved = productRepository.save(dto);
 
-        Storage storage = storageMapper.toEntity(saved);
+        Storage storage = storageService.createStorage(saved);
         storageRepository.save(storage);
 
         saved.setStorage(storage);
+        productRepository.save(saved);
 
         return productMapper.toDTO(saved);
     }
@@ -88,13 +85,11 @@ public class ProductService {
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
 
-        Product product = productMapper.toEntity(dto, category);
-        Product saved = productRepository.update(product);
-
-        Storage storage = storageMapper.toEntity(saved);
-        storageRepository.save(storage);
-
-        saved.setStorage(storage);
+        Product product = productMapper.toEntity(dto, category); //PRODUTO COM A CATEGORIA
+        Storage storage = storageMapper.toEntity(product); //PRODUTO
+        storageRepository.update(storage); //ATUALIZA STORAGE COM ID DO PRODUTO NA TABELA
+        saved.setStorage(storage); //ESTOQUE JÁ ATUALIZADO COM PRODUTO
+        Product saved = productRepository.update(product); //ATUALIZA PRODUTO NA TABELA
 
         return productMapper.toDTO(saved);
     }

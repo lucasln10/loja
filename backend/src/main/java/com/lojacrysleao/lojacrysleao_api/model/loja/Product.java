@@ -43,7 +43,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "storage_id", nullable = false)
-    private Storage storage;
+    private Storage storage_id;
 
 
     // Método helper para obter a imagem principal

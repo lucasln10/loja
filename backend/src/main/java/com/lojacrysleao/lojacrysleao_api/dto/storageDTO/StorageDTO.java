@@ -17,6 +17,6 @@ public class StorageDTO {
 
     private int reservation;
 
-    private Product product_id;
+    private Long product_id;
 
 }

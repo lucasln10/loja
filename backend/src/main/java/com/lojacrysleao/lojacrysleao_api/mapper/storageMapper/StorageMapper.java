@@ -26,16 +26,15 @@ public class StorageMapper {
         return dto;
     }
 
-    public Storage toEntity(StorageDTO storageDTO) {
+    public Storage toEntity(Product product) {
         if (storageDTO == null) {
             return null;
         }
 
         Storage storage = new Storage();
-        storage.setId(storageDTO.getId());
-        storage.setQuantity(storageDTO.getQuantity());
-        storage.setReservation(storageDTO.getReservation());
-        storage.setProduct_id(storage.getProduct());
+        storage.setProduct_id(product.getId);
+        storage.setQuantity(product.getQuantity);
+        storage.setReservation(0);
 
         return storage;
     }
