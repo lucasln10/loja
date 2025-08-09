@@ -8,6 +8,7 @@ import com.lojacrysleao.lojacrysleao_api.model.loja.Category;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.CategoryRepository;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.ProductRepository;
+import com.lojacrysleao.lojacrysleao_api.service.storageService.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,13 +43,11 @@ public class ProductService {
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));  
 
-        Product saved = productRepository.save(dto);
+        Product product = productMapper.toEntity(dto, category);
+        Product saved = productRepository.save(product);
 
-        Storage storage = storageService.createStorage(saved);
-        storageRepository.save(storage);
-
-        saved.setStorage(storage);
-        productRepository.save(saved);
+        // Criar o storage para o produto
+        storageService.createStorage(saved);
 
         return productMapper.toDTO(saved);
     }
@@ -85,11 +84,8 @@ public class ProductService {
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
 
-        Product product = productMapper.toEntity(dto, category); //PRODUTO COM A CATEGORIA
-        Storage storage = storageMapper.toEntity(product); //PRODUTO
-        storageRepository.update(storage); //ATUALIZA STORAGE COM ID DO PRODUTO NA TABELA
-        saved.setStorage(storage); //ESTOQUE JÁ ATUALIZADO COM PRODUTO
-        Product saved = productRepository.update(product); //ATUALIZA PRODUTO NA TABELA
+        Product product = productMapper.toEntity(dto, category);
+        Product saved = productRepository.save(product);
 
         return productMapper.toDTO(saved);
     }

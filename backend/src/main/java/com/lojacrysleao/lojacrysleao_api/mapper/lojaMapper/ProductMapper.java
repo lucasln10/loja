@@ -51,8 +51,7 @@ public class ProductMapper {
         product.setQuantity(dto.getQuantity());
         product.setDescription(dto.getDescription());
         product.setDetailedDescription(dto.getDetailedDescription());
-        product.setStorage(dto.getStorage)
-        
+
         return product;
     }
 
