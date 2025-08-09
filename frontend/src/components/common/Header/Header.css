@@ -179,10 +179,10 @@
   transition: all 0.3s ease;
   background: linear-gradient(
     to right,
-    #FFF 0%,
+    #DC143C 0%,
+    #DC143C 50%,
     #FFF 50%,
-    rgba(255, 255, 255, 0.7) 50%,
-    rgba(255, 255, 255, 0.7) 100%
+    #FFF 100%
   );
   background-size: 200% 100%;
   background-position: 100% 0;
