@@ -2,12 +2,15 @@ export interface Product {
   id: number;
   name: string;
   price: number;
-  image: string;
+  quantity: number;
   description: string;
   detailedDescription?: string;
-  category: string;
+  category?: string;
   categoryId?: number;
-  quantity?: number;
+  image: string;
+  imageUrl?: string;
+  imageUrls?: string[];
+  inStock?: boolean;
 }
 
 export interface AdminProduct {

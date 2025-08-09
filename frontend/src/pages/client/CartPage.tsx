@@ -1,7 +1,7 @@
 import React from 'react';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../../context/CartContext';
 import './CartPage.css';
-import { FaShoppingCart } from "react-icons/fa";
+import { FaCartShopping } from "react-icons/fa6";
 
 const CartPage: React.FC = () => {
   const { state, removeFromCart, updateQuantity, clearCart } = useCart();
@@ -19,7 +19,7 @@ const CartPage: React.FC = () => {
       <div className="cart-page">
         <div className="container">
           <div className="empty-cart">
-            <div className="empty-cart-icon">{(FaShoppingCart as any)()}</div>
+            <div className="empty-cart-icon"><FaCartShopping /></div>
             <h1>Seu Carrinho está Vazio</h1>
             <p>Que tal adicionar alguns moldes incríveis?</p>
             <button className="continue-shopping-btn">

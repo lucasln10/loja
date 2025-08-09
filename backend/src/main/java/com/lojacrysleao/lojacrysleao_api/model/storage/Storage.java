@@ -3,27 +3,22 @@ package com.lojacrysleao.lojacrysleao_api.model.storage;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
 import jakarta.persistence.*;
 
-import java.util.List;
-
 
 @Entity
-@Table(name = "estoque")
+@Table(name = "storage")
 public class Storage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
-    private double price;
+    @OneToOne
+    @JoinColumn(name = "product_id", nullable = false, unique = true)
+    private Product product;
 
     private int quantity;
 
     private int reservation;
-
-    @OneToMany(mappedBy = "storage")
-    private List<Product> products;
 
 
     public Long getId() {
@@ -32,22 +27,6 @@ public class Storage {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
     }
 
     public int getQuantity() {
@@ -66,11 +45,12 @@ public class Storage {
         this.reservation = reservation;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setProduct(Product product) {
+        this.product = product;
     }
+
 }

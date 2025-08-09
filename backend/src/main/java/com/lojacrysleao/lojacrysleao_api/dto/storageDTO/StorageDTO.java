@@ -13,14 +13,10 @@ public class StorageDTO {
 
     private Long id;
 
-    private String name;
-
-    private double price;
-
     private int quantity;
 
     private int reservation;
 
-    private List<ProductDTO> products;
+    private Long product_id;
 
 }

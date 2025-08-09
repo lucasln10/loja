@@ -41,10 +41,10 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductImage> images = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "storage_id")
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Storage storage;
 
+    //criar coluna para deixar produto ativou ou desativado e criar a funcao e rota para essa funcao
 
     // Método helper para obter a imagem principal
     public String getPrimaryImageUrl() {

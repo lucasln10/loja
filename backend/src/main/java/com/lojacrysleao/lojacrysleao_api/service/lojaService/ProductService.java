@@ -6,8 +6,11 @@ import com.lojacrysleao.lojacrysleao_api.exception.ResourceNotFoundException;
 import com.lojacrysleao.lojacrysleao_api.mapper.lojaMapper.ProductMapper;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Category;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
+import com.lojacrysleao.lojacrysleao_api.model.storage.Storage;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.CategoryRepository;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.ProductRepository;
+import com.lojacrysleao.lojacrysleao_api.repository.storageRepository.StorageRepository;
+import com.lojacrysleao.lojacrysleao_api.service.storageService.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,12 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
+    private StorageService storageService;
+
+    @Autowired
+    private StorageRepository storageRepository;
+
 
     public ProductDTO create(ProductDTO dto) {
         if (dto == null) {
@@ -37,11 +46,14 @@ public class ProductService {
         }
         
         Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));  
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
 
         Product product = productMapper.toEntity(dto, category);
-        Product saved = productRepository.save(product);
-        return productMapper.toDTO(saved);
+        Product savedProduct = productRepository.save(product);
+
+        storageService.create(savedProduct);
+
+        return productMapper.toDTO(savedProduct);
     }
 
     public List<ProductDTO> listAll() {
@@ -77,8 +89,11 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
 
         Product product = productMapper.toEntity(dto, category);
-        Product saved = productRepository.save(product);
-        return productMapper.toDTO(saved);
+        Product savedProduct = productRepository.save(product);
+
+        storageService.update(savedProduct);
+
+        return productMapper.toDTO(savedProduct);
     }
 
     public void delete(Long id) {

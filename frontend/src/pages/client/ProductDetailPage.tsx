@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { productService } from '../services/productService';
-import { categoryService } from '../services/categoryService';
-import { useCart } from '../context/CartContext';
-import { Product } from '../types';
+import { productService } from '../../services/productService';
+import { categoryService } from '../../services/categoryService';
+import { useCart } from '../../context/CartContext';
+import { Product } from '../../types';
 import { IoBagHandleSharp, IoArrowBack, IoHeart, IoHeartOutline } from 'react-icons/io5';
 import { FaStar, FaStarHalf, FaRegStar } from 'react-icons/fa6';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -15,11 +15,9 @@ import 'swiper/css/thumbs';
 import './ProductDetailPage.css';
 
 interface ProductDetails extends Product {
-  detailedDescription?: string;
   specifications?: { [key: string]: string };
   rating?: number;
   reviewCount?: number;
-  inStock?: boolean;
   tags?: string[];
 }
 
@@ -55,6 +53,9 @@ const ProductDetailPage: React.FC = () => {
           productService.getProductImages(productId)
         ]);
 
+        console.log('🔍 Produto carregado:', productData);
+        console.log('🖼️ Imagens carregadas:', images);
+
         // Buscar detalhes da categoria
         let categoryName = productData.category;
         
@@ -65,8 +66,6 @@ const ProductDetailPage: React.FC = () => {
           } catch (error) {
             console.log('❌ Erro ao buscar categoria, usando categoria do produto como fallback');
           }
-        } else {
-          console.log('⚠️ Produto não tem categoryId definido');
         }
 
         // Expandir produto com dados adicionais para demonstração
@@ -177,6 +176,9 @@ const ProductDetailPage: React.FC = () => {
     );
   }
 
+  // Se não há imagens carregadas, usar imagem padrão
+  const imagesToDisplay = productImages.length > 0 ? productImages : [product.image || '/images/logo.webp'];
+
   return (
     <div className="product-detail-page">
       <div className="container">
@@ -205,7 +207,7 @@ const ProductDetailPage: React.FC = () => {
                 thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
                 className="main-swiper"
               >
-                {productImages.map((image, index) => (
+                {imagesToDisplay.map((image, index) => (
                   <SwiperSlide key={index}>
                     <img 
                       src={image} 
@@ -219,7 +221,7 @@ const ProductDetailPage: React.FC = () => {
                 ))}
               </Swiper>
                {/* Miniaturas */}
-            {productImages.length > 1 && (
+            {imagesToDisplay.length > 1 && (
               <Swiper
                 modules={[Thumbs]}
                 watchSlidesProgress
@@ -228,7 +230,7 @@ const ProductDetailPage: React.FC = () => {
                 spaceBetween={10}
                 className="thumbs-swiper"
               >
-                {productImages.map((image, index) => (
+                {imagesToDisplay.map((image, index) => (
                   <SwiperSlide key={index}>
                     <img 
                       src={image} 
@@ -258,6 +260,7 @@ const ProductDetailPage: React.FC = () => {
               </div>
             </div>
           </div>
+          
           {/* Informações do Produto */}
           <div className="product-info">
             <div className="product-header">
@@ -293,6 +296,7 @@ const ProductDetailPage: React.FC = () => {
                 <span>à vista no PIX com 5% de desconto</span>
               </div>
             </div>
+            
             {/* Tags */}
             {product.tags && product.tags.length > 0 && (
               <div className="product-tags">
@@ -314,8 +318,8 @@ const ProductDetailPage: React.FC = () => {
                     -
                   </button>
                   <input 
-                    type="number" 
-                    value={quantity} 
+                    type="number"
+                    value={quantity}
                     onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
                     min="1"
                     max={product.quantity || 999}
@@ -346,6 +350,14 @@ const ProductDetailPage: React.FC = () => {
                 >
                   Comprar Agora
                 </button>
+              </div>
+
+              <div className="stock-status">
+                {product.inStock ? (
+                  <span className="in-stock">✅ Em estoque ({product.quantity} unidades)</span>
+                ) : (
+                  <span className="out-of-stock">❌ Produto esgotado</span>
+                )}
               </div>
             </div>
           </div>
