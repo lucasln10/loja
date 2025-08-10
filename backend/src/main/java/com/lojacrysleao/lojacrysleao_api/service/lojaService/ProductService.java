@@ -10,13 +10,12 @@ import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
 import com.lojacrysleao.lojacrysleao_api.model.storage.Storage;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.CategoryRepository;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.ProductRepository;
-import com.lojacrysleao.lojacrysleao_api.repository.storageRepository.StorageRepository;
 import com.lojacrysleao.lojacrysleao_api.service.storageService.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,10 +33,10 @@ public class ProductService {
     @Autowired
     private StorageService storageService;
 
-    @Autowired
-    private StorageRepository storageRepository;
+    // storageRepository not used directly; StorageService encapsulates logic
 
 
+    @Transactional
     public ProductDTO create(ProductDTO dto) {
         if (dto == null) {
             throw new BadRequestException("ProductDTO não pode ser nulo");
@@ -51,9 +50,11 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
 
         Product product = productMapper.toEntity(dto, category);
-        Storage storage = storageService.create(product);
-        product.setStorage(storage);
+        // Primeiro salva o produto para garantir que tenha ID
         Product savedProduct = productRepository.save(product);
+        // Agora cria o estoque vinculado ao produto salvo
+        Storage storage = storageService.create(savedProduct);
+        savedProduct.setStorage(storage);
 
         return productMapper.toDTO(savedProduct);
     }
@@ -75,6 +76,7 @@ public class ProductService {
         return productMapper.toDTO(product);
     }
 
+    @Transactional
     public ProductDTO update(ProductDTO dto) {
         if (dto == null || dto.getId() == null) {
             throw new BadRequestException("ProductDTO e ID não podem ser nulos");
@@ -84,16 +86,24 @@ public class ProductService {
             throw new BadRequestException("ID da categoria é obrigatório");
         }
 
-        productRepository.findById(dto.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Produto com ID " + dto.getId() + " não encontrado"));
-        
-        Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
+        Product existing = productRepository.findById(dto.getId())
+            .orElseThrow(() -> new ResourceNotFoundException("Produto com ID " + dto.getId() + " não encontrado"));
 
-        Product product = productMapper.toEntity(dto, category);
-        Storage storage = storageService.create(product);
-        product.setStorage(storage);
-        Product savedProduct = productRepository.save(product);
+        Category category = categoryRepository.findById(dto.getCategoryId())
+            .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
+
+        // Atualiza apenas os campos mutáveis
+        existing.setName(dto.getName());
+        existing.setPrice(dto.getPrice());
+        existing.setQuantity(dto.getQuantity());
+        existing.setDescription(dto.getDescription());
+        existing.setDetailedDescription(dto.getDetailedDescription());
+        existing.setStatus(dto.isStatus());
+        existing.setCategory(category);
+
+        Product savedProduct = productRepository.save(existing);
+        // Atualiza o estoque existente para refletir a nova quantidade
+        storageService.update(savedProduct);
 
         return productMapper.toDTO(savedProduct);
     }

@@ -31,8 +31,8 @@ public class StorageService {
         storage.setProduct(product);
         storage.setQuantity(product.getQuantity());
         storage.setReservation(0);
-        storageRepository.save(storage);
-        return storage;
+    storage = storageRepository.save(storage);
+    return storage;
     }
 
     public StorageDTO findByProductId(Long productId) {
@@ -51,15 +51,22 @@ public class StorageService {
             throw new BadRequestException("Product e ID não podem ser nulos");
         }
 
-        storageRepository.findById(product.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Produto com ID " + product.getId() + " não encontrado"));
+        // Busca o estoque pelo ID do produto
+        Optional<Storage> existingOpt = storageRepository.findByProductId(product.getId());
 
-        Storage storage = storageMapper.toEntity(product);
-        storage.setProduct(product);
-        storage.setQuantity(product.getQuantity());
-        storage.setReservation(0);
-        storageRepository.save(storage);
-        return storage;
+        Storage storage;
+        if (existingOpt.isPresent()) {
+            storage = existingOpt.get();
+            storage.setQuantity(product.getQuantity());
+            // Mantém a reserva atual (ou ajuste conforme sua regra)
+        } else {
+            // Caso não exista, cria um novo
+            storage = storageMapper.toEntity(product);
+        }
+
+    storage.setProduct(product);
+    storage = storageRepository.save(storage);
+    return storage;
     }
 
     public void delete(Long id) {
