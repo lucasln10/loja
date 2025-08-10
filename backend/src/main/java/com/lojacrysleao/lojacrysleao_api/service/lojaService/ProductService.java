@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,9 +51,9 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
 
         Product product = productMapper.toEntity(dto, category);
+        Storage storage = storageService.create(product);
+        product.setStorage(storage);
         Product savedProduct = productRepository.save(product);
-
-        storageService.create(savedProduct);
 
         return productMapper.toDTO(savedProduct);
     }
@@ -90,9 +91,9 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
 
         Product product = productMapper.toEntity(dto, category);
+        Storage storage = storageService.create(product);
+        product.setStorage(storage);
         Product savedProduct = productRepository.save(product);
-
-        storageService.update(savedProduct);
 
         return productMapper.toDTO(savedProduct);
     }
@@ -100,7 +101,8 @@ public class ProductService {
     public void delete(Long id) {
         // Verifica se produto existe
         findById(id);
-        Product product = new Product();
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + id));
 
         if (product.isStatus()) {
             throw new ValidationException("PRODUTO ESTA ATIVO, POR ISTO NAO PODE SER EXCLUIDO.");
@@ -108,7 +110,34 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    //public ProductDTO StatusOnOrOff() {
+    public boolean enableStatus(Long id) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + id));
+
+        if (product.isStatus()){
+            throw new BadRequestException("Produto ja esta ativo.");
+        }
+
+        product.setStatus(true);
+        productRepository.save(product);
+        return true;
+    }
+
+    public boolean desableStatus(Long id) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + id));
+
+        if (product.isStatus()){
+            throw new BadRequestException("Produto ja esta inativo.");
+        }
+
+        product.setStatus(false);
+        productRepository.save(product);
+        return false;
+    }
+
 
 
     

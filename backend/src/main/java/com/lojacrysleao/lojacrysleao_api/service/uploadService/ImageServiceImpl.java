@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,22 +21,29 @@ public class ImageServiceImpl implements ImageService {
             "image/jpeg", "image/png", "image/webp"
     );
 
-    public static final String UPLOAD_DIR = "/home/hlxt/loja-gitlab/loja/backend/uploads/products"; // Diretiorio onde sera armazenado as imagens dos produtos
+    private static final String UPLOAD_DIR;
 
-    public ImageServiceImpl() {
-        criarDiretorioSeNaoExistir();
-    }
+    static {
+        // Descobre o caminho base do projeto (pasta "loja")
+        String baseDir = System.getProperty("user.dir");
 
-    private void criarDiretorioSeNaoExistir() {
-        File uploadDir = new File(UPLOAD_DIR);
-        if (!uploadDir.exists()) {
-            boolean criado = uploadDir.mkdirs();
-            if (criado) {
-                System.out.println("Pasta de uploads criada em: " + UPLOAD_DIR);
+        // Monta o caminho da pasta de uploads
+        UPLOAD_DIR = Paths.get(baseDir, "backend", "uploads", "products").toString();
+
+        // Garante que a pasta existe
+        File uploadDirFile = new File(UPLOAD_DIR);
+        if (!uploadDirFile.exists()) {
+            boolean created = uploadDirFile.mkdirs();
+            if (created) {
+                System.out.println("Pasta criada: " + UPLOAD_DIR);
             } else {
-                throw new RuntimeException("Falha ao criar a pasta de uploads em: " + UPLOAD_DIR);
+                System.err.println("Não foi possível criar a pasta de upload: " + UPLOAD_DIR);
             }
         }
+    }
+
+    public String getUploadDir() {
+        return UPLOAD_DIR;
     }
 
     @Override
