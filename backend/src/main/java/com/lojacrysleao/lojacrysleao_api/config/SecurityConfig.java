@@ -35,6 +35,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/api/categories/**").permitAll()
                         .requestMatchers("/api/products/**").permitAll()
+                        .requestMatchers("/api/carousel/**").permitAll() // TEMPORÁRIO: permitir todos os endpoints do carousel
+                        .requestMatchers("/uploads/**").permitAll() // Permitir acesso aos arquivos estáticos
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()

@@ -274,14 +274,14 @@ const ProductDetailPage: React.FC = () => {
             </div>
 
             <div className="product-meta">
-              <div className="rating-container">
+              {/* <div className="rating-container">
                 <div className="stars">
                   {renderStars(product.rating || 0)}
                 </div>
                 <span className="rating-text">
                   {product.rating?.toFixed(1)} ({product.reviewCount} avaliações)
                 </span>
-              </div>
+              </div> */}
               
               <div className="category-tag">
                 <span>Categoria: {product.category}</span>
@@ -378,12 +378,12 @@ const ProductDetailPage: React.FC = () => {
             >
               Especificações
             </button>
-            <button 
+            {/* <button 
               className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
               onClick={() => setActiveTab('reviews')}
             >
               Avaliações ({product.reviewCount})
-            </button>
+            </button> */}
           </div>
 
           <div className="tabs-content">
@@ -414,7 +414,7 @@ const ProductDetailPage: React.FC = () => {
 
             {activeTab === 'reviews' && (
               <div className="tab-content">
-                <h3>Avaliações dos Clientes</h3>
+                {/* <h3>Avaliações dos Clientes</h3>
                 <div className="reviews-summary">
                   <div className="average-rating">
                     <div className="rating-number">{product.rating?.toFixed(1)}</div>
@@ -423,12 +423,12 @@ const ProductDetailPage: React.FC = () => {
                     </div>
                     <div className="review-count">{product.reviewCount} avaliações</div>
                   </div>
-                </div>
+                </div> */}
                 
                 {/* Aqui você pode adicionar as avaliações reais quando implementar */}
-                <div className="reviews-placeholder">
+                {/* <div className="reviews-placeholder">
                   <p>Sistema de avaliações será implementado em breve.</p>
-                </div>
+                </div> */}
               </div>
             )}
           </div>
