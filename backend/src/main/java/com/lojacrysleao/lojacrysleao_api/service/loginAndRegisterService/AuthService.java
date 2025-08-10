@@ -4,7 +4,7 @@ import com.lojacrysleao.lojacrysleao_api.config.JWT.JwtTokenProvider;
 import com.lojacrysleao.lojacrysleao_api.dto.authDTO.LoginRequest;
 import com.lojacrysleao.lojacrysleao_api.dto.authDTO.LoginResponse;
 import com.lojacrysleao.lojacrysleao_api.dto.authDTO.UserDTO;
-import com.lojacrysleao.lojacrysleao_api.exception.BadRequestException;
+import com.lojacrysleao.lojacrysleao_api.mapper.userMapper.UserMapper;
 import com.lojacrysleao.lojacrysleao_api.exception.ResourceNotFoundException;
 import com.lojacrysleao.lojacrysleao_api.exception.UnauthorizedException;
 import com.lojacrysleao.lojacrysleao_api.exception.ValidationException;
@@ -12,11 +12,11 @@ import com.lojacrysleao.lojacrysleao_api.model.user.User;
 import com.lojacrysleao.lojacrysleao_api.repository.userRepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -30,6 +30,9 @@ public class AuthService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserMapper userMapper;
+
     public LoginResponse authenticate(LoginRequest request) {
         try {
             // Verifica se o usuário existe e está habilitado
@@ -41,7 +44,7 @@ public class AuthService {
             }
 
             // Autentica o usuário com e-mail e senha
-            Authentication authentication = authenticationManager.authenticate(
+            authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getEmail(),
                             request.getPassword()
@@ -58,11 +61,12 @@ public class AuthService {
                     user.getRole().name()
             );
             return response;
-        } catch (Exception e) {
+    } catch (RuntimeException e) {
             throw new UnauthorizedException("Usuario não autenticado.");
         }
     }
 
+    @Transactional(readOnly = true)
     public UserDTO getCurrentUser() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -71,13 +75,8 @@ public class AuthService {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
-            return new UserDTO(
-                    user.getId(),
-                    user.getName(),
-                    user.getEmail(),
-                    user.getRole().name()
-            );
-        } catch (Exception e) {
+            return userMapper.toDTO(user, true);
+    } catch (RuntimeException e) {
             throw new ResourceNotFoundException("Erro ao buscar Usuario");
         }
     }

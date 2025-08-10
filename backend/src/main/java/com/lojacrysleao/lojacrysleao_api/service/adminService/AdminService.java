@@ -11,12 +11,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import com.lojacrysleao.lojacrysleao_api.mapper.userMapper.UserMapper;
 
 @Service
 public class AdminService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserMapper userMapper;
 
     public void promoteUserToAdmin(Long userId) {
         if (userId == null) {
@@ -52,13 +56,8 @@ public class AdminService {
 
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return users.stream()
-                .map(user -> new UserDTO(
-                        user.getId(),
-                        user.getName(),
-                        user.getEmail(),
-                        user.getRole().name()
-                ))
-                .collect(Collectors.toList());
+    return users.stream()
+        .map(user -> userMapper.toDTO(user, false))
+        .collect(Collectors.toList());
     }
 }
