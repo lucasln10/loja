@@ -20,7 +20,23 @@ public class ImageServiceImpl implements ImageService {
             "image/jpeg", "image/png", "image/webp"
     );
 
-    public static final String UPLOAD_DIR = "/home/hlxt/loja-gitlab/loja/backend/uploads"; // Diretório local para desenvolvimento
+    public static final String UPLOAD_DIR = "/home/hlxt/loja-gitlab/loja/backend/uploads/products"; // Diretiorio onde sera armazenado as imagens dos produtos
+
+    public ImageServiceImpl() {
+        criarDiretorioSeNaoExistir();
+    }
+
+    private void criarDiretorioSeNaoExistir() {
+        File uploadDir = new File(UPLOAD_DIR);
+        if (!uploadDir.exists()) {
+            boolean criado = uploadDir.mkdirs();
+            if (criado) {
+                System.out.println("Pasta de uploads criada em: " + UPLOAD_DIR);
+            } else {
+                throw new RuntimeException("Falha ao criar a pasta de uploads em: " + UPLOAD_DIR);
+            }
+        }
+    }
 
     @Override
     public String uploadImage(MultipartFile file) {
