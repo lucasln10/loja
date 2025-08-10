@@ -2,12 +2,15 @@ package com.lojacrysleao.lojacrysleao_api.model.loja;
 
 import com.fasterxml.jackson.databind.annotation.EnumNaming;
 import com.lojacrysleao.lojacrysleao_api.model.storage.Storage;
+import com.lojacrysleao.lojacrysleao_api.model.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -45,6 +48,13 @@ public class Product {
     private Storage storage;
 
     private boolean status = false;
+
+    @ManyToMany(mappedBy = "favorites")
+    private Set<User> favoredBy = new HashSet<>();
+
+    public Set<User> getFavoredBy() {
+        return favoredBy;
+    }
 
     // Método helper para obter a imagem principal
     public String getPrimaryImageUrl() {

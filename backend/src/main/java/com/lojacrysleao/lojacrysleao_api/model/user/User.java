@@ -1,20 +1,15 @@
 package com.lojacrysleao.lojacrysleao_api.model.user;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
@@ -44,6 +39,27 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private boolean enable = false;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "product_id"})
+    )
+    private Set<Product> favorites = new HashSet<>();
+
+    public Set<Product> getFavorites() {
+        return favorites;
+    }
+
+    public void addFavorite(Product product) {
+        this.favorites.add(product);
+    }
+
+    public void removeFavorite(Product product) {
+        this.favorites.remove(product);
+    }
 
     public void setRole(Role role) {
         this.role = role;

@@ -8,8 +8,10 @@ import com.lojacrysleao.lojacrysleao_api.exception.BadRequestException;
 import com.lojacrysleao.lojacrysleao_api.exception.ConflictException;
 import com.lojacrysleao.lojacrysleao_api.exception.ResourceNotFoundException;
 import com.lojacrysleao.lojacrysleao_api.exception.ValidationException;
+import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
 import com.lojacrysleao.lojacrysleao_api.model.user.Role;
 import com.lojacrysleao.lojacrysleao_api.model.user.User;
+import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.ProductRepository;
 import com.lojacrysleao.lojacrysleao_api.repository.userRepository.UserRepository;
 import com.lojacrysleao.lojacrysleao_api.service.emailService.EmailService;
 import com.lojacrysleao.lojacrysleao_api.service.verifyService.PasswordResetTokenService;
@@ -18,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
 
 @Service
 @Transactional
@@ -37,6 +41,9 @@ public class UserService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     public RegisterResponse registerUser(RegisterRequest request) {
         try {
@@ -157,5 +164,29 @@ public class UserService {
             throw new BadRequestException("Erro ao enviar email de redefinição de senha");
         }
 
+    }
+
+    @Transactional
+    public void addFavorite(Long userId, Long productId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        Product product = productRepository.findById(productId).orElseThrow();
+        user.addFavorite(product);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void removeFavorite(Long userId, Long productId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        Product product = productRepository.findById(productId).orElseThrow();
+        user.removeFavorite(product);
+        userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public Set<Product> listFavorites(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+    // Força carga da coleção de favoritos antes de sair da transação
+    user.getFavorites().size();
+    return user.getFavorites();
     }
 }

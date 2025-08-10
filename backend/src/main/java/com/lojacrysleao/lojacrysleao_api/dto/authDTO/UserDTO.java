@@ -16,6 +16,9 @@ public class UserDTO {
 
     private String role;
 
+    // Set of product IDs that the user has favorited
+    private java.util.Set<Long> favoriteProductIds;
+
     // Default constructor
     public UserDTO() {
     }
@@ -82,5 +85,13 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public java.util.Set<Long> getFavoriteProductIds() {
+        return favoriteProductIds;
+    }
+
+    public void setFavoriteProductIds(java.util.Set<Long> favoriteProductIds) {
+        this.favoriteProductIds = favoriteProductIds;
     }
 }

@@ -54,6 +54,7 @@ public class ProductMapper {
         product.setDetailedDescription(dto.getDetailedDescription());
         product.setStatus(dto.isStatus());
 
+
         return product;
     }
 

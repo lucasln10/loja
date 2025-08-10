@@ -7,6 +7,9 @@ jwt.secret=SUA_CHAVE_JWT_SECRETA_AQUI_MINIMO_32_CARACTERES
 server.port=8080
 server.servlet.context-path=/
 
+# Configuracoes do Frontend
+app.frontend.base-url=http://localhost:3000
+
 # Configurações do banco de dados - AJUSTAR CONFORME SEU AMBIENTE
 spring.datasource.url=jdbc:mysql://localhost:3306/loja?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Sao_Paulo
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -31,3 +34,8 @@ spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 spring.mail.default-encoding=UTF-8
 spring.mail.from=seu-email@example.com
+
+# Configuracoes de Alerta
+app.alert.lowstock.recipients=//emails que precisam receber o alertas separados por virgula ex: teste@gmail.com, loja@crysleao.com, dev@crysleao.com
+app.alert.lowstock.threshold=5 //5 ou menos, limite para ser enviado o alerta
+app.alert.lowstock.cooldown-hours=6 // hrs para ser enviado o proximo aviso de estoque baixo, de 6 em 6 hrs
