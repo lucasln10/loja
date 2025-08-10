@@ -46,7 +46,7 @@ export const productService = {
     try {
       // Buscar produtos e categorias em paralelo
       const [productsDTO, categories] = await Promise.all([
-        fetch(`${API_BASE_URL}/api/products`).then(res => res.json()),
+  fetch(`${API_BASE_URL}/api/products/enabled`).then(res => res.json()),
         fetch(`${API_BASE_URL}/api/categories`).then(res => res.json())
       ]);
 
@@ -80,7 +80,7 @@ export const productService = {
   },
   async getAllProductsSimple(): Promise<Product[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/products`, {
+  const response = await fetch(`${API_BASE_URL}/api/products/enabled`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

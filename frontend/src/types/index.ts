@@ -11,6 +11,7 @@ export interface Product {
   imageUrl?: string;
   imageUrls?: string[];
   inStock?: boolean;
+  status?: boolean;
 }
 
 export interface AdminProduct {
@@ -23,6 +24,7 @@ export interface AdminProduct {
   categoryId: number;
   imageUrl?: string;
   imageUrls?: string[];
+  status?: boolean;
 }
 
 export interface CartItem extends Product {

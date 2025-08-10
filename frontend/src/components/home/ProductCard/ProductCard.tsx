@@ -31,24 +31,28 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div className="product-card" onClick={handleProductClick}>
       <div className="product-image-container">
+        {product.quantity !== undefined && product.quantity <= 0 && (
+          <span className="badge badge-out">Esgotado</span>
+        )}
         <img 
           src={product.image} 
           alt={product.name}
           className="product-image"
           onError={(e) => {
-            // Fallback para uma imagem SVG simples
             e.currentTarget.src = 'images/logoSemFundo.svg';
           }}
         />
         <div className="product-overlay">
-          <button className="quick-view-btn" onClick={handleViewDetails}>Ver Detalhes</button>
+          <button className="quick-view-btn" onClick={handleViewDetails}>Ver detalhes</button>
         </div>
       </div>
       
       <div className="product-info">
-        <span className="product-category">{product.category}</span>
-        <h3 className="product-name">{product.name}</h3>
-        <p className="product-description">{product.description}</p>
+        {product.category && <span className="product-category">{product.category}</span>}
+        <h3 className="product-name" title={product.name}>{product.name}</h3>
+        {product.description && (
+          <p className="product-description" title={product.description}>{product.description}</p>
+        )}
         
         <div className="product-footer">
           <div className="product-price">
@@ -59,9 +63,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <button 
             className="add-to-cart-btn"
             onClick={handleAddToCart}
+            disabled={product.quantity !== undefined && product.quantity <= 0}
+            aria-disabled={product.quantity !== undefined && product.quantity <= 0}
           >
             <span className="btn-icon">{(IoBagHandleSharp as any)()}</span>
-            <span className="btn-text">Adicionar</span>
+            <span className="btn-text">{product.quantity !== undefined && product.quantity <= 0 ? 'Indisponível' : 'Adicionar'}</span>
           </button>
         </div>
       </div>

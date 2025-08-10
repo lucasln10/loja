@@ -17,6 +17,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<AdminProduct | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [showCreate, setShowCreate] = useState(false); // esconder criação por padrão
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -57,6 +58,19 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
       }
     } catch (error) {
       console.error('Erro ao carregar produtos:', error);
+    }
+  };
+
+  const handleToggleStatus = async (product: AdminProduct) => {
+    try {
+      const path = product.status ? 'disable' : 'enable';
+      await fetch(`${API_BASE_URL}/products/${product.id}/${path}`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${authToken}` }
+      });
+      await loadProducts();
+    } catch (e) {
+      console.error('Erro ao alternar status do produto', e);
     }
   };
 
@@ -184,42 +198,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
     }
   };
 
-  const handleEdit = (product: AdminProduct) => {
-    setFormData(product);
-    setSelectedProduct(product);
-    setIsEditing(true);
-    
-    // Caregar previews das imagens existentes
-    if (product.imageUrls && product.imageUrls.length > 0) {
-      const previews = product.imageUrls.map(url => `http://localhost:8080${url}`);
-      setImagePreviews(previews);
-    } else if (product.imageUrl) {
-      setImagePreviews([`http://localhost:8080${product.imageUrl}`]);
-    } else {
-      setImagePreviews([]);
-    }
-    
-    setImageFiles([]);
-  };
-
-  const handleDelete = async (id: number) => {
-    if (window.confirm('Tem certeza que deseja excluir este produto?')) {
-      try {
-        const response = await fetch(`${API_BASE_URL}/products/${id}`, {
-          method: 'DELETE',
-          headers: headers
-        });
-
-        if (response.ok) {
-          await loadProducts();
-          alert('Produto excluído com sucesso!');
-        }
-      } catch (error) {
-        console.error('Erro ao excluir produto:', error);
-        alert('Erro ao excluir produto');
-      }
-    }
-  };
+  // Editar/Excluir removidos por solicitação: apenas alternar status permanece
 
   const resetForm = () => {
     setFormData({
@@ -250,8 +229,9 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
       </div>
 
       <div className="product-manager-content">
-        {/* Formulário */}
-        <div className="product-form-section">
+  {/* Formulário (opcional) */}
+  {showCreate && (
+  <div className="product-form-section">
           <h3>{isEditing ? 'Editar Produto' : 'Adicionar Novo Produto'}</h3>
           
           <form onSubmit={handleSubmit} className="product-form">
@@ -444,7 +424,8 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
               )}
             </div>
           </form>
-        </div>
+  </div>
+  )}
 
         {/* Lista de Produtos */}
         <div className="products-list-section">
@@ -493,17 +474,11 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
                 </div>
                 
                 <div className="product-actions">
-                  <button 
-                    onClick={() => handleEdit(product)}
-                    className="btn-edit"
+                  <button
+                    onClick={() => handleToggleStatus(product)}
+                    className="btn-secondary"
                   >
-                    Editar
-                  </button>
-                  <button 
-                    onClick={() => handleDelete(product.id!)}
-                    className="btn-delete"
-                  >
-                    Excluir
+                    {product.status ? 'Desativar' : 'Ativar'}
                   </button>
                 </div>
               </div>
