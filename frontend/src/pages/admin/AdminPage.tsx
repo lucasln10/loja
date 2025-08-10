@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ProductManager from '../../components/admin/ProductManager';
+import StockManager from '../../components/admin/StockManager';
 import './AdminPage.css';
 
 interface Product {
@@ -300,6 +301,12 @@ const AdminPage: React.FC = () => {
           Produtos
         </button>
         <button 
+          className={activeTab === 'stock' ? 'active' : ''} 
+          onClick={() => setActiveTab('stock')}
+        >
+          Estoque
+        </button>
+        <button 
           className={activeTab === 'categories' ? 'active' : ''} 
           onClick={() => setActiveTab('categories')}
         >
@@ -339,6 +346,10 @@ const AdminPage: React.FC = () => {
 
         {activeTab === 'products' && (
           <ProductManager authToken={localStorage.getItem('token') || ''} />
+        )}
+
+        {activeTab === 'stock' && (
+          <StockManager authToken={localStorage.getItem('token') || ''} />
         )}
 
         {activeTab === 'categories' && (

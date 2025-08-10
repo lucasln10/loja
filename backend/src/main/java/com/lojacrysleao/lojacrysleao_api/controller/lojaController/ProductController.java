@@ -31,11 +31,13 @@ public class ProductController {
     }
 
     @GetMapping("/enabled")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<ProductDTO>> getEnabledProducts() {
         return ResponseEntity.ok(productService.listEnabled());
     }
 
     @GetMapping("/disabled")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<ProductDTO>> getDisabledProducts() {
         return ResponseEntity.ok(productService.listDisabled());
     }
