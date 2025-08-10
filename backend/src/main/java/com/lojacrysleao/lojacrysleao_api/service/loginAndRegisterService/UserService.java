@@ -1,5 +1,12 @@
 package com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService;
 
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.lojacrysleao.lojacrysleao_api.dto.authDTO.RegisterRequest;
 import com.lojacrysleao.lojacrysleao_api.dto.authDTO.RegisterResponse;
 import com.lojacrysleao.lojacrysleao_api.dto.verifyDTO.PasswordResetTokenDTO;
@@ -16,12 +23,6 @@ import com.lojacrysleao.lojacrysleao_api.repository.userRepository.UserRepositor
 import com.lojacrysleao.lojacrysleao_api.service.emailService.EmailService;
 import com.lojacrysleao.lojacrysleao_api.service.verifyService.PasswordResetTokenService;
 import com.lojacrysleao.lojacrysleao_api.service.verifyService.VerificationTokenService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Set;
 
 @Service
 @Transactional
@@ -170,23 +171,27 @@ public class UserService {
     public void addFavorite(Long userId, Long productId) {
         User user = userRepository.findById(userId).orElseThrow();
         Product product = productRepository.findById(productId).orElseThrow();
-        user.addFavorite(product);
+        boolean alreadyFavorited = user.getFavorites().stream()
+            .anyMatch(p -> p.getId().equals(productId));
+        if (!alreadyFavorited) {
+            user.addFavorite(product);
+        }
         userRepository.save(user);
     }
 
     @Transactional
     public void removeFavorite(Long userId, Long productId) {
         User user = userRepository.findById(userId).orElseThrow();
-        Product product = productRepository.findById(productId).orElseThrow();
-        user.removeFavorite(product);
-        userRepository.save(user);
+    // remove pelo ID para evitar problemas de equals/hashCode entre instâncias diferentes
+        user.getFavorites().removeIf(p -> p.getId().equals(productId));
+            userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
     public Set<Product> listFavorites(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
-    // Força carga da coleção de favoritos antes de sair da transação
-    user.getFavorites().size();
-    return user.getFavorites();
+        // Força carga da coleção de favoritos antes de sair da transação
+        user.getFavorites().size();
+        return user.getFavorites();
     }
 }

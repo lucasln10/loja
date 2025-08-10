@@ -13,6 +13,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/thumbs';
 import './ProductDetailPage.css';
+import { favoriteService } from '../../services/favoriteService';
+import { useAuth } from '../../context/AuthContext';
 
 interface ProductDetails extends Product {
   specifications?: { [key: string]: string };
@@ -33,6 +35,7 @@ const ProductDetailPage: React.FC = () => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState<'description' | 'specifications' | 'reviews'>('description');
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+  const { user, isAuthenticated } = useAuth();
 
   // Scroll para o topo quando o componente é montado ou o ID do produto muda
   useEffect(() => {
@@ -40,7 +43,7 @@ const ProductDetailPage: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    const loadProductDetails = async () => {
+  const loadProductDetails = async () => {
       if (!id) return;
       
       setIsLoading(true);
@@ -100,6 +103,23 @@ const ProductDetailPage: React.FC = () => {
 
         setProduct(detailedProduct);
         setProductImages(images);
+
+        // Inicializa estado de favorito
+        try {
+          if (isAuthenticated) {
+            // Preferir favoriteProductIds do usuário, se houver no contexto; caso contrário buscar na API
+            if (user?.favoriteProductIds && user.favoriteProductIds.length > 0) {
+              setIsWishlisted(user.favoriteProductIds.includes(productId));
+            } else {
+              const favs = await favoriteService.getFavorites();
+              setIsWishlisted(favs.has(productId));
+            }
+          } else {
+            setIsWishlisted(false);
+          }
+        } catch (e) {
+          console.warn('Não foi possível carregar favoritos do usuário:', e);
+        }
       } catch (error) {
         console.error('Erro ao carregar detalhes do produto:', error);
       } finally {
@@ -125,9 +145,27 @@ const ProductDetailPage: React.FC = () => {
     navigate('/carrinho');
   };
 
-  const toggleWishlist = () => {
-    setIsWishlisted(!isWishlisted);
-    // Aqui você implementaria a lógica de wishlist
+  const toggleWishlist = async () => {
+    if (!product) return;
+    if (!isAuthenticated) {
+      alert('Faça login para favoritar produtos.');
+      navigate('/login');
+      return;
+    }
+    const next = !isWishlisted;
+    setIsWishlisted(next); // otimista
+    try {
+      if (next) {
+        await favoriteService.addFavorite(product.id);
+      } else {
+        await favoriteService.removeFavorite(product.id);
+      }
+    } catch (e) {
+      // reverte em caso de erro
+      setIsWishlisted(!next);
+      alert('Não foi possível atualizar o favorito.');
+      console.error(e);
+    }
   };
 
   const renderStars = (rating: number) => {
