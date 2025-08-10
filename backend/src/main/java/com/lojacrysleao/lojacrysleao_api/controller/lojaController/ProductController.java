@@ -50,4 +50,16 @@ public class ProductController {
         productService.delete(id);
         return ResponseEntity.ok("Produto excluído com sucesso");
     }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Boolean> enableStatus(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.enableStatus(id));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Boolean> desableStatus(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.desableStatus(id));
+    }
 }

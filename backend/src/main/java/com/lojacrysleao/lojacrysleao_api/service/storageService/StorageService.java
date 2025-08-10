@@ -27,12 +27,12 @@ public class StorageService {
             throw new BadRequestException("O Produto não pode ser nulo");
         }
 
-        Storage storage = new Storage();
+        Storage storage = storageMapper.toEntity(product);
         storage.setProduct(product);
         storage.setQuantity(product.getQuantity());
         storage.setReservation(0);
-
-        return storageRepository.save(storage);
+        storageRepository.save(storage);
+        return storage;
     }
 
     public StorageDTO findByProductId(Long productId) {
@@ -54,12 +54,12 @@ public class StorageService {
         storageRepository.findById(product.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Produto com ID " + product.getId() + " não encontrado"));
 
-        Storage storage = new Storage();
+        Storage storage = storageMapper.toEntity(product);
         storage.setProduct(product);
         storage.setQuantity(product.getQuantity());
         storage.setReservation(0);
-
-        return storageRepository.save(storage);
+        storageRepository.save(storage);
+        return storage;
     }
 
     public void delete(Long id) {
@@ -67,5 +67,8 @@ public class StorageService {
         storageRepository.deleteById(id);
     }
 
+    //public int quantityProduct(Long id){
+
+    //}
 
 }
