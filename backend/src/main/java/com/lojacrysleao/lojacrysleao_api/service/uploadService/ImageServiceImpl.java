@@ -10,6 +10,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
@@ -21,30 +23,12 @@ public class ImageServiceImpl implements ImageService {
             "image/jpeg", "image/png", "image/webp"
     );
 
-    private static final String UPLOAD_DIR;
-
-    static {
-        // Descobre o caminho base do projeto (pasta "loja")
-        String baseDir = System.getProperty("user.dir");
-
-        // Monta o caminho da pasta de uploads
-        UPLOAD_DIR = Paths.get(baseDir, "backend", "uploads", "products").toString();
-
-        // Garante que a pasta existe
-        File uploadDirFile = new File(UPLOAD_DIR);
-        if (!uploadDirFile.exists()) {
-            boolean created = uploadDirFile.mkdirs();
-            if (created) {
-                System.out.println("Pasta criada: " + UPLOAD_DIR);
-            } else {
-                System.err.println("Não foi possível criar a pasta de upload: " + UPLOAD_DIR);
-            }
-        }
-    }
-
-    public String getUploadDir() {
-        return UPLOAD_DIR;
-    }
+    // Diretório onde serão armazenadas as imagens dos produtos (resolvido dinamicamente a partir do diretório do projeto)
+    public static final String UPLOAD_DIR = Paths.get(
+        System.getProperty("user.dir"),
+        "uploads",
+        "products"
+    ).toString();
 
     @Override
     public String uploadImage(MultipartFile file) {
@@ -61,7 +45,11 @@ public class ImageServiceImpl implements ImageService {
             String extension = contentType.substring(contentType.indexOf("/") + 1);
             String filename = UUID.randomUUID().toString() + "." + extension;
 
-            File outputFile = new File(UPLOAD_DIR + File.separator + filename);
+            // Garante que o diretório de upload exista
+            Path uploadDirPath = Paths.get(UPLOAD_DIR);
+            Files.createDirectories(uploadDirPath);
+
+            File outputFile = uploadDirPath.resolve(filename).toFile();
 
             Thumbnails.of(file.getInputStream())
                     .size(800, 800) // largura e altura
