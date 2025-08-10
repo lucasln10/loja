@@ -6,6 +6,7 @@ interface User {
   name: string;
   email: string;
   role: 'USER' | 'ADMIN';
+  favoriteProductIds?: number[] | null;
 }
 
 interface AuthContextType {
@@ -40,6 +41,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = (token: string, userData: User) => {
     localStorage.setItem('token', token);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     setUser(userData);
   };
 
@@ -56,9 +58,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
       // Verificar se o token ainda é válido fazendo uma requisição para obter dados do usuário
-      axios.get('http://localhost:8080/api/auth/me')
+    axios.get('http://localhost:8080/api/auth/me')
         .then(response => {
-          setUser(response.data);
+      setUser(response.data);
         })
         .catch(() => {
           // Token inválido, remover do localStorage
