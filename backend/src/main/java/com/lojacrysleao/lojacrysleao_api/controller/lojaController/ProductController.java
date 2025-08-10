@@ -51,13 +51,13 @@ public class ProductController {
         return ResponseEntity.ok("Produto excluído com sucesso");
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/enable")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Boolean> enableStatus(@PathVariable Long id) {
         return ResponseEntity.ok(productService.enableStatus(id));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/disable")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Boolean> desableStatus(@PathVariable Long id) {
         return ResponseEntity.ok(productService.desableStatus(id));
