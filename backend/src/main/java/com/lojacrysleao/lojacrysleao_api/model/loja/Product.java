@@ -44,7 +44,7 @@ public class Product {
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Storage storage;
 
-    //criar coluna para deixar produto ativou ou desativado e criar a funcao e rota para essa funcao
+    private boolean status = false;
 
     // Método helper para obter a imagem principal
     public String getPrimaryImageUrl() {

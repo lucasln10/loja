@@ -25,6 +25,7 @@ public class ProductMapper {
         dto.setDescription(product.getDescription());
         dto.setDetailedDescription(product.getDetailedDescription());
         dto.setCategoryId(product.getCategory() != null ? product.getCategory().getId() : null);
+        dto.setStatus(product.isStatus());
 
         // Mapear as URLs das imagens
         if (product.getImages() != null && !product.getImages().isEmpty()) {
@@ -51,6 +52,7 @@ public class ProductMapper {
         product.setQuantity(dto.getQuantity());
         product.setDescription(dto.getDescription());
         product.setDetailedDescription(dto.getDetailedDescription());
+        product.setStatus(dto.isStatus());
 
         return product;
     }

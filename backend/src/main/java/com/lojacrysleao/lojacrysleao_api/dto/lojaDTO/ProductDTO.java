@@ -25,6 +25,8 @@ public class ProductDTO {
 
     private Long categoryId;
 
+    private boolean status;
+
     private String imageUrl;
 
     private List<String> imageUrls = new ArrayList<>();
