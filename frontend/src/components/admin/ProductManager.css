@@ -389,10 +389,11 @@
   padding: 15px;
   border-top: 1px solid #e5e7eb;
   display: flex;
-  gap: 10px;
+  justify-content: center; /* center single toggle button */
 }
 
-.btn-edit,
+/* legacy button styles kept for reference; not used after removing edit/delete */
+/* .btn-edit,
 .btn-delete {
   flex: 1;
   padding: 8px 16px;
@@ -402,7 +403,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 0.9rem;
-}
+} */
 
 .btn-edit {
   background: #3b82f6;

@@ -1,13 +1,21 @@
 package com.lojacrysleao.lojacrysleao_api.controller.lojaController;
 
-import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.ProductDTO;
-import com.lojacrysleao.lojacrysleao_api.service.lojaService.ProductService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.ProductDTO;
+import com.lojacrysleao.lojacrysleao_api.service.lojaService.ProductService;
 
 @RestController
 @RequestMapping("/api/products")
@@ -20,6 +28,16 @@ public class ProductController {
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         List<ProductDTO> products = productService.listAll();
         return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/enabled")
+    public ResponseEntity<List<ProductDTO>> getEnabledProducts() {
+        return ResponseEntity.ok(productService.listEnabled());
+    }
+
+    @GetMapping("/disabled")
+    public ResponseEntity<List<ProductDTO>> getDisabledProducts() {
+        return ResponseEntity.ok(productService.listDisabled());
     }
 
     @GetMapping("/{id}")

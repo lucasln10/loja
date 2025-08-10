@@ -1,5 +1,12 @@
 package com.lojacrysleao.lojacrysleao_api.service.lojaService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.ProductDTO;
 import com.lojacrysleao.lojacrysleao_api.exception.BadRequestException;
 import com.lojacrysleao.lojacrysleao_api.exception.ResourceNotFoundException;
@@ -11,12 +18,6 @@ import com.lojacrysleao.lojacrysleao_api.model.storage.Storage;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.CategoryRepository;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.ProductRepository;
 import com.lojacrysleao.lojacrysleao_api.service.storageService.StorageService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -61,6 +62,20 @@ public class ProductService {
 
     public List<ProductDTO> listAll() {
         return  productRepository.findAll()
+                .stream()
+                .map(productMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductDTO> listEnabled() {
+        return productRepository.findByStatus(true)
+                .stream()
+                .map(productMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductDTO> listDisabled() {
+        return productRepository.findByStatus(false)
                 .stream()
                 .map(productMapper::toDTO)
                 .collect(Collectors.toList());
@@ -139,8 +154,9 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + id));
 
-        if (product.isStatus()){
-            throw new BadRequestException("Produto ja esta inativo.");
+        // Só é possível desativar se o produto estiver ativo
+        if (!product.isStatus()) {
+            throw new BadRequestException("Produto já está inativo.");
         }
 
         product.setStatus(false);
