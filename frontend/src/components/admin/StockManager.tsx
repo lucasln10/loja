@@ -16,11 +16,11 @@ interface ProductRow {
 
 interface Category { id: number; name: string; }
 
-interface StockManagerProps { authToken: string; }
+interface StockManagerProps { authToken: string; selectedProductId?: number }
 
 const API_BASE_URL = 'http://localhost:8080/api';
 
-const StockManager: React.FC<StockManagerProps> = ({ authToken }) => {
+const StockManager: React.FC<StockManagerProps> = ({ authToken, selectedProductId }) => {
   const [rows, setRows] = useState<ProductRow[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
@@ -74,6 +74,12 @@ const StockManager: React.FC<StockManagerProps> = ({ authToken }) => {
   };
 
   useEffect(() => { load(); }, []);
+
+  useEffect(() => {
+    if (!selectedProductId || rows.length === 0) return;
+    const found = rows.find(r => r.id === selectedProductId);
+    if (found) startEdit(found);
+  }, [selectedProductId, rows]);
 
   const startCreate = () => {
     setCreating(true);

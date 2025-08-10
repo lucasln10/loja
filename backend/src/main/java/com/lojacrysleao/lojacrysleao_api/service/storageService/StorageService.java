@@ -9,15 +9,21 @@ import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
 import com.lojacrysleao.lojacrysleao_api.model.storage.Storage;
 import com.lojacrysleao.lojacrysleao_api.repository.storageRepository.StorageRepository;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.ProductRepository;
+import com.lojacrysleao.lojacrysleao_api.service.emailService.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.time.Duration;
 
 @Service
 public class StorageService {
+
+    // Vamos obter os destinatários por um serviço/consulta; evite injetar entidade diretamente
 
     @Autowired
     private StorageRepository storageRepository;
@@ -27,6 +33,12 @@ public class StorageService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Value("${app.alert.lowstock.cooldown-hours:6}")
+    private long cooldownHours;
 
     public Storage create(Product product) {
         if (product == null) {
@@ -120,6 +132,45 @@ public class StorageService {
     public void delete(Long id) {
         findByProductId(id);
         storageRepository.deleteById(id);
+    }
+
+    // Envia alerta de estoque baixo para destinatários definidos
+    public void alertLowStock(List<Storage> lowStocks, List<String> recipients, String frontendBaseUrl) {
+        if (lowStocks == null) {
+            throw new ResourceNotFoundException("Lista de estoques não pode ser nula");
+        }
+        if (recipients == null || recipients.isEmpty()) {
+            throw new BadRequestException("Nenhum destinatário configurado para alertas de estoque baixo");
+        }
+
+        for (Storage storage : lowStocks) {
+            Product product = storage.getProduct();
+            if (product == null) continue;
+            // puxa último envio e aplica cooldown
+            LocalDateTime last = storage.getLastLowStockAlertAt();
+            if (last != null) {
+                Duration elapsed = Duration.between(last, LocalDateTime.now());
+                if (elapsed.toHours() < cooldownHours) {
+                    continue; // ainda no cooldown; pula envio
+                }
+            }
+
+            // deep-link direto para a aba de estoque com o produto selecionado (UI deve ler params)
+            String base = frontendBaseUrl != null ? frontendBaseUrl : "http://localhost:3000";
+            String urlProduct = String.format("%s/admin?tab=stock&productId=%d", base, product.getId());
+            String html = emailService.createLowStockAlertEmailTemplate(product.getName(), storage.getQuantity(), urlProduct);
+            for (String to : recipients) {
+                emailService.sendHtmlEmail(to, "Alerta de Estoque Baixo - Loja Crysleão", html);
+            }
+
+            // marca o horário do último alerta para o produto
+            storage.setLastLowStockAlertAt(LocalDateTime.now());
+            storageRepository.save(storage);
+        }
+    }
+
+    public List<Storage> findLowStock(int threshold) {
+        return storageRepository.findByQuantityLessThanEqual(threshold);
     }
 
 }
