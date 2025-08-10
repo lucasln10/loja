@@ -37,6 +37,21 @@ export interface CartState {
   itemCount: number;
 }
 
+export interface CarouselItem {
+  id: number;
+  title: string;
+  description?: string;
+  imageUrl: string;
+  carouselType: 'PRODUCT' | 'CUSTOM';
+  productId?: number;
+  product?: Product;
+  active: boolean;
+  displayOrder: number;
+  linkUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export type CartAction = 
   | { type: 'ADD_ITEM'; payload: Product }
   | { type: 'REMOVE_ITEM'; payload: number }

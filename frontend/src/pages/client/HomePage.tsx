@@ -1,7 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Product } from '../../types';
+import { Product, CarouselItem } from '../../types';
 import { productService } from '../../services/productService';
+import { carouselService } from '../../services/carouselService';
 import { FaTruckFast } from "react-icons/fa6";
 import { IoShieldCheckmark } from "react-icons/io5";
 import { TbBrandCake } from "react-icons/tb";
@@ -15,14 +16,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 const HomePage: React.FC = () => {
-  const navigate = useNavigate(); // Adicione esta linha
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [startScrollLeft, setStartScrollLeft] = useState(0);
-  const [dragDistance, setDragDistance] = useState(0);
-  const [carouselProducts, setCarouselProducts] = useState<Product[]>([]);
+  const navigate = useNavigate();
+  const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -77,44 +72,92 @@ const HomePage: React.FC = () => {
   ];
 
   useEffect(() => {
-    const loadProducts = async () => {
+    const loadData = async () => {
       setIsLoading(true);
       setError(null);
       
       try {
-        console.log('Iniciando carregamento de produtos...');
+        console.log('Iniciando carregamento de dados...');
         
-        const [carousel, featured] = await Promise.all([
-          productService.getCarouselProducts(),
-          productService.getFeaturedProducts()
-        ]);
-        
-        console.log('Produtos carregados:', { carousel, featured });
-        
-        // Se não conseguiu carregar produtos da API, usa estáticos
-        if (carousel.length === 0 && featured.length === 0) {
-          console.log('Nenhum produto encontrado na API, usando produtos estáticos');
+        // Primeiro tenta carregar do backend
+        try {
+          const [carousel, featured] = await Promise.all([
+            carouselService.getActiveCarouselItems(),
+            productService.getFeaturedProducts()
+          ]);
+          
+          console.log('Dados carregados do backend:', { carousel, featured });
+          
+          // Se conseguiu carregar carousel, usa do backend
+          if (carousel.length > 0) {
+            setCarouselItems(carousel);
+          } else {
+            // Usa produtos estáticos para carousel
+            const staticProducts = getStaticProducts();
+            const staticCarouselItems: CarouselItem[] = staticProducts.map((product, index) => ({
+              id: product.id,
+              title: product.name,
+              description: product.description,
+              imageUrl: product.image,
+              carouselType: 'PRODUCT' as const,
+              productId: product.id,
+              product: product,
+              active: true,
+              displayOrder: index + 1
+            }));
+            setCarouselItems(staticCarouselItems);
+          }
+
+          // Se conseguiu carregar produtos em destaque, usa do backend
+          if (featured.length > 0) {
+            setFeaturedProducts(featured);
+          } else {
+            // Usa produtos estáticos
+            const staticProducts = getStaticProducts();
+            setFeaturedProducts(staticProducts.slice(0, 3));
+          }
+        } catch (backendError) {
+          console.log('Backend não disponível, usando produtos estáticos:', backendError);
+          
+          // Usar produtos estáticos para tudo
           const staticProducts = getStaticProducts();
-          setCarouselProducts(staticProducts);
+          const staticCarouselItems: CarouselItem[] = staticProducts.map((product, index) => ({
+            id: product.id,
+            title: product.name,
+            description: product.description,
+            imageUrl: product.image,
+            carouselType: 'PRODUCT' as const,
+            productId: product.id,
+            product: product,
+            active: true,
+            displayOrder: index + 1
+          }));
+          setCarouselItems(staticCarouselItems);
           setFeaturedProducts(staticProducts.slice(0, 3));
-        } else {
-          setCarouselProducts(carousel);
-          setFeaturedProducts(featured);
         }
       } catch (err) {
-        console.error('Erro ao carregar produtos:', err);
-        setError('Erro ao carregar produtos. Usando produtos de exemplo.');
-        
-        // Sempre usa produtos estáticos como fallback
+        console.error('Erro geral:', err);
+        // Fallback final para produtos estáticos
         const staticProducts = getStaticProducts();
-        setCarouselProducts(staticProducts);
+        const staticCarouselItems: CarouselItem[] = staticProducts.map((product, index) => ({
+          id: product.id,
+          title: product.name,
+          description: product.description,
+          imageUrl: product.image,
+          carouselType: 'PRODUCT' as const,
+          productId: product.id,
+          product: product,
+          active: true,
+          displayOrder: index + 1
+        }));
+        setCarouselItems(staticCarouselItems);
         setFeaturedProducts(staticProducts.slice(0, 3));
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadProducts();
+    loadData();
   }, []);
 
   // Adicionar este useEffect para debug
@@ -122,124 +165,46 @@ const HomePage: React.FC = () => {
     console.log('Estado atual:', {
       isLoading,
       error,
-      carouselProductsLength: carouselProducts.length,
+      carouselItemsLength: carouselItems.length,
       featuredProductsLength: featuredProducts.length
     });
-  }, [isLoading, error, carouselProducts, featuredProducts]);
+  }, [isLoading, error, carouselItems, featuredProducts]);
 
   // Adicione este useEffect após os existentes
   useEffect(() => {
-    console.log('Produtos do carrossel:', carouselProducts);
-    carouselProducts.forEach((product, index) => {
-      console.log(`Produto ${index + 1}:`, {
-        name: product.name,
-        image: product.image
+    console.log('Itens do carrossel:', carouselItems);
+    carouselItems.forEach((item, index) => {
+      console.log(`Item ${index + 1}:`, {
+        title: item.title,
+        imageUrl: item.imageUrl
       });
     });
-  }, [carouselProducts]);
+  }, [carouselItems]);
 
-  // Função para ir para um slide específico
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-    if (carouselRef.current) {
-      carouselRef.current.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-    }
-  };
-
-  // Funções de navegação do carrossel
-  const nextSlide = () => {
-    const newIndex = (currentIndex + 1) % carouselProducts.length;
-    goToSlide(newIndex);
-  };
-
-  const prevSlide = () => {
-    const newIndex = currentIndex === 0 ? carouselProducts.length - 1 : currentIndex - 1;
-    goToSlide(newIndex);
-  };
-
-  // Eventos de mouse/touch para arrastar
-  const handleStart = (clientX: number) => {
-    setIsDragging(true);
-    setStartX(clientX);
-    setStartScrollLeft(currentIndex);
-    setDragDistance(0);
-    
-    if (carouselRef.current) {
-      carouselRef.current.style.transition = 'none';
-    }
-  };
-
-  const handleMove = (clientX: number) => {
-    if (!isDragging || !carouselRef.current) return;
-    
-    const distance = clientX - startX;
-    const slideWidth = carouselRef.current.offsetWidth;
-    const dragPercentage = (distance / slideWidth) * 100;
-    
-    setDragDistance(distance);
-    
-    // Aplicar transformação durante o arraste
-    const translateX = -(startScrollLeft * (100 / carouselProducts.length)) + (dragPercentage / carouselProducts.length);
-    carouselRef.current.style.transform = `translateX(${translateX}%)`;
-  };
-
-  const handleEnd = () => {
-    if (!isDragging || !carouselRef.current) return;
-    
-    setIsDragging(false);
-    
-    if (carouselRef.current) {
-      carouselRef.current.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-    }
-    
-    const slideWidth = carouselRef.current.offsetWidth;
-    const threshold = slideWidth * 0.2; // 20% da largura do slide
-    
-    let newIndex = currentIndex;
-    
-    if (Math.abs(dragDistance) > threshold) {
-      if (dragDistance > 0) {
-        // Arrastar para direita (slide anterior)
-        newIndex = currentIndex === 0 ? carouselProducts.length - 1 : currentIndex - 1;
+  // Função para lidar com cliques no carrossel
+  const handleCarouselClick = (item: CarouselItem) => {
+    if (item.carouselType === 'PRODUCT' && item.productId) {
+      // Se for um produto, navega para a página de detalhes do produto
+      navigate(`/produtos/${item.productId}`);
+    } else if (item.carouselType === 'CUSTOM') {
+      // Se for personalizado, verifica se tem uma categoria no título ou link
+      if (item.linkUrl) {
+        // Se tem um link personalizado, usa esse link
+        window.open(item.linkUrl, '_blank');
+      } else if (item.title.toLowerCase().includes('promoção') || item.title.toLowerCase().includes('promocao')) {
+        // Se o título contém "promoção", vai para produtos com filtro de promoção
+        navigate('/produtos?categoria=promocao');
+      } else if (item.title.toLowerCase().includes('novidade')) {
+        // Se o título contém "novidade", vai para produtos com filtro de novidades
+        navigate('/produtos?categoria=novidades');
+      } else if (item.title.toLowerCase().includes('liquidação') || item.title.toLowerCase().includes('liquidacao')) {
+        // Se o título contém "liquidação", vai para produtos com filtro de liquidação
+        navigate('/produtos?categoria=liquidacao');
       } else {
-        // Arrastar para esquerda (próximo slide)
-        newIndex = (currentIndex + 1) % carouselProducts.length;
+        // Caso padrão, vai para a página de produtos
+        navigate('/produtos');
       }
     }
-    
-    setCurrentIndex(newIndex);
-    setDragDistance(0);
-  };
-
-  // Eventos de mouse
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    handleStart(e.clientX);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    handleMove(e.clientX);
-  };
-
-  const handleMouseUp = () => {
-    handleEnd();
-  };
-
-  const handleMouseLeave = () => {
-    handleEnd();
-  };
-
-  // Eventos de touch
-  const handleTouchStart = (e: React.TouchEvent) => {
-    handleStart(e.touches[0].clientX);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    handleMove(e.touches[0].clientX);
-  };
-
-  const handleTouchEnd = () => {
-    handleEnd();
   };
 
   // Loading state
@@ -249,20 +214,6 @@ const HomePage: React.FC = () => {
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Carregando produtos...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className="home-page">
-        <div className="error-container">
-          <p>{error}</p>
-          <button onClick={() => window.location.reload()}>
-            Tentar Novamente
-          </button>
         </div>
       </div>
     );
@@ -281,11 +232,23 @@ const HomePage: React.FC = () => {
             slidesPerView={1}
             style={{ width: '100%', height: '100%' }}
           >
-            {carouselProducts.map((product) => (
-              <SwiperSlide key={product.id}>
-                <div className="carousel-slide">
-                  <div className="carousel-product-image">
-                    <img src={product.image} alt={product.name} />
+            {carouselItems.map((item) => (
+              <SwiperSlide key={item.id}>
+                <div 
+                  className="carousel-slide"
+                  onClick={() => handleCarouselClick(item)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="carousel-image-container">
+                    <img 
+                      src={item.imageUrl.startsWith('http') ? item.imageUrl : `http://localhost:8080${item.imageUrl}`} 
+                      alt={item.title}
+                      onError={(e) => {
+                        console.error('Erro ao carregar imagem do carrossel:', item.imageUrl);
+                        // Fallback para logo se a imagem não carregar
+                        (e.target as HTMLImageElement).src = '/images/logo.webp';
+                      }}
+                    />
                   </div>
                 </div>
               </SwiperSlide>

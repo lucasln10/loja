@@ -68,12 +68,67 @@
 }
 
 .carousel-slide {
-  flex-shrink: 0;
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
   cursor: pointer;
+}
+
+.carousel-slide:hover {
+  transform: scale(1.02);
+}
+
+.carousel-image-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.carousel-image-container img {
+  width: 1000px; /* Largura fixa */
+  height: 350px; /* Altura fixa */
+  object-fit: fill; /* ✅ Estica a imagem para preencher */
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.carousel-slide:hover .carousel-image-container img {
+  transform: scale(1.05);
+}
+
+/* Responsividade do Carousel */
+@media (max-width: 768px) {
+  .carousel-slide {
+    flex-direction: column;
+    height: auto;
+    padding: 2rem 1rem;
+  }
+
+  .carousel-product-image,
+  .carousel-content {
+    width: 100%;
+  }
+
+  .carousel-content h2 {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .carousel-content p {
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  .carousel-button {
+    margin: 0 auto;
+  }
 }
 
 /* Controles do Carrossel */

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ProductManager from '../../components/admin/ProductManager';
 import StockManager from '../../components/admin/StockManager';
+import CarouselManager from '../../components/admin/CarouselManager';
 import './AdminPage.css';
 
 interface Product {
@@ -307,6 +308,12 @@ const AdminPage: React.FC = () => {
           Estoque
         </button>
         <button 
+          className={activeTab === 'carousel' ? 'active' : ''} 
+          onClick={() => setActiveTab('carousel')}
+        >
+          Carousel
+        </button>
+        <button 
           className={activeTab === 'categories' ? 'active' : ''} 
           onClick={() => setActiveTab('categories')}
         >
@@ -350,6 +357,10 @@ const AdminPage: React.FC = () => {
 
         {activeTab === 'stock' && (
           <StockManager authToken={localStorage.getItem('token') || ''} />
+        )}
+
+        {activeTab === 'carousel' && (
+          <CarouselManager />
         )}
 
         {activeTab === 'categories' && (
