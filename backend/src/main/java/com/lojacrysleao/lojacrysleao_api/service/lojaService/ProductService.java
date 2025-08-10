@@ -3,6 +3,7 @@ package com.lojacrysleao.lojacrysleao_api.service.lojaService;
 import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.ProductDTO;
 import com.lojacrysleao.lojacrysleao_api.exception.BadRequestException;
 import com.lojacrysleao.lojacrysleao_api.exception.ResourceNotFoundException;
+import com.lojacrysleao.lojacrysleao_api.exception.ValidationException;
 import com.lojacrysleao.lojacrysleao_api.mapper.lojaMapper.ProductMapper;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Category;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
@@ -99,7 +100,14 @@ public class ProductService {
     public void delete(Long id) {
         // Verifica se produto existe
         findById(id);
+        Product product = new Product();
+
+        if (product.isStatus()) {
+            throw new ValidationException("PRODUTO ESTA ATIVO, POR ISTO NAO PODE SER EXCLUIDO.");
+        }
         productRepository.deleteById(id);
     }
+
+    public ProductDTO StatusOnOrOff()
     
 }
