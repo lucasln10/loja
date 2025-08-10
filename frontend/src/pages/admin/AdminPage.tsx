@@ -42,6 +42,7 @@ const AdminPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [usersError, setUsersError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [deeplinkProductId, setDeeplinkProductId] = useState<number | null>(null);
 
   // Estados para formulários
   const [newProduct, setNewProduct] = useState({
@@ -70,6 +71,18 @@ const AdminPage: React.FC = () => {
       alert('Acesso negado. Apenas administradores podem acessar esta página.');
       navigate('/');
       return;
+    }
+
+    // deep-link: /admin?tab=stock&productId=123
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab === 'stock') {
+      setActiveTab('stock');
+    }
+    const pid = params.get('productId');
+    if (pid) {
+      const n = parseInt(pid, 10);
+      if (!isNaN(n)) setDeeplinkProductId(n);
     }
   }, [user, isAdmin, navigate]);
 
@@ -356,7 +369,7 @@ const AdminPage: React.FC = () => {
         )}
 
         {activeTab === 'stock' && (
-          <StockManager authToken={localStorage.getItem('token') || ''} />
+          <StockManager authToken={localStorage.getItem('token') || ''} selectedProductId={deeplinkProductId ?? undefined} />
         )}
 
         {activeTab === 'carousel' && (

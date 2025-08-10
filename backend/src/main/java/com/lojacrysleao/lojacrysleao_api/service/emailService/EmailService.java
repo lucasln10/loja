@@ -10,6 +10,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmailService {
 
@@ -318,5 +320,106 @@ public class EmailService {
                 </body>
                 </html>
                 """.formatted(userName, resetUrl, resetUrl);
+    }
+
+    public String createLowStockAlertEmailTemplate(String productName, int currentStock, String productUrl) {
+        return """
+            <!DOCTYPE html>
+            <html lang="pt-BR">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>⚠ Alerta de Estoque Baixo - Loja Crysleão</title>
+                <style>
+                    body {
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        line-height: 1.6;
+                        color: #333;
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding: 20px;
+                        background-color: #f9f9f9;
+                    }
+                    .container {
+                        background-color: #ffffff;
+                        padding: 40px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    }
+                    .header {
+                        text-align: center;
+                        margin-bottom: 30px;
+                    }
+                    .logo {
+                        font-size: 28px;
+                        font-weight: bold;
+                        color: #e67e22;
+                        margin-bottom: 10px;
+                    }
+                    .title {
+                        font-size: 22px;
+                        color: #c0392b;
+                        margin-bottom: 20px;
+                    }
+                    .content {
+                        margin-bottom: 30px;
+                        font-size: 16px;
+                    }
+                    .warning {
+                        background-color: #fff3cd;
+                        border: 1px solid #ffeaa7;
+                        border-radius: 5px;
+                        padding: 15px;
+                        margin: 20px 0;
+                        color: #856404;
+                        font-weight: bold;
+                        text-align: center;
+                        font-size: 18px;
+                    }
+                    .button {
+                        display: inline-block;
+                        background-color: #e67e22;
+                        color: white;
+                        padding: 12px 25px;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        font-weight: bold;
+                        font-size: 16px;
+                        text-align: center;
+                    }
+                    .button:hover {
+                        background-color: #d35400;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <div class="logo">🍰 Loja Crysleão</div>
+                        <h1 class="title">⚠ Alerta de Estoque Baixo</h1>
+                    </div>
+
+                    <div class="content">
+                        <p>O produto <strong>%s</strong> está com estoque baixo.</p>
+                        
+                        <div class="warning">
+                            Estoque atual: %d unidades
+                        </div>
+
+                        <p>Recomendamos repor o estoque o quanto antes para evitar a falta do produto.</p>
+
+                        <div style="text-align: center; margin-top: 20px;">
+                            <a href="%s" class="button">📦 Ver Produto</a>
+                        </div>
+                    </div>
+
+                    <div class="footer" style="margin-top: 30px; font-size: 14px; color: #666;">
+                        <p>Este é um aviso automático do sistema da Loja Crysleão.</p>
+                        <p>Certifique-se de acompanhar seu estoque regularmente para evitar indisponibilidade.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """.formatted(productName, currentStock, productUrl);
     }
 }

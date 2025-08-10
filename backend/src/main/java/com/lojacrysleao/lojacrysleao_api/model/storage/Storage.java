@@ -2,6 +2,7 @@ package com.lojacrysleao.lojacrysleao_api.model.storage;
 
 import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -19,6 +20,9 @@ public class Storage {
     private int quantity;
 
     private int reservation;
+
+    @Column(name = "last_low_stock_alert_at")
+    private LocalDateTime lastLowStockAlertAt;
 
 
     public Long getId() {
@@ -51,6 +55,14 @@ public class Storage {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public LocalDateTime getLastLowStockAlertAt() {
+        return lastLowStockAlertAt;
+    }
+
+    public void setLastLowStockAlertAt(LocalDateTime lastLowStockAlertAt) {
+        this.lastLowStockAlertAt = lastLowStockAlertAt;
     }
 
 }
