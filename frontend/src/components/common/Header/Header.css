@@ -233,7 +233,7 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #DC143C;
+  border-color: #FA8072;
   background-color: white;
   box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
 }
@@ -252,7 +252,7 @@
 }
 
 .search-button:hover {
-  background: #DC143C;
+  background: #FA8072;
   color: white;
   box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
 }
@@ -292,7 +292,7 @@
 
 .cart-button {
   border: 2px solid #E0E0E0;
-  color: #DC143C;
+  color: #FA8072;
   padding: 0.75rem 1.5rem;
   border-radius: 25px;
   display: flex;
@@ -306,7 +306,7 @@
 }
 
 .cart-button:hover {
-  background: #DC143C;
+  background: #FA8072;
   color: white;
   box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
 }
@@ -317,7 +317,7 @@
 
 .cart-badge {
   background: white;
-  color: #DC143C;
+  color: #FA8072;
   border-radius: 50%;
   width: 20px;
   height: 20px;

@@ -70,7 +70,7 @@
 
 .product-category {
   background: #FFE9EC;
-  color: #B22222;
+  color: #DC143C;
   padding: 0.25rem 0.6rem;
   border-radius: 10px;
   font-size: 0.7rem;
@@ -114,20 +114,20 @@
 
 .price-label {
   font-size: 1rem;
-  color: #DC143C;
+  color: #FA8072;
   font-weight: 600;
 }
 
 .price-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #DC143C;
+  color: #FA8072;
 }
 
 .add-to-cart-btn {
   background: #fff;
-  border: 1.5px solid #DC143C;
-  color: #DC143C;
+  border: 1.5px solid #FA8072;
+  color: #FA8072;
   padding: 0.6rem 1rem;
   border-radius: 999px;
   display: flex;
@@ -141,7 +141,7 @@
 }
 
 .add-to-cart-btn:hover {
-  background: #DC143C;
+  background: #FA8072;
   color: white;
 }
 
