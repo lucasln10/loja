@@ -412,18 +412,18 @@
 
 .add-to-cart-btn {
   background: white;
-  color: #DC143C;
-  border: 2px solid #DC143C;
+  color: #FA8072;
+  border: 2px solid #FA8072;
 }
 
 .add-to-cart-btn:hover:not(:disabled) {
-  background: #DC143C;
+  background: #FA8072;
   color: white;
   transform: translateY(-2px);
 }
 
 .buy-now-btn {
-  background: #DC143C;
+  background: #FA8072;
   color: white;
 }
 

@@ -376,6 +376,10 @@ const AdminPage: React.FC = () => {
           <CarouselManager />
         )}
 
+        {activeTab === 'carousel' && (
+          <CarouselManager />
+        )}
+
         {activeTab === 'categories' && (
           <div className="categories-section">
             <h2>Gerenciar Categorias</h2>
