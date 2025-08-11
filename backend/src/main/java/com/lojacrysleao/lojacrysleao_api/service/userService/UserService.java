@@ -1,4 +1,4 @@
-package com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService;
+package com.lojacrysleao.lojacrysleao_api.service.userService;
 
 import java.util.Set;
 
@@ -169,8 +169,8 @@ public class UserService {
 
     @Transactional
     public void addFavorite(Long userId, Long productId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        Product product = productRepository.findById(productId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user ID nao foi encontrado."));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("product ID nao foi encontrado."));
         boolean alreadyFavorited = user.getFavorites().stream()
             .anyMatch(p -> p.getId().equals(productId));
         if (!alreadyFavorited) {
@@ -181,7 +181,7 @@ public class UserService {
 
     @Transactional
     public void removeFavorite(Long userId, Long productId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user ID nao foi encontrado."));
     // remove pelo ID para evitar problemas de equals/hashCode entre instâncias diferentes
         user.getFavorites().removeIf(p -> p.getId().equals(productId));
             userRepository.save(user);
@@ -189,7 +189,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Set<Product> listFavorites(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user ID nao foi encontrado."));
         // Força carga da coleção de favoritos antes de sair da transação
         user.getFavorites().size();
         return user.getFavorites();

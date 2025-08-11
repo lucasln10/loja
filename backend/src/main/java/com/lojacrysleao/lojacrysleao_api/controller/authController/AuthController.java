@@ -8,7 +8,7 @@ import com.lojacrysleao.lojacrysleao_api.dto.authDTO.UserDTO;
 import com.lojacrysleao.lojacrysleao_api.dto.verifyDTO.PasswordResetTokenDTO;
 import com.lojacrysleao.lojacrysleao_api.dto.verifyDTO.VerificationTokenDTO;
 import com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService.AuthService;
-import com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService.UserService;
+import com.lojacrysleao.lojacrysleao_api.service.userService.UserService;
 import com.lojacrysleao.lojacrysleao_api.service.verifyService.PasswordResetTokenService;
 import com.lojacrysleao.lojacrysleao_api.service.verifyService.VerificationTokenService;
 import jakarta.validation.Valid;
