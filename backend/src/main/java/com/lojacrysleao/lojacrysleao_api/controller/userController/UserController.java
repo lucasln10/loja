@@ -3,7 +3,7 @@ package com.lojacrysleao.lojacrysleao_api.controller.userController;
 import com.lojacrysleao.lojacrysleao_api.dto.authDTO.UserDTO;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
 import com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService.AuthService;
-import com.lojacrysleao.lojacrysleao_api.service.loginAndRegisterService.UserService;
+import com.lojacrysleao.lojacrysleao_api.service.userService.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
