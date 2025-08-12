@@ -1,7 +1,7 @@
 .product-card {
   background: #fff;
   border-radius: 16px;
-  border: 1px solid #f1f1f1;
+  border: 1px dashed #FA8072;
   padding: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -87,7 +87,7 @@
   line-height: 1.25;
 }
 
-.product-description {
+.pc-product-description {
   color: #7F8C8D;
   font-size: 0.9rem;
   line-height: 1.5;
@@ -126,10 +126,10 @@
 
 .add-to-cart-btn {
   background: #fff;
-  border: 1.5px solid #FA8072;
+  border: 1px dashed #FA8072;
   color: #FA8072;
   padding: 0.6rem 1rem;
-  border-radius: 999px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   gap: 0.5rem;

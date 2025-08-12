@@ -1,7 +1,6 @@
 .products-page {
   min-height: 80vh;
   padding: 2rem 0;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 .products-header {
@@ -176,36 +175,32 @@
   font-size: 0.9rem;
 }
 
+/* Breadcrumb */
 .breadcrumb {
   display: flex;
   align-items: center;
   margin-bottom: 2rem;
   font-size: 0.9rem;
+  color: #666;
 }
 
-.breadcrumb-link {
+.breadcrumb button {
   background: none;
   border: none;
-  color: #666;
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-  text-decoration: none;
-}
-
-.breadcrumb-link:hover {
-  background: #f0f0f0;
-  color: #333;
-}
-
-.breadcrumb-current {
   color: #DC143C;
-  font-weight: 500;
-  }
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0.5rem;
+}
 
-.breadcrumb span {
-  color: #999;
+.breadcrumb button:hover {
+  color: #b91c3c;
+}
+
+.breadcrumb span:last-child {
+  color: #333;
+  font-weight: 500;
+  padding: 0.5rem;
 }
 
 /* Responsividade */

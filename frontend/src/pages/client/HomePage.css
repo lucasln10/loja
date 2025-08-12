@@ -356,11 +356,13 @@
 /* Swiper navigation buttons */
 .hero-carousel .swiper-button-next,
 .hero-carousel .swiper-button-prev {
-  color: #DC143C;
+  color: #FA8072;
+  border: 2px solid #E0E0E0;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
   width: 50px;
   height: 50px;
+  transition: all 0.3s ease;
 }
 
 .hero-carousel .swiper-button-next:after,
@@ -371,7 +373,7 @@
 
 .hero-carousel .swiper-button-next:hover,
 .hero-carousel .swiper-button-prev:hover {
-  background: #DC143C;
+  background: #FA8072;
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
