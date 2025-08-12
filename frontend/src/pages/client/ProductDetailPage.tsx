@@ -192,8 +192,8 @@ const ProductDetailPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="product-detail-page">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
+        <div className="pdp-loading-container">
+          <div className="pdp-loading-spinner"></div>
           <p>Carregando detalhes do produto...</p>
         </div>
       </div>
@@ -203,10 +203,10 @@ const ProductDetailPage: React.FC = () => {
   if (!product) {
     return (
       <div className="product-detail-page">
-        <div className="error-container">
+        <div className="pdp-error-container">
           <h2>Produto não encontrado</h2>
           <p>O produto que você está procurando não existe ou foi removido.</p>
-          <button className="back-btn" onClick={() => navigate('/produtos')}>
+          <button className="pdp-back-btn" onClick={() => navigate('/produtos')}>
             <IoArrowBack /> Voltar aos Produtos
           </button>
         </div>
@@ -219,9 +219,9 @@ const ProductDetailPage: React.FC = () => {
 
   return (
     <div className="product-detail-page">
-      <div className="container">
+      <div className="pdp-container">
         {/* Breadcrumb */}
-        <nav className="breadcrumb">
+        <nav className="pdp-breadcrumb">
           <button onClick={() => navigate('/')}>Home</button>
           <span>/</span>
           <button onClick={() => navigate('/produtos')}>Produtos</button>
@@ -234,23 +234,23 @@ const ProductDetailPage: React.FC = () => {
         </nav>
 
         {/* Conteúdo Principal */}
-        <div className="product-content">
+        <div className="pdp-product-content">
           {/* Galeria de Imagens */}
-          <div className="product-gallery">
-            <div className="main-image-container">
+          <div className="pdp-product-gallery">
+            <div className="pdp-main-image-container">
               <Swiper
                 modules={[Navigation, Pagination, Thumbs]}
                 navigation
                 pagination={{ clickable: true }}
                 thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
-                className="main-swiper"
+                className="pdp-main-swiper"
               >
                 {imagesToDisplay.map((image, index) => (
                   <SwiperSlide key={index}>
                     <img 
                       src={image} 
                       alt={`${product.name} - Imagem ${index + 1}`}
-                      className="main-product-image"
+                      className="pdp-main-product-image"
                       onError={(e) => {
                         e.currentTarget.src = '/images/logo.webp';
                       }}
@@ -266,14 +266,14 @@ const ProductDetailPage: React.FC = () => {
                 onSwiper={setThumbsSwiper}
                 slidesPerView={4}
                 spaceBetween={10}
-                className="thumbs-swiper"
+                className="pdp-thumbs-swiper"
               >
                 {imagesToDisplay.map((image, index) => (
                   <SwiperSlide key={index}>
                     <img 
                       src={image} 
                       alt={`Miniatura ${index + 1}`}
-                      className="thumb-image"
+                      className="pdp-thumb-image"
                       onError={(e) => {
                         e.currentTarget.src = '/images/logo.webp';
                       }}
@@ -282,73 +282,71 @@ const ProductDetailPage: React.FC = () => {
                 ))}
               </Swiper>
             )}
-            </div>
             {/* Informações de Entrega */}
-            <div className="shipping-info">
+            <div className="pdp-shipping-info">
               <h4>Informações de Entrega</h4>
-              <div className="shipping-options">
-                <div className="shipping-option">
-                  <span className="shipping-type">📦 Frete Grátis</span>
-                  <span className="shipping-time">5-7 dias úteis</span>
+              <div className="pdp-shipping-options">
+                <div className="pdp-shipping-option">
+                  <span className="pdp-shipping-type">📦 Frete Grátis</span>
+                  <span className="pdp-shipping-time">5-7 dias úteis</span>
                 </div>
-                <div className="shipping-option">
-                  <span className="shipping-type">🚚 Entrega Expressa</span>
-                  <span className="shipping-time">1-2 dias úteis - R$ 15,00</span>
+                <div className="pdp-shipping-option">
+                  <span className="pdp-shipping-type">🚚 Entrega Expressa</span>
+                  <span className="pdp-shipping-time">1-2 dias úteis - R$ 15,00</span>
                 </div>
               </div>
+            </div>
             </div>
           </div>
           
           {/* Informações do Produto */}
-          <div className="product-info">
-            <div className="product-header">
-              <h1 className="product-title">{product.name}</h1>
+          <div className="pdp-product-info">
+            <div className="pdp-product-header">
+              <h1 className="pdp-product-title">{product.name}</h1>
               <button 
-                className={`wishlist-btn ${isWishlisted ? 'active' : ''}`}
+                className={`pdp-wishlist-btn ${isWishlisted ? 'active' : ''}`}
                 onClick={toggleWishlist}
               >
                 {isWishlisted ? <IoHeart /> : <IoHeartOutline />}
               </button>
             </div>
-
-            <div className="product-meta">
-              {/* <div className="rating-container">
-                <div className="stars">
-                  {renderStars(product.rating || 0)}
-                </div>
-                <span className="rating-text">
-                  {product.rating?.toFixed(1)} ({product.reviewCount} avaliações)
-                </span>
-              </div> */}
-              
-              <div className="category-tag">
-                <span>Categoria: {product.category}</span>
-              </div>
-            </div>
-
-            <div className="price-container">
-              <div className="current-price">
-                R$ {product.price.toFixed(2).replace('.', ',')}
-              </div>
-              <div className="price-info">
-                <span>à vista no PIX com 5% de desconto</span>
-              </div>
-            </div>
-            
             {/* Tags */}
             {product.tags && product.tags.length > 0 && (
-              <div className="product-tags">
+              <div className="pdp-product-tags">
                 {product.tags.map((tag, index) => (
-                  <span key={index} className="tag">{tag}</span>
+                  <span key={index} className="pdp-tag">{tag}</span>
                 ))}
               </div>
             )}
 
+            <div className="pdp-product-meta">
+              {/* <div className="pdp-rating-container">
+                <div className="pdp-stars">
+                  {renderStars(product.rating || 0)}
+                </div>
+                <span className="pdp-rating-text">
+                  {product.rating?.toFixed(1)} ({product.reviewCount} avaliações)
+                </span>
+              </div> */}
+              
+              <div className="pdp-category-tag">
+                <span>Categoria: {product.category}</span>
+              </div>
+            </div>
+
+            <div className="pdp-price-container">
+              <div className="pdp-current-price">
+                R$ {product.price.toFixed(2).replace('.', ',')}
+              </div>
+              <div className="pdp-price-info">
+                <span>à vista no PIX com 5% de desconto</span>
+              </div>
+            </div>
             {/* Controles de Compra */}
-            <div className="purchase-controls">
-              <div className="quantity-selector">
+            <div className="pdp-purchase-controls">
+              <div className="pdp-quantity-selector">
                 <label>Quantidade:</label>
-                <div className="quantity-input">
+                <div className="pdp-quantity-input">
                   <button 
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1}
@@ -371,9 +369,9 @@ const ProductDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="action-buttons">
+              <div className="pdp-action-buttons">
                 <button 
-                  className="add-to-cart-btn"
+                  className="pdp-add-to-cart-btn"
                   onClick={handleAddToCart}
                   disabled={!product.inStock}
                 >
@@ -382,53 +380,45 @@ const ProductDetailPage: React.FC = () => {
                 </button>
                 
                 <button 
-                  className="buy-now-btn"
+                  className="pdp-buy-now-btn"
                   onClick={handleBuyNow}
                   disabled={!product.inStock}
                 >
                   Comprar Agora
                 </button>
               </div>
-
-              <div className="stock-status">
-                {product.inStock ? (
-                  <span className="in-stock">✅ Em estoque ({product.quantity} unidades)</span>
-                ) : (
-                  <span className="out-of-stock">❌ Produto esgotado</span>
-                )}
-              </div>
             </div>
           </div>
         </div>
 
         {/* Abas de Detalhes */}
-        <div className="product-details-tabs">
-          <div className="tabs-header">
+        <div className="pdp-product-details-tabs">
+          <div className="pdp-tabs-header">
             <button 
-              className={`tab-btn ${activeTab === 'description' ? 'active' : ''}`}
+              className={`pdp-tab-btn ${activeTab === 'description' ? 'active' : ''}`}
               onClick={() => setActiveTab('description')}
             >
               Descrição
             </button>
             <button 
-              className={`tab-btn ${activeTab === 'specifications' ? 'active' : ''}`}
+              className={`pdp-tab-btn ${activeTab === 'specifications' ? 'active' : ''}`}
               onClick={() => setActiveTab('specifications')}
             >
               Especificações
             </button>
             {/* <button 
-              className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
+              className={`pdp-tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
               onClick={() => setActiveTab('reviews')}
             >
               Avaliações ({product.reviewCount})
             </button> */}
           </div>
 
-          <div className="tabs-content">
+          <div className="pdp-tabs-content">
             {activeTab === 'description' && (
-              <div className="tab-content">
+              <div className="pdp-tab-content">
                 <h3>Descrição Detalhada</h3>
-                <div className="description-content">
+                <div className="pdp-description-content">
                   {product.detailedDescription?.split('\n').map((paragraph, index) => (
                     <p key={index}>{paragraph.trim()}</p>
                   ))}
@@ -437,13 +427,13 @@ const ProductDetailPage: React.FC = () => {
             )}
 
             {activeTab === 'specifications' && (
-              <div className="tab-content">
+              <div className="pdp-tab-content">
                 <h3>Especificações Técnicas</h3>
-                <div className="specifications-grid">
+                <div className="pdp-specifications-grid">
                   {product.specifications && Object.entries(product.specifications).map(([key, value]) => (
-                    <div key={key} className="spec-item">
-                      <dt className="spec-label">{key}:</dt>
-                      <dd className="spec-value">{value}</dd>
+                    <div key={key} className="pdp-spec-item">
+                      <dt className="pdp-spec-label">{key}:</dt>
+                      <dd className="pdp-spec-value">{value}</dd>
                     </div>
                   ))}
                 </div>
@@ -451,10 +441,10 @@ const ProductDetailPage: React.FC = () => {
             )}
 
             {activeTab === 'reviews' && (
-              <div className="tab-content">
+              <div className="pdp-tab-content">
                 {/* <h3>Avaliações dos Clientes</h3>
-                <div className="reviews-summary">
-                  <div className="average-rating">
+                <div className="pdp-reviews-summary">
+                  <div className="pdp-average-rating">
                     <div className="rating-number">{product.rating?.toFixed(1)}</div>
                     <div className="stars-large">
                       {renderStars(product.rating || 0)}

@@ -51,7 +51,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {product.category && <span className="product-category">{product.category}</span>}
         <h3 className="product-name" title={product.name}>{product.name}</h3>
         {product.description && (
-          <p className="product-description" title={product.description}>{product.description}</p>
+          <p className="pc-product-description" title={product.description}>{product.description}</p>
         )}
         
         <div className="product-footer">
