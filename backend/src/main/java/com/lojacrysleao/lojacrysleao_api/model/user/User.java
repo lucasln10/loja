@@ -46,9 +46,13 @@ public class User implements UserDetails {
     )
     private Set<Product> favorites = new HashSet<>();
 
-    private Date created_at;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-    private Date updated_at;
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public Set<Product> getFavorites() {
         return favorites;

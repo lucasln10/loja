@@ -198,16 +198,4 @@ public class UserService {
         return user.getFavorites();
     }
 
-
-    public void cleanUserInactive(List<Long> usersId) {
-        for (Long userId : usersId) {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Usuario nao encontrado pelo ID" + userId));
-            userRepository.deleteById(userId);
-        }
-    }
-
-    //public List<User> findInactiveUsers(int days) {
-     //   return userRepository.findByInactiveUserEqual(days);
-    //}
 }

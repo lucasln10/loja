@@ -11,5 +11,6 @@ import com.lojacrysleao.lojacrysleao_api.model.user.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     public Optional<User> findByEmail (String email);
 
-    //List<User> findByInactiveUserEqual (int days);
+    @Query("SELECT u FROM User u WHERE u.enable = false AND u.createdAt < :date")
+    List<User> findUnverifiedOlderThan(LocalDateTime date);
 }
