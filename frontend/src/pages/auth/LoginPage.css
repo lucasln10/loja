@@ -39,19 +39,19 @@
   gap: 1rem;
 }
 
-.form-group {
+.lp-form-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.form-label {
+.lp-form-label {
   color: #2C3E50;
   font-weight: 500;
   font-size: 0.9rem;
 }
 
-.form-input {
+.lp-form-input {
   padding: 1rem;
   border: 2px solid #e1e5e9;
   border-radius: 8px;
@@ -60,14 +60,14 @@
   background-color: #f8f9fa;
 }
 
-.form-input:focus {
+.lp-form-input:focus {
   outline: none;
   border-color: #DC143C;
   background-color: white;
   box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
 }
 
-.form-input::placeholder {
+  form-input::placeholder {
   color: #7F8C8D;
 }
 
