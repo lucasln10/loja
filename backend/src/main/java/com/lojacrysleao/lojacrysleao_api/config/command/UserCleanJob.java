@@ -22,12 +22,13 @@ public class UserCleanJob {
 
     // Limiar de usuarios inativos (>)
     @Value("${app.dayslimit.userinactivity:7}")
-    private int limitDate;
+    private int limitDays;
 
     // Roda todo dia às 3h da manhã
     @Scheduled(cron = "0 0 3 * * *", zone = "America/Sao_Paulo")
     public void deleteOldUnverifiedAccounts() {
-        List<User> oldUser = userRepository.findUnverifiedOlderThan(limitDate);
+        LocalDateTime limitDateTime = LocalDateTime.now().minusDays(limitDays);
+        List<User> oldUser = userRepository.findUnverifiedOlderThan(limitDateTime);
 
         if (!oldUser.isEmpty()){
             userRepository.deleteAll(oldUsers);
