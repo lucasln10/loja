@@ -176,11 +176,11 @@ public class CarouselItemService {
         if (productImageUrl != null && !productImageUrl.startsWith("http")) {
             // Se a URL não é absoluta, garantir que está no formato correto
             if (productImageUrl.startsWith("/api/products/images/")) {
-                // Converter de /api/products/images/ para /uploads/products/
-                productImageUrl = productImageUrl.replace("/api/products/images/", "/uploads/products/");
+                // Converter de /api/products/images/ para /uploads/product/
+                productImageUrl = productImageUrl.replace("/api/products/images/", "/uploads/product/");
             } else if (!productImageUrl.startsWith("/uploads/")) {
                 // Se não tem o prefixo correto, adicionar
-                productImageUrl = "/uploads/products/" + productImageUrl;
+                productImageUrl = "/uploads/product/" + productImageUrl;
             }
         }
         carouselItem.setImageUrl(productImageUrl);

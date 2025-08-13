@@ -1,6 +1,13 @@
 import { Product } from '../types';
 
-const API_BASE_URL = 'http://localhost:8080';
+// Resolve API base to match the environment (Docker/nginx vs local dev)
+const API_BASE_URL: string =
+  // 1) Explicit env override at build-time (CRA):
+  (process.env.REACT_APP_API_BASE_URL as string | undefined)?.trim() ||
+  // 2) If served behind nginx on port 3000, use the same origin so /api proxies work
+  (typeof window !== 'undefined' && window.location && window.location.port === '3000'
+    ? window.location.origin
+    : 'http://localhost:8080');
 
 // Interface baseada no seu ProductDTO exato
 export interface ProductDTO {

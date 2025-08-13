@@ -14,12 +14,11 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList(
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://localhost:8081", // frontend docker (Nginx -> 80 mapped to 8081)
-        "https://seu-dominio.com"
-    ));
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:3000",
+            "http://192.168.0.104:3000",
+            "https://seu-dominio.com"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);

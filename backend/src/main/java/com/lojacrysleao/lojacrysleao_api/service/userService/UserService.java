@@ -1,5 +1,7 @@
 package com.lojacrysleao.lojacrysleao_api.service.userService;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +62,7 @@ public class UserService {
             newUser.setPassword(passwordEncoder.encode(request.getPassword()));
             newUser.setEnable(false);
             newUser.setRole(Role.USER);
+            newUser.setCreated_at(new Date());
 
             User savedUser = userRepository.save(newUser);
             sendVerificationEmail(savedUser);
@@ -194,4 +197,17 @@ public class UserService {
         user.getFavorites().size();
         return user.getFavorites();
     }
+
+
+    public void cleanUserInactive(List<Long> usersId) {
+        for (Long userId : usersId) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuario nao encontrado pelo ID" + userId));
+            userRepository.deleteById(userId);
+        }
+    }
+
+    //public List<User> findInactiveUsers(int days) {
+     //   return userRepository.findByInactiveUserEqual(days);
+    //}
 }
