@@ -1,20 +1,22 @@
 package com.lojacrysleao.lojacrysleao_api.config.command;
 
+import com.lojacrysleao.lojacrysleao_api.model.user.User;
+import com.lojacrysleao.lojacrysleao_api.repository.userRepository.UserRepository;
 import com.lojacrysleao.lojacrysleao_api.service.userService.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
 public class UserCleanJob {
 
-    @Autowired
     private final UserService userService;
-
-    @Autowired
     private final UserRepository userRepository;
 
+    @Autowired
     public UserCleanJob(UserService userService, UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
@@ -28,9 +30,9 @@ public class UserCleanJob {
     @Scheduled(cron = "0 0 3 * * *", zone = "America/Sao_Paulo")
     public void deleteOldUnverifiedAccounts() {
         LocalDateTime limitDateTime = LocalDateTime.now().minusDays(limitDays);
-        List<User> oldUser = userRepository.findUnverifiedOlderThan(limitDateTime);
+        List<User> oldUsers = userRepository.findUnverifiedOlderThan(limitDateTime);
 
-        if (!oldUser.isEmpty()){
+        if (!oldUsers.isEmpty()){
             userRepository.deleteAll(oldUsers);
         }
 
