@@ -70,3 +70,7 @@ Quando você clonar o projeto:
 3. Execute o projeto normalmente
 
 Suas configurações locais não afetarão outros desenvolvedores!
+
+
+
+teste
