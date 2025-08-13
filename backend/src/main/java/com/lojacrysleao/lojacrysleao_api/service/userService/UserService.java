@@ -64,10 +64,17 @@ public class UserService {
             newUser.setEnable(false);
             newUser.setRole(Role.USER);
 <<<<<<< HEAD
+<<<<<<< Updated upstream
             newUser.setCreatedAt(LocalDateTime.now());
 =======
             newUser.setCreated_at(LocalDateTime.now());
 >>>>>>> 236ef02deb3259031b99b26a0c5e807b880f7dac
+=======
+            newUser.setCreated_at(LocalDateTime.now());
+=======
+            newUser.setCreatedAt(LocalDateTime.now());
+>>>>>>> 39ef745 (corrigindo metodos e adicionando imports)
+>>>>>>> Stashed changes
 
             User savedUser = userRepository.save(newUser);
             sendVerificationEmail(savedUser);
