@@ -71,6 +71,3 @@ Quando você clonar o projeto:
 
 Suas configurações locais não afetarão outros desenvolvedores!
 
-
-
-teste
