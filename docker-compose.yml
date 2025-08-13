@@ -13,23 +13,11 @@ services:
     networks:
       - app-network
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    depends_on:
-      - db
-    ports:
-      - "8082:80"        # Acesse phpMyAdmin em http://localhost:8082
-    environment:
-      PMA_HOST: db       # Host do banco dentro da rede docker
-      PMA_USER: root
-      PMA_PASSWORD: rootpass
-    networks:
-      - app-network
-
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    container_name: backend
     ports:
       - "8080:8080"
     environment:
@@ -40,15 +28,45 @@ services:
       - db
     networks:
       - app-network
+    volumes:
+      - ./uploads:/app/uploads
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    container_name: frontend
+    networks:
+      - app-network
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx
     ports:
       - "3000:80"
     depends_on:
       - backend
+      - frontend
+    networks:
+      - app-network
+    volumes:
+      - ./uploads:/app/uploads:ro
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: rootpass
+      UPLOAD_LIMIT: 64M
+    depends_on:
+      - db
+    ports:
+      - "8082:80"
     networks:
       - app-network
 
@@ -57,3 +75,4 @@ volumes:
 
 networks:
   app-network:
+    driver: bridge

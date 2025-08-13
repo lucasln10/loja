@@ -1,4 +1,4 @@
-package com.lojacrysleao.lojacrysleao_api.config.componet;
+package com.lojacrysleao.lojacrysleao_api.config.command;
 
 import com.lojacrysleao.lojacrysleao_api.model.storage.Storage;
 import com.lojacrysleao.lojacrysleao_api.service.storageService.StorageService;
@@ -20,7 +20,7 @@ public class LowStockJob {
     }
 
     // URL do frontend para construir links (padrão localhost)
-    @Value("${app.frontend.base-url:http://localhost:3000}")
+    @Value("${app.frontend.base-url:}")
     private String frontendBaseUrl;
 
     // Lista de emails separados por vírgula

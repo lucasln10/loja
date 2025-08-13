@@ -10,9 +10,13 @@ public class WebConfig implements WebMvcConfigurer {
     
     @Override
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-        // Configurar para servir uploads de produtos
-        registry.addResourceHandler("/uploads/products/**")
-                .addResourceLocations("file:uploads/products/");
+    // Configurar para servir uploads de produtos (padrão: uploads/products)
+    registry.addResourceHandler("/uploads/products/**")
+        .addResourceLocations("file:uploads/products/");
+
+    // Compatibilidade retroativa com uploads/product, se existir
+    registry.addResourceHandler("/uploads/product/**")
+        .addResourceLocations("file:uploads/product/");
         
         // Configurar para servir uploads do carrossel
         registry.addResourceHandler("/uploads/carousel/**")
