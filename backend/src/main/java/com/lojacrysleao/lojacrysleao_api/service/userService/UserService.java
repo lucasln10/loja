@@ -3,6 +3,7 @@ package com.lojacrysleao.lojacrysleao_api.service.userService;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -62,7 +63,7 @@ public class UserService {
             newUser.setPassword(passwordEncoder.encode(request.getPassword()));
             newUser.setEnable(false);
             newUser.setRole(Role.USER);
-            newUser.setCreated_at(new Date());
+            newUser.setCreatedAt(LocalDateTime.now());
 
             User savedUser = userRepository.save(newUser);
             sendVerificationEmail(savedUser);

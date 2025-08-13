@@ -1,10 +1,14 @@
 package com.lojacrysleao.lojacrysleao_api.config.command;
 
 import com.lojacrysleao.lojacrysleao_api.service.userService.UserService;
+import com.lojacrysleao.lojacrysleao_api.repository.userRepository.UserRepository;
+import com.lojacrysleao.lojacrysleao_api.model.user.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Component
 public class UserCleanJob {
@@ -31,7 +35,7 @@ public class UserCleanJob {
         List<User> oldUser = userRepository.findUnverifiedOlderThan(limitDateTime);
 
         if (!oldUser.isEmpty()){
-            userRepository.deleteAll(oldUsers);
+            userRepository.deleteAll(oldUser);
         }
 
     }
