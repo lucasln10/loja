@@ -1,24 +1,28 @@
 package com.lojacrysleao.lojacrysleao_api.config.command;
 
+import com.lojacrysleao.lojacrysleao_api.model.user.User;
+import com.lojacrysleao.lojacrysleao_api.repository.userRepository.UserRepository;
 import com.lojacrysleao.lojacrysleao_api.service.userService.UserService;
+<<<<<<< HEAD
 import com.lojacrysleao.lojacrysleao_api.repository.userRepository.UserRepository;
 import com.lojacrysleao.lojacrysleao_api.model.user.User;
+=======
+>>>>>>> 236ef02deb3259031b99b26a0c5e807b880f7dac
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.time.LocalDateTime;
 
 @Component
 public class UserCleanJob {
 
-    @Autowired
     private final UserService userService;
-
-    @Autowired
     private final UserRepository userRepository;
 
+    @Autowired
     public UserCleanJob(UserService userService, UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
@@ -32,10 +36,15 @@ public class UserCleanJob {
     @Scheduled(cron = "0 0 3 * * *", zone = "America/Sao_Paulo")
     public void deleteOldUnverifiedAccounts() {
         LocalDateTime limitDateTime = LocalDateTime.now().minusDays(limitDays);
-        List<User> oldUser = userRepository.findUnverifiedOlderThan(limitDateTime);
+        List<User> oldUsers = userRepository.findUnverifiedOlderThan(limitDateTime);
 
+<<<<<<< HEAD
         if (!oldUser.isEmpty()){
             userRepository.deleteAll(oldUser);
+=======
+        if (!oldUsers.isEmpty()){
+            userRepository.deleteAll(oldUsers);
+>>>>>>> 236ef02deb3259031b99b26a0c5e807b880f7dac
         }
 
     }

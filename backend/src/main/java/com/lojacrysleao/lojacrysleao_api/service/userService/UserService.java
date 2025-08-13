@@ -1,6 +1,6 @@
 package com.lojacrysleao.lojacrysleao_api.service.userService;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.time.LocalDateTime;
@@ -63,7 +63,11 @@ public class UserService {
             newUser.setPassword(passwordEncoder.encode(request.getPassword()));
             newUser.setEnable(false);
             newUser.setRole(Role.USER);
+<<<<<<< HEAD
             newUser.setCreatedAt(LocalDateTime.now());
+=======
+            newUser.setCreated_at(LocalDateTime.now());
+>>>>>>> 236ef02deb3259031b99b26a0c5e807b880f7dac
 
             User savedUser = userRepository.save(newUser);
             sendVerificationEmail(savedUser);
