@@ -6,10 +6,9 @@ import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-cimport org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
