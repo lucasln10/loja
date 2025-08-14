@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Product, CarouselItem } from '../../types';
-import { productService } from '../../services/productService';
+import { productService, API_BASE_URL } from '../../services/productService';
 import { carouselService } from '../../services/carouselService';
 import { FaTruckFast } from "react-icons/fa6";
 import { IoShieldCheckmark } from "react-icons/io5";
@@ -77,21 +77,24 @@ const HomePage: React.FC = () => {
       setError(null);
       
       try {
-        console.log('Iniciando carregamento de dados...');
+        console.log('🔄 Iniciando carregamento de dados...');
+        console.log('📡 API_BASE_URL:', 'http://localhost:8080');
         
         // Primeiro tenta carregar do backend
         try {
-          const [carousel, featured] = await Promise.all([
-            carouselService.getActiveCarouselItems(),
-            productService.getFeaturedProducts()
-          ]);
+          console.log('🎠 Carregando carrossel...');
+          const carousel = await carouselService.getActiveCarouselItems();
+          console.log('🎠 Carrossel carregado:', carousel);
           
-          console.log('Dados carregados do backend:', { carousel, featured });
+          console.log('⭐ Carregando produtos em destaque...');
+          const featured = await productService.getFeaturedProducts();
+          console.log('⭐ Produtos em destaque carregados:', featured);
           
           // Se conseguiu carregar carousel, usa do backend
           if (carousel.length > 0) {
             setCarouselItems(carousel);
           } else {
+            console.log('🎠 Carrossel vazio, usando produtos estáticos...');
             // Usa produtos estáticos para carousel
             const staticProducts = getStaticProducts();
             const staticCarouselItems: CarouselItem[] = staticProducts.map((product, index) => ({
@@ -110,14 +113,16 @@ const HomePage: React.FC = () => {
 
           // Se conseguiu carregar produtos em destaque, usa do backend
           if (featured.length > 0) {
+            console.log('✅ Usando produtos do backend');
             setFeaturedProducts(featured);
           } else {
+            console.log('⚠️ Produtos em destaque vazios, usando estáticos...');
             // Usa produtos estáticos
             const staticProducts = getStaticProducts();
             setFeaturedProducts(staticProducts.slice(0, 3));
           }
         } catch (backendError) {
-          console.log('Backend não disponível, usando produtos estáticos:', backendError);
+          console.error('❌ Backend não disponível, usando produtos estáticos:', backendError);
           
           // Usar produtos estáticos para tudo
           const staticProducts = getStaticProducts();
@@ -136,7 +141,7 @@ const HomePage: React.FC = () => {
           setFeaturedProducts(staticProducts.slice(0, 3));
         }
       } catch (err) {
-        console.error('Erro geral:', err);
+        console.error('💥 Erro geral:', err);
         // Fallback final para produtos estáticos
         const staticProducts = getStaticProducts();
         const staticCarouselItems: CarouselItem[] = staticProducts.map((product, index) => ({
@@ -241,7 +246,7 @@ const HomePage: React.FC = () => {
                 >
                   <div className="carousel-image-container">
                     <img 
-                      src={item.imageUrl.startsWith('http') ? item.imageUrl : `http://localhost:8080${item.imageUrl}`} 
+                      src={item.imageUrl.startsWith('http') ? item.imageUrl : `${API_BASE_URL}${item.imageUrl}`} 
                       alt={item.title}
                       onError={(e) => {
                         console.error('Erro ao carregar imagem do carrossel:', item.imageUrl);

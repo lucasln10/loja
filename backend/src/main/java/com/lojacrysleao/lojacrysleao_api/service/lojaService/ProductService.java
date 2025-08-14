@@ -43,7 +43,7 @@ public class ProductService {
     private StorageService storageService;
 
     @Autowired
-    private ImageServiceImpl ImageService;
+    private ImageServiceImpl imageService;
     
     // storageRepository not used directly; StorageService encapsulates logic
 
@@ -62,6 +62,10 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
 
         Product product = productMapper.toEntity(dto, category);
+        // Por padrão, novos produtos ficam ativos para aparecerem na Home
+        if (!product.isStatus()) {
+            product.setStatus(true);
+        }
         // Primeiro salva o produto para garantir que tenha ID
         Product savedProduct = productRepository.save(product);
         // Agora cria o estoque vinculado ao produto salvo
@@ -134,17 +138,32 @@ public class ProductService {
         return productMapper.toDTO(savedProduct);
     }
 
+    @Transactional
     public void delete(Long id) {
-        // Verifica se produto existe
-        findById(id);
+        if (id == null) {
+            throw new BadRequestException("ID não pode ser nulo");
+        }
+        
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + id));
 
         if (product.isStatus()) {
             throw new ValidationException("PRODUTO ESTA ATIVO, POR ISTO NAO PODE SER EXCLUIDO.");
         }
-        ImageService.deleteImagesByProductId(id);
-        storageService.delete(product.getStorage().getId());
+        
+        // Deletar arquivos de imagem físicos se existirem
+        if (product.getImages() != null) {
+            product.getImages().forEach(img -> {
+                try {
+                    imageService.deleteImage(img.getFilename());
+                } catch (Exception ignored) {
+                    // Log do erro mas continua a operação
+                }
+            });
+        }
+        
+        // Com cascade = CascadeType.ALL e orphanRemoval = true, 
+        // todas as entidades relacionadas serão deletadas automaticamente
         productRepository.deleteById(id);
     }
 

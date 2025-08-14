@@ -1,6 +1,5 @@
 import { CarouselItem } from '../types';
-
-const API_BASE_URL = 'http://localhost:8080';
+import { API_BASE_URL } from './productService';
 
 class CarouselService {
   // Buscar itens ativos do carrossel (público)

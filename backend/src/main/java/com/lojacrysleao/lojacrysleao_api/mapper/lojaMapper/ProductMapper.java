@@ -54,6 +54,39 @@ public class ProductMapper {
         product.setDetailedDescription(dto.getDetailedDescription());
         product.setStatus(dto.isStatus());
 
+        // Processar imagens se fornecidas
+        if (dto.getImageUrl() != null && !dto.getImageUrl().trim().isEmpty()) {
+            ProductImage primaryImage = new ProductImage();
+            primaryImage.setImageUrl(dto.getImageUrl());
+            primaryImage.setFilename(extractFilenameFromUrl(dto.getImageUrl()));
+            primaryImage.setPrimary(true);
+            primaryImage.setDisplayOrder(1);
+            primaryImage.setProduct(product);
+            product.getImages().add(primaryImage);
+        }
+
+        // Processar imageUrls se fornecidas (além da imageUrl principal)
+        if (dto.getImageUrls() != null && !dto.getImageUrls().isEmpty()) {
+            boolean hasPrimary = dto.getImageUrl() != null && !dto.getImageUrl().trim().isEmpty();
+            
+            for (int i = 0; i < dto.getImageUrls().size(); i++) {
+                String imageUrl = dto.getImageUrls().get(i);
+                if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+                    // Evita duplicar a imageUrl principal
+                    if (hasPrimary && imageUrl.equals(dto.getImageUrl())) {
+                        continue;
+                    }
+                    
+                    ProductImage image = new ProductImage();
+                    image.setImageUrl(imageUrl);
+                    image.setFilename(extractFilenameFromUrl(imageUrl));
+                    image.setPrimary(!hasPrimary && i == 0); // Primeira imagem é principal se não há imageUrl
+                    image.setDisplayOrder(hasPrimary ? i + 2 : i + 1); // Se tem primary, começa do 2
+                    image.setProduct(product);
+                    product.getImages().add(image);
+                }
+            }
+        }
 
         return product;
     }
@@ -62,5 +95,28 @@ public class ProductMapper {
         Product product = toEntity(dto);
         product.setCategory(category);
         return product;
+    }
+
+    /**
+     * Extrai o nome do arquivo da URL
+     * Ex: "/uploads/products/produto-teste.jpg" -> "produto-teste.jpg"
+     */
+    private String extractFilenameFromUrl(String url) {
+        if (url == null || url.trim().isEmpty()) {
+            return "default-image.jpg";
+        }
+        
+        // Remove parâmetros da URL se houver
+        String cleanUrl = url.split("\\?")[0];
+        
+        // Extrai o filename do path
+        String filename = cleanUrl.substring(cleanUrl.lastIndexOf("/") + 1);
+        
+        // Se não conseguir extrair, usa um nome padrão
+        if (filename.isEmpty() || !filename.contains(".")) {
+            return "image-" + System.currentTimeMillis() + ".jpg";
+        }
+        
+        return filename;
     }
 }
