@@ -3,10 +3,7 @@ package com.lojacrysleao.lojacrysleao_api.repository.userRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-<<<<<<< HEAD
-=======
 
->>>>>>> ea43366 (adicionando filtros de busca e endpoints)
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
