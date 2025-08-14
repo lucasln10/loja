@@ -91,5 +91,14 @@ public class ImageServiceImpl implements ImageService {
             throw new BadRequestException("Não foi possível processar a imagem: " + e.getMessage());
         }
     }
+
+    public void deleteImage(String filename) {
+        Path filePath = Paths.get(UPLOAD_DIR, filename);
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            throw new BadRequestException("Não foi possível excluir a imagem: " + e.getMessage());
+        }
+    }
 }
 

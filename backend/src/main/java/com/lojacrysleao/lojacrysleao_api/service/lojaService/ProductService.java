@@ -34,6 +34,8 @@ public class ProductService {
     @Autowired
     private StorageService storageService;
 
+    @Autowired
+    private ImageServiceImpl ImageService;
     // storageRepository not used directly; StorageService encapsulates logic
 
 
@@ -132,6 +134,8 @@ public class ProductService {
         if (product.isStatus()) {
             throw new ValidationException("PRODUTO ESTA ATIVO, POR ISTO NAO PODE SER EXCLUIDO.");
         }
+        ImageService.deleteImagesByProductId(id);
+        storageService.delete(product.getStorage().getId());
         productRepository.deleteById(id);
     }
 
