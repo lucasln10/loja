@@ -35,7 +35,6 @@ public class ProductController {
     }
 
     @GetMapping("/enabled")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<ProductDTO>> getEnabledProducts() {
         return ResponseEntity.ok(productService.listEnabled());
     }
