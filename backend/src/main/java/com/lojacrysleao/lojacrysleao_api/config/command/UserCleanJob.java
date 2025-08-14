@@ -35,6 +35,5 @@ public class UserCleanJob {
         if (!oldUsers.isEmpty()){
             userRepository.deleteAll(oldUsers);
         }
-
     }
 }

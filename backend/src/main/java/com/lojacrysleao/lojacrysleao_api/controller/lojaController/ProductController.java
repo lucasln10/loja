@@ -12,9 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.ProductDTO;
+import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.ProductSearchDTO;
+import com.lojacrysleao.lojacrysleao_api.dto.common.PageResponseDTO;
+import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.ProductSearchStatsDTO;
 import com.lojacrysleao.lojacrysleao_api.service.lojaService.ProductService;
 
 @RestController
@@ -81,5 +85,93 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Boolean> desableStatus(@PathVariable Long id) {
         return ResponseEntity.ok(productService.desableStatus(id));
+    }
+
+    /**
+     * Busca avançada com filtros e paginação
+     */
+    @PostMapping("/search")
+    public ResponseEntity<PageResponseDTO<ProductDTO>> searchProducts(@RequestBody ProductSearchDTO searchDTO) {
+        PageResponseDTO<ProductDTO> result = productService.searchProducts(searchDTO);
+        return ResponseEntity.ok(result);
+    }
+    
+    /**
+     * Busca simples por termo
+     */
+    @GetMapping("/search")
+    public ResponseEntity<PageResponseDTO<ProductDTO>> searchByTerm(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        PageResponseDTO<ProductDTO> result = productService.searchByTerm(q, page, size);
+        return ResponseEntity.ok(result);
+    }
+    
+    /**
+     * Filtra produtos por categoria
+     */
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<PageResponseDTO<ProductDTO>> filterByCategory(
+            @PathVariable Long categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        PageResponseDTO<ProductDTO> result = productService.filterByCategory(categoryId, page, size);
+        return ResponseEntity.ok(result);
+    }
+    
+    /**
+     * Filtra produtos por faixa de preço
+     */
+    @GetMapping("/price-range")
+    public ResponseEntity<PageResponseDTO<ProductDTO>> filterByPriceRange(
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        PageResponseDTO<ProductDTO> result = productService.filterByPriceRange(minPrice, maxPrice, page, size);
+        return ResponseEntity.ok(result);
+    }
+    
+    /**
+     * Filtra produtos por estoque
+     */
+    @GetMapping("/stock")
+    public ResponseEntity<PageResponseDTO<ProductDTO>> filterByStock(
+            @RequestParam Integer minStock,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        PageResponseDTO<ProductDTO> result = productService.filterByStock(minStock, page, size);
+        return ResponseEntity.ok(result);
+    }
+    
+    /**
+     * Lista produtos com paginação básica
+     */
+    @GetMapping("/page")
+    public ResponseEntity<PageResponseDTO<ProductDTO>> getProductsPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
+        
+        ProductSearchDTO searchDTO = new ProductSearchDTO();
+        searchDTO.setPage(page);
+        searchDTO.setSize(size);
+        searchDTO.setSortBy(sortBy);
+        searchDTO.setSortDirection(sortDirection);
+        searchDTO.setActiveOnly(true);
+        
+        PageResponseDTO<ProductDTO> result = productService.searchProducts(searchDTO);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Obtém estatísticas dos produtos para filtros
+     */
+    @GetMapping("/stats")
+    public ResponseEntity<ProductSearchStatsDTO> getProductStats() {
+        ProductSearchStatsDTO stats = productService.getProductStats();
+        return ResponseEntity.ok(stats);
     }
 }

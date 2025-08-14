@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
@@ -51,6 +52,14 @@ public class Product {
 
     @ManyToMany(mappedBy = "favorites")
     private Set<User> favoredBy = new HashSet<>();
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     public Set<User> getFavoredBy() {
         return favoredBy;
