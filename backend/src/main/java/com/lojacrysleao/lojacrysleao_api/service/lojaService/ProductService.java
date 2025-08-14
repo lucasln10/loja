@@ -18,6 +18,7 @@ import com.lojacrysleao.lojacrysleao_api.model.storage.Storage;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.CategoryRepository;
 import com.lojacrysleao.lojacrysleao_api.repository.lojaRepository.ProductRepository;
 import com.lojacrysleao.lojacrysleao_api.service.storageService.StorageService;
+import com.lojacrysleao.lojacrysleao_api.service.uploadService.ImageServiceImpl;
 
 @Service
 public class ProductService {
@@ -36,6 +37,7 @@ public class ProductService {
 
     @Autowired
     private ImageServiceImpl ImageService;
+    
     // storageRepository not used directly; StorageService encapsulates logic
 
 
