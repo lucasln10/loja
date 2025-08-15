@@ -150,6 +150,13 @@ Se preferir não instalar Java/Node localmente:
 ```bash
 # 1. Instale Docker Desktop
 # 2. Execute:
+
+cd backend
+
+./mvnw clean install
+
+cd .. 
+
 docker compose up -d --build
 
 # 3. Acesse: http://localhost:3000
