@@ -5,7 +5,7 @@ services:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: moldesbolos
+      MYSQL_DATABASE: lojacrysleao
     ports:
       - "3306:3306"
     volumes:
@@ -21,7 +21,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/moldesbolos
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/lojacrysleao
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: rootpass
     depends_on:

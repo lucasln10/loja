@@ -196,9 +196,8 @@
 /* Informações do Produto */
 .pdp-product-info {
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   flex-direction: column;
-  gap: 2rem;
 }
 
 .pdp-product-header {
@@ -276,14 +275,14 @@
   font-size: 0.9rem;
 }
 
-.pdp-category-tag span {
+/* .pdp-category-tag span {
   background: #f8f9fa;
   color: #495057;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;
   border: 1px solid #dee2e6;
-}
+} */
 
 /* Preço */
 .pdp-price-container {
@@ -455,7 +454,7 @@
 }
 
 /* Informações de Entrega */
-.pdp-shipping-info {
+/* .pdp-shipping-info {
   background: #f8f9fa;
   padding: 1.5rem;
   border-radius: 12px;
@@ -466,7 +465,7 @@
   margin: 0 0 1rem 0;
   color: #333;
   font-size: 1.1rem;
-}
+} */
 
 .pdp-shipping-options {
   display: flex;

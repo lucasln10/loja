@@ -80,21 +80,21 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="register-page">
-      <div className="register-container">
-        <h2 className="register-title">
+    <div className="rep-register-page">
+      <div className="rep-register-container">
+        <h2 className="rep-register-title">
           {cadastroCompleto ? 'Cadastro Realizado!' : 'Criar Conta'}
         </h2>
         
         {!cadastroCompleto ? (
           <>
-            <form className="register-form" onSubmit={handleRegister}>
-              <div className="form-group">
-                <label className="form-label" htmlFor="name">Nome Completo</label>
+            <form className="rep-register-form" onSubmit={handleRegister}>
+              <div className="rep-form-group">
+                <label className="rep-form-label" htmlFor="name">Nome Completo</label>
                 <input
                   id="name"
                   type="text"
-                  className="form-input"
+                  className="rep-form-input"
                   placeholder="Digite seu nome completo"
                   value={name}
                   onChange={e => setName(e.target.value)}
@@ -102,12 +102,12 @@ const RegisterPage: React.FC = () => {
                   disabled={cadastrando}
                 />
               </div>
-              <div className="form-group">
-                <label className="form-label" htmlFor="cpf">CPF</label>
+              <div className="rep-form-group">
+                <label className="rep-form-label" htmlFor="cpf">CPF</label>
                 <input
                   id="cpf"
                   type="text"
-                  className="form-input"
+                  className="rep-form-input"
                   placeholder="000.000.000-00"
                   value={cpf}
                   onChange={e => setCpf(formatCpf(e.target.value))}
@@ -116,12 +116,12 @@ const RegisterPage: React.FC = () => {
                   disabled={cadastrando}
                 />
               </div>
-              <div className="form-group">
-                <label className="form-label" htmlFor="phone">Telefone</label>
+              <div className="rep-form-group">
+                <label className="rep-form-label" htmlFor="phone">Telefone</label>
                 <input
                   id="phone"
                   type="text"
-                  className="form-input"
+                  className="rep-form-input"
                   placeholder="(11) 99999-9999"
                   value={phone}
                   onChange={e => setPhone(formatPhone(e.target.value))}
@@ -130,12 +130,12 @@ const RegisterPage: React.FC = () => {
                   disabled={cadastrando}
                 />
               </div>
-              <div className="form-group">
-                <label className="form-label" htmlFor="email">E-mail</label>
+              <div className="rep-form-group">
+                <label className="rep-form-label" htmlFor="email">E-mail</label>
                 <input
                   id="email"
                   type="email"
-                  className="form-input"
+                  className="rep-form-input"
                   placeholder="Digite seu e-mail"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
@@ -144,12 +144,12 @@ const RegisterPage: React.FC = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label className="form-label" htmlFor="password">Senha</label>
+              <div className="rep-form-group">
+                <label className="rep-form-label" htmlFor="password">Senha</label>
                 <input
                   id="password"
                   type="password"
-                  className="form-input"
+                  className="rep-form-input"
                   placeholder="Digite uma senha (mín. 6 caracteres)"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -161,27 +161,27 @@ const RegisterPage: React.FC = () => {
 
               <button 
                 type="submit" 
-                className="register-button"
+                className="rep-register-button"
                 disabled={cadastrando}
               >
                 {cadastrando ? 'Criando conta...' : 'Criar Conta'}
               </button>
             </form>
 
-            <div className="login-link">
+            <div className="rep-login-link">
               <p>Já tem uma conta? <a href="/login">Faça login aqui</a></p>
             </div>
           </>
         ) : (
           <>
-            <div className="verification-info">
-              <div className="email-icon">📧</div>
+            <div className="rep-verification-info">
+              <div className="rep-email-icon">📧</div>
               <h3>Verifique seu email</h3>
               <p>Quase pronto! Para ativar sua conta, clique no link que enviamos para:</p>
-              <div className="email-highlight">{email}</div>
+              <div className="rep-email-highlight">{email}</div>
             </div>
 
-            <div className="verification-instructions">
+            <div className="rep-verification-instructions">
               <h4>Próximos passos:</h4>
               <ol>
                 <li>Abra seu email e procure por uma mensagem da Loja Crysleão</li>
@@ -191,30 +191,30 @@ const RegisterPage: React.FC = () => {
               <p><strong>Dica:</strong> Se não encontrou o email, verifique a pasta de spam.</p>
             </div>
 
-            <div className="action-buttons">
+            <div className="rep-action-buttons">
               <button 
-                className="resend-button"
+                className="rep-resend-button"
                 onClick={handleResendVerification}
               >
                 Reenviar Email
               </button>
               
               <button 
-                className="login-button"
+                className="rep-login-button"
                 onClick={() => navigate('/login')}
               >
                 Ir para Login
               </button>
             </div>
 
-            <div className="countdown-info">
+            <div className="rep-countdown-info">
               <p>Você será redirecionado automaticamente para o login em alguns segundos...</p>
             </div>
           </>
         )}
 
-        {erro && <div className="error-message">{erro}</div>}
-        {sucesso && <div className="success-message">{sucesso}</div>}
+        {erro && <div className="rep-error-message">{erro}</div>}
+        {sucesso && <div className="rep-success-message">{sucesso}</div>}
       </div>
     </div>
   );

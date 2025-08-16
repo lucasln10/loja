@@ -1,11 +1,11 @@
-.register-page {
+.rep-register-page {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
 }
 
-.register-container {
+.rep-register-container {
   padding: 2.5rem;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -14,7 +14,7 @@
   position: relative;
 }
 
-.register-container::before {
+.rep-register-container::before {
   content: '';
   position: absolute;
   top: 0;
@@ -25,7 +25,7 @@
   border-radius: 15px 15px 0 0;
 }
 
-.register-title {
+.rep-register-title {
   text-align: center;
   color: #2C3E50;
   font-size: 2rem;
@@ -33,25 +33,25 @@
   font-weight: 600;
 }
 
-.register-form {
+.rep-register-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.form-group {
+.rep-form-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.form-label {
+.rep-form-label {
   color: #2C3E50;
   font-weight: 500;
   font-size: 0.9rem;
 }
 
-.form-input {
+.rep-form-input {
   padding: 1rem;
   border: 2px solid #e1e5e9;
   border-radius: 8px;
@@ -60,23 +60,23 @@
   background-color: #f8f9fa;
 }
 
-.form-input:focus {
+.rep-form-input:focus {
   outline: none;
   border-color: #FA8072;
   background-color: white;
   box-shadow: 0 0 0 3px rgba(250, 128, 114, 0.1);
 }
 
-.form-input::placeholder {
+.rep-form-input::placeholder {
   color: #7F8C8D;
 }
 
-.form-row {
+.rep-form-row {
   display: grid;
   gap: 1rem;
 }
 
-.register-button {
+.rep-register-button {
   background: #FA8072;
   color: white;
   border: none;
@@ -89,17 +89,17 @@
   margin-top: 1rem;
 }
 
-.register-button:hover {
+.rep-register-button:hover {
   background: #ff6a59;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(250, 128, 114, 0.3);
 }
 
-.register-button:active {
+.rep-register-button:active {
   transform: translateY(0);
 }
 
-.register-button:disabled {
+.rep-register-button:disabled {
   background: #cccccc;
   cursor: not-allowed;
   transform: none;
@@ -107,30 +107,30 @@
 }
 
 /* Novos estilos para verificação de email */
-.verification-info {
+.rep-verification-info {
   text-align: center;
   margin-bottom: 2rem;
 }
 
-.email-icon {
+.rep-email-icon {
   font-size: 4rem;
   margin-bottom: 1rem;
 }
 
-.verification-info h3 {
+.rep-verification-info h3 {
   color: #2C3E50;
   font-size: 1.5rem;
   margin-bottom: 1rem;
   font-weight: 600;
 }
 
-.verification-info p {
+.rep-verification-info p {
   color: #7F8C8D;
   margin-bottom: 1rem;
   line-height: 1.5;
 }
 
-.email-highlight {
+.rep-email-highlight {
   background: #e8f5e8;
   color: #2e7d32;
   padding: 0.8rem;
@@ -140,7 +140,7 @@
   margin: 1rem 0;
 }
 
-.verification-instructions {
+.rep-verification-instructions {
   background: #f8f9fa;
   padding: 1.5rem;
   border-radius: 8px;
@@ -149,37 +149,37 @@
   text-align: left;
 }
 
-.verification-instructions h4 {
+.rep-verification-instructions h4 {
   color: #2C3E50;
   margin-bottom: 1rem;
   font-size: 1.1rem;
 }
 
-.verification-instructions ol {
+.rep-verification-instructions ol {
   color: #2C3E50;
   margin-bottom: 1rem;
   padding-left: 1.2rem;
 }
 
-.verification-instructions li {
+.rep-verification-instructions li {
   margin-bottom: 0.5rem;
   line-height: 1.4;
 }
 
-.verification-instructions p {
+.rep-verification-instructions p {
   color: #7F8C8D;
   font-size: 0.9rem;
   margin: 0;
   font-style: italic;
 }
 
-.action-buttons {
+.rep-action-buttons {
   display: flex;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
-.resend-button, .login-button {
+.rep-resend-button, .rep-login-button {
   flex: 1;
   padding: 1rem;
   border: none;
@@ -190,29 +190,29 @@
   transition: all 0.3s ease;
 }
 
-.resend-button {
+.rep-resend-button {
   background: #17a2b8;
   color: white;
 }
 
-.resend-button:hover {
+.rep-resend-button:hover {
   background: #138496;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
 }
 
-.login-button {
+.rep-login-button {
   background: #FA8072;
   color: white;
 }
 
-.login-button:hover {
+.rep-login-button:hover {
   background: #ff6a59;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(250, 128, 114, 0.3);
 }
 
-.countdown-info {
+.rep-countdown-info {
   background: #fff3cd;
   color: #856404;
   padding: 1rem;
@@ -222,17 +222,17 @@
   font-size: 0.9rem;
 }
 
-.countdown-info p {
+.rep-countdown-info p {
   margin: 0;
 }
 
-.form-input:disabled {
+.rep-form-input:disabled {
   background-color: #e9ecef;
   color: #6c757d;
   cursor: not-allowed;
 }
 
-.error-message {
+.rep-error-message {
   background-color: #ffebee;
   color: #c62828;
   padding: 1rem;
@@ -242,7 +242,7 @@
   margin-top: 1rem;
 }
 
-.success-message {
+.rep-success-message {
   background-color: #e8f5e8;
   color: #2e7d32;
   padding: 1rem;
@@ -252,25 +252,25 @@
   margin-top: 1rem;
 }
 
-.login-link {
+.rep-login-link {
   text-align: center;
   margin-top: 1rem;
   color: #7F8C8D;
 }
 
-.login-link a {
+.rep-login-link a {
   color: #FA8072;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s ease;
 }
 
-.login-link a:hover {
+.rep-login-link a:hover {
   color: #DC143C;
   text-decoration: underline;
 }
 
-.form-instructions {
+.rep-form-instructions {
   background-color: #f8f9fa;
   padding: 1rem;
   border-radius: 8px;
@@ -280,42 +280,42 @@
   color: #2C3E50;
 }
 
-.form-instructions ul {
+.rep-form-instructions ul {
   margin: 0.5rem 0 0 1rem;
   padding: 0;
 }
 
-.form-instructions li {
+.rep-form-instructions li {
   margin-bottom: 0.25rem;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .register-page {
+  .rep-register-page {
     padding: 1rem;
   }
   
-  .register-container {
+  .rep-register-container {
     padding: 2rem;
   }
   
-  .register-title {
+  .rep-register-title {
     font-size: 1.5rem;
   }
   
-  .form-row {
+  .rep-form-row {
     grid-template-columns: 1fr;
   }
   
-  .action-buttons {
+  .rep-action-buttons {
     flex-direction: column;
   }
   
-  .email-icon {
+  .rep-email-icon {
     font-size: 3rem;
   }
   
-  .verification-info h3 {
+  .rep-verification-info h3 {
     font-size: 1.3rem;
   }
 }

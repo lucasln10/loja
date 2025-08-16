@@ -283,7 +283,7 @@ const ProductDetailPage: React.FC = () => {
               </Swiper>
             )}
             {/* Informações de Entrega */}
-            <div className="pdp-shipping-info">
+            {/* <div className="pdp-shipping-info">
               <h4>Informações de Entrega</h4>
               <div className="pdp-shipping-options">
                 <div className="pdp-shipping-option">
@@ -295,7 +295,7 @@ const ProductDetailPage: React.FC = () => {
                   <span className="pdp-shipping-time">1-2 dias úteis - R$ 15,00</span>
                 </div>
               </div>
-            </div>
+            </div> */}
             </div>
           </div>
           
@@ -329,9 +329,9 @@ const ProductDetailPage: React.FC = () => {
                 </span>
               </div> */}
               
-              <div className="pdp-category-tag">
+              {/* <div className="pdp-category-tag">
                 <span>Categoria: {product.category}</span>
-              </div>
+              </div> */}
             </div>
 
             <div className="pdp-price-container">
