@@ -29,21 +29,21 @@ const RecoverPasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="recover-password-page">
-      <div className="recover-password-container">
-        <h2 className="recover-password-title">Recuperar Senha</h2>
+    <div className="rp-recover-password-page">
+      <div className="rp-recover-password-container">
+        <h2 className="rp-recover-password-title">Recuperar Senha</h2>
         
-        <div className="recover-password-instructions">
+        <div className="rp-recover-password-instructions">
           <p>Digite seu e-mail cadastrado e enviaremos instruções para redefinir sua senha.</p>
         </div>
 
-        <form className="recover-password-form" onSubmit={handleRecoverPassword}>
-          <div className="form-group">
-            <label className="form-label" htmlFor="email">E-mail</label>
+        <form className="rp-recover-password-form" onSubmit={handleRecoverPassword}>
+          <div className="rp-form-group">
+            <label className="rp-form-label" htmlFor="email">E-mail</label>
             <input
               id="email"
               type="email"
-              className="form-input"
+              className="rp-form-input"
               placeholder="Digite seu e-mail cadastrado"
               value={email}
               onChange={e => setEmail(e.target.value)}
@@ -54,17 +54,17 @@ const RecoverPasswordPage: React.FC = () => {
           
           <button 
             type="submit" 
-            className="recover-password-button"
+            className="rp-recover-password-button"
             disabled={enviando}
           >
             {enviando ? 'Enviando...' : 'Enviar Instruções'}
           </button>
         </form>
         
-        {erro && <div className="error-message">{erro}</div>}
-        {sucesso && <div className="success-message">{sucesso}</div>}
+        {erro && <div className="rp-error-message">{erro}</div>}
+        {sucesso && <div className="rp-success-message">{sucesso}</div>}
         
-        <div className="back-to-login">
+        <div className="rp-back-to-login">
           <p>
             <a href="/login">← Voltar para o login</a>
           </p>
