@@ -3,20 +3,12 @@
   padding: 2rem 0;
 }
 
-.products-header {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
 .products-header h1 {
-  font-size: 3rem;
   color: #DC143C;
-  margin-bottom: 1rem;
   font-weight: 700;
 }
 
 .products-header p {
-  font-size: 1.2rem;
   color: #666;
   margin-bottom: 0;
 }
@@ -205,9 +197,6 @@
 
 /* Responsividade */
 @media (max-width: 768px) {
-  .products-header h1 {
-    font-size: 2rem;
-  }
   
   .products-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -229,5 +218,94 @@
   
   .products-main {
     order: 1;
+  }
+}
+
+/* Paginação para SearchResultsPage */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.pagination-btn {
+  background-color: #DC143C;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #b91c3c;
+}
+
+.pagination-btn:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Breadcrumb específico para SearchResultsPage */
+.breadcrumb-link {
+  background: none;
+  border: none;
+  color: #DC143C;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+.breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-current {
+  color: #333;
+  font-weight: 500;
+}
+
+/* Botão explore para no-products */
+.explore-btn {
+  background-color: #DC143C;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.explore-btn:hover {
+  background-color: #b91c3c;
+}
+
+/* Ajustes responsivos para paginação */
+@media (max-width: 768px) {
+  .pagination {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pagination-btn {
+    width: 100%;
+    max-width: 200px;
   }
 }

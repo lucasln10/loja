@@ -1,4 +1,5 @@
 import { Product } from '../types';
+import { categoryService } from './categoryService';
 
 export const API_BASE_URL = 'http://localhost:8080';
 
@@ -52,13 +53,14 @@ export const productService = {
       console.log('📦 Produtos recebidos:', all);
       const filtered = all.filter(p => p.status === true || p.status === undefined);
       console.log('📦 Produtos filtrados:', filtered);
+      // Mantém o mapeamento básico; a versão com categorias corrige o nome depois
       return filtered.map(dto => ({
         id: dto.id || 0,
         name: dto.name,
         price: dto.price,
         image: getProductImage(dto),
         description: dto.description || '',
-        category: 'Produto',
+        category: 'Produto', // será substituído em getAllProductsWithCategories
         categoryId: dto.categoryId,
         quantity: dto.quantity
       }));
@@ -71,17 +73,34 @@ export const productService = {
   async getAllProductsWithCategories(): Promise<Product[]> {
     try {
       console.log('Buscando produtos com categorias...');
-      return this.getAllProducts();
+      const [products, categories] = await Promise.all([
+        this.getAllProducts(),
+        categoryService.getAllCategories(),
+      ]);
+
+      const categoryMap = new Map<number, string>(
+        categories
+          .filter(c => typeof c.id === 'number')
+          .map(c => [c.id as number, c.name])
+      );
+
+      // Sobrescreve o campo category com o nome real
+      return products.map(p => ({
+        ...p,
+        category: categoryMap.get(p.categoryId || 0) || 'Produto'
+      }));
     } catch (error) {
       console.error('Erro ao buscar produtos com categorias:', error);
       return [];
     }
   },
 
+  // Retorna alguns produtos para a seção "destaques"
   async getFeaturedProducts(): Promise<Product[]> {
     try {
       console.log('Buscando produtos em destaque...');
-      const products = await this.getAllProducts();
+      // Estratégia simples: usa a listagem com categorias e pega os 3 primeiros
+      const products = await this.getAllProductsWithCategories();
       return products.slice(0, 3);
     } catch (error) {
       console.error('Erro ao buscar produtos em destaque:', error);
@@ -96,13 +115,24 @@ export const productService = {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const dto: ProductDTO = await response.json();
       console.log('📦 Produto recebido:', dto);
+
+      // Tenta resolver o nome da categoria para o detalhe também
+      let categoryName = 'Produto';
+      try {
+        const categories = await categoryService.getAllCategories();
+        const found = categories.find(c => c.id === dto.categoryId);
+        if (found?.name) categoryName = found.name;
+      } catch {
+        console.log('❌ Erro ao buscar categoria, usando fallback "Produto"');
+      }
+
       return {
         id: dto.id || 0,
         name: dto.name,
         price: dto.price,
         image: getProductImage(dto),
         description: dto.description || '',
-        category: 'Produto',
+        category: categoryName,
         categoryId: dto.categoryId,
         quantity: dto.quantity
       };

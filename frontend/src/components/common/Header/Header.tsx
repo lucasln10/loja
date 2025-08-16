@@ -48,14 +48,20 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Buscar por:', searchQuery);
+    
+    if (searchQuery.trim()) {
+  // Navegar para a página de produtos com o termo de busca
+  navigate(`/produtos?q=${encodeURIComponent(searchQuery.trim())}`);
+      // Limpar o campo de busca após a navegação
+      setSearchQuery('');
+    }
   };
 
   // Função para navegar para categorias
   const handleCategoryNavigation = (categoryId: number, categoryName: string) => {
     const categorySlug = categoryName.toLowerCase()
       .replace(/\s+/g, '-')
-      .replace(/[^\w\-]+/g, '');
+      .replace(/[^\w-]+/g, '');
     
     onPageChange(categorySlug);
     navigate(`/produtos?categoria=${categoryId}&nome=${categorySlug}`);
@@ -144,12 +150,17 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
           <form className="search-form" onSubmit={handleSearch}>
             <input
               type="text"
-              placeholder="Digite o que você procura"
+              placeholder="Buscar produtos ou categorias..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="search-input"
             />
-            <button type="submit" className="search-button">
+            <button 
+              type="submit" 
+              className="search-button"
+              disabled={!searchQuery.trim()}
+              title="Buscar produtos"
+            >
               <span className="search-icon">{(FaMagnifyingGlass as any)()}</span>
             </button>
           </form>

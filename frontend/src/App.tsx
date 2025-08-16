@@ -1,6 +1,6 @@
 // App.tsx
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/common/Header/Header';
@@ -37,6 +37,7 @@ function AppContent() {
     const pageToRoute: { [key: string]: string } = {
       'home': '/',
       'produtos': '/produtos',
+  'buscar': '/produtos',
       'promocoes': '/produtos?categoria=promocoes',
       'cortadores': '/produtos?categoria=cortadores',
       'moldes-silicone': '/produtos?categoria=moldes-silicone',
@@ -69,6 +70,11 @@ function AppContent() {
       setCurrentPage('home');
     } else if (path === '/produtos' && categoria) {
       setCurrentPage(categoria);
+    } else if (path === '/buscar') {
+      // Redirecionar rotas antigas de busca para /produtos mantendo querystring
+      const qs = location.search || '';
+      navigate(`/produtos${qs}`, { replace: true });
+      setCurrentPage('produtos');
     } else if (path === '/carrinho') {
       setCurrentPage('carrinho');
     } else if (path === '/login') {
@@ -90,7 +96,7 @@ function AppContent() {
     } else if (path === '/reenviar-verificacao') {
       setCurrentPage('reenviar-verificacao');
     } 
-  }, [location]);
+  }, [location, navigate]);
 
   return (
     <div className="App">
@@ -106,6 +112,12 @@ function AppContent() {
           <Route path="/verificar-email" element={<VerifyEmailPage />} />
           <Route path="/reenviar-verificacao" element={<ResendVerificationPage />} />
           <Route path="/produtos" element={<ProductsPage />} />
+          <Route
+            path="/buscar"
+            element={
+              <RedirectToProdutos />
+            }
+          />
           <Route path="/produto/:id" element={<ProductDetailPage />} />
           <Route path="/sobre" element={<AboutPage />} />
           <Route path="/contato" element={<ContactPage />} />
@@ -117,6 +129,12 @@ function AppContent() {
       <Footer />
     </div>
   );
+}
+
+function RedirectToProdutos() {
+  const location = useLocation();
+  const search = location.search || '';
+  return <Navigate to={`/produtos${search}`} replace />;
 }
 
 function App() {
