@@ -18,7 +18,6 @@ const ProductsPage: React.FC = () => {
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'newest'>('name');
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 1000 });
 
-  // Hook específico para navegação - monitora mudanças na URL
   useScrollToTopOnNavigation([searchParams.toString()]);
 
   useEffect(() => {
@@ -34,23 +33,73 @@ const ProductsPage: React.FC = () => {
         setCategories(categoriesData);
         setAllProducts(productsData);
         
-        // Verificar se há uma categoria específica na URL
-        const categoriaId = searchParams.get('categoria');
+        // Verificar parâmetros de URL
+        const categoriaParam = searchParams.get('categoria');
+        const searchTerm = (searchParams.get('q') || '').trim().toLowerCase();
+
+        // Helper para slugificar nomes de categoria
+        const slugify = (s: string) => s
+          .toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^\w-]+/g, '');
         
-        if (categoriaId) {
-          const categoryId = parseInt(categoriaId);
-          const category = categoriesData.find(cat => cat.id === categoryId);
+        // Mapa id -> nome da categoria (lower) para facilitar busca por nome
+        const categoryNameById = new Map<number, string>(
+          categoriesData
+            .filter(c => typeof c.id === 'number')
+            .map(c => [c.id as number, (c.name || '').toLowerCase()])
+        );
+        
+        if (categoriaParam) {
+          // Detectar categoria por ID numérico ou por slug/nome
+          let categoryId: number | null = null;
+          let category: CategoryDTO | undefined;
+
+          const parsedId = parseInt(categoriaParam, 10);
+          if (!isNaN(parsedId)) {
+            categoryId = parsedId;
+            category = categoriesData.find(cat => cat.id === parsedId);
+          } else {
+            const targetSlug = slugify(categoriaParam);
+            category = categoriesData.find(cat => slugify(cat.name) === targetSlug);
+            if (category && typeof category.id === 'number') {
+              categoryId = category.id as number;
+            }
+          }
+
           setCurrentCategory(category || null);
           
           // Filtrar produtos pela categoria
-          const filteredProducts = productsData.filter(product => 
-            product.categoryId === categoryId
+          let filteredProducts = productsData.filter(product => 
+            categoryId !== null && product.categoryId === categoryId
           );
+          // Se houver termo de busca, refinar pelo termo
+          if (searchTerm) {
+            filteredProducts = filteredProducts.filter(p =>
+              p.name.toLowerCase().includes(searchTerm) ||
+              (p.description || '').toLowerCase().includes(searchTerm) ||
+              (categoryNameById.get(p.categoryId || 0) || '').includes(searchTerm)
+            );
+          }
           
           setProducts(filteredProducts);
         } else {
-          // Mostrar todos os produtos
-          setProducts(productsData);
+          // Sem categoria específica
+          if (searchTerm) {
+            // Filtrar por termo de busca em nome, descrição ou categoria
+            const filteredBySearch = productsData.filter(p => {
+              const catName = categoryNameById.get(p.categoryId || 0) || '';
+              return (
+                p.name.toLowerCase().includes(searchTerm) ||
+                (p.description || '').toLowerCase().includes(searchTerm) ||
+                catName.includes(searchTerm)
+              );
+            });
+            setProducts(filteredBySearch);
+          } else {
+            // Mostrar todos os produtos
+            setProducts(productsData);
+          }
           setCurrentCategory(null);
         }
       } catch (error) {
@@ -109,10 +158,16 @@ const ProductsPage: React.FC = () => {
       { label: 'Produtos', path: '/produtos' }
     ];
     
+    const searchTerm = (searchParams.get('q') || '').trim();
     if (currentCategory) {
       items.push({ 
         label: currentCategory.name, 
         path: `/produtos?categoria=${currentCategory.id}` 
+      });
+    } else if (searchTerm) {
+      items.push({
+        label: `"${searchTerm}"`,
+        path: `/produtos?q=${encodeURIComponent(searchTerm)}`
       });
     }
     

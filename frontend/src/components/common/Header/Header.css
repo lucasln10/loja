@@ -249,12 +249,20 @@
   cursor: pointer;
   font-size: 1rem;
   color: #FA8072;
+  background: white;
+  transition: all 0.3s ease;
 }
 
-.search-button:hover {
+.search-button:hover:not(:disabled) {
   background: #FA8072;
   color: white;
   box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+}
+
+.search-button:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+  border-color: #f0f0f0;
 }
 
 /* Ações do header principal */
