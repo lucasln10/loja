@@ -14,27 +14,31 @@ export interface ProductDTO {
   imageUrls?: string[];
   status?: boolean;
 }
+const toAbsoluteUrl = (url: string): string => {
+  if (!url) return '/images/logo.webp';
+  let fixed = url.trim();
+  fixed = fixed.replace('/uploads/product/', '/uploads/products/');
+  fixed = fixed.replace('uploads/product/', 'uploads/products/');
+  if (fixed.endsWith('/uploads/product')) fixed = fixed.replace('/uploads/product', '/uploads/products');
+  if (fixed.includes('uploads/product')) fixed = fixed.replace('uploads/product', 'uploads/products');
 
-// Função para obter a imagem do produto
+  if (fixed.startsWith('http://') || fixed.startsWith('https://')) return fixed;
+  const path = fixed.startsWith('/') ? fixed : `/${fixed}`;
+  return `${API_BASE_URL}${path}`;
+};
 const getProductImage = (dto: ProductDTO): string => {
   console.log('🖼️ Mapeando imagem para produto:', dto.name, {
     imageUrl: dto.imageUrl,
     imageUrls: dto.imageUrls
   });
-
-  // Prioridade: imageUrls[0] > imageUrl > logo padrão
   if (dto.imageUrls && dto.imageUrls.length > 0) {
-    const url = dto.imageUrls[0].startsWith('http') 
-      ? dto.imageUrls[0] 
-      : `${API_BASE_URL}${dto.imageUrls[0]}`;
+    const url = toAbsoluteUrl(dto.imageUrls[0]);
     console.log('✅ Usando imageUrls[0]:', url);
     return url;
   }
   
   if (dto.imageUrl) {
-    const url = dto.imageUrl.startsWith('http') 
-      ? dto.imageUrl 
-      : `${API_BASE_URL}${dto.imageUrl}`;
+    const url = toAbsoluteUrl(dto.imageUrl);
     console.log('✅ Usando imageUrl:', url);
     return url;
   }
@@ -83,8 +87,6 @@ export const productService = {
           .filter(c => typeof c.id === 'number')
           .map(c => [c.id as number, c.name])
       );
-
-      // Sobrescreve o campo category com o nome real
       return products.map(p => ({
         ...p,
         category: categoryMap.get(p.categoryId || 0) || 'Produto'
@@ -94,12 +96,9 @@ export const productService = {
       return [];
     }
   },
-
-  // Retorna alguns produtos para a seção "destaques"
   async getFeaturedProducts(): Promise<Product[]> {
     try {
       console.log('Buscando produtos em destaque...');
-      // Estratégia simples: usa a listagem com categorias e pega os 3 primeiros
       const products = await this.getAllProductsWithCategories();
       return products.slice(0, 3);
     } catch (error) {
@@ -115,8 +114,6 @@ export const productService = {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const dto: ProductDTO = await response.json();
       console.log('📦 Produto recebido:', dto);
-
-      // Tenta resolver o nome da categoria para o detalhe também
       let categoryName = 'Produto';
       try {
         const categories = await categoryService.getAllCategories();
@@ -145,23 +142,17 @@ export const productService = {
   async getProductImages(productId: number): Promise<string[]> {
     try {
       console.log('🖼️ Buscando imagens do produto:', productId);
-      
-      // Primeiro tenta buscar do endpoint específico de imagens
       try {
         const response = await fetch(`${API_BASE_URL}/api/products/images/product/${productId}`);
         if (response.ok) {
           const imageUrls: string[] = await response.json();
-          const fullUrls = imageUrls.map(url => 
-            url.startsWith('http') ? url : `${API_BASE_URL}${url}`
-          );
+          const fullUrls = imageUrls.map(url => toAbsoluteUrl(url));
           console.log('✅ Imagens encontradas no endpoint específico:', fullUrls);
           return fullUrls.length > 0 ? fullUrls : ['/images/logo.webp'];
         }
       } catch (err) {
         console.log('⚠️ Endpoint específico de imagens não disponível, tentando pelo produto...');
       }
-      
-      // Fallback: busca o produto completo e extrai as imagens
       const productResponse = await fetch(`${API_BASE_URL}/api/products/${productId}`);
       if (productResponse.ok) {
         const product: ProductDTO = await productResponse.json();
@@ -171,12 +162,12 @@ export const productService = {
         
         if (product.imageUrls && product.imageUrls.length > 0) {
           product.imageUrls.forEach(url => {
-            images.push(url.startsWith('http') ? url : `${API_BASE_URL}${url}`);
+            images.push(toAbsoluteUrl(url));
           });
         }
         
         if (product.imageUrl) {
-          const url = product.imageUrl.startsWith('http') ? product.imageUrl : `${API_BASE_URL}${product.imageUrl}`;
+          const url = toAbsoluteUrl(product.imageUrl);
           if (!images.includes(url)) {
             images.push(url);
           }

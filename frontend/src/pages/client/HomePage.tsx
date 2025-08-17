@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Product, CarouselItem } from '../../types';
-import { productService, API_BASE_URL } from '../../services/productService';
+import { productService } from '../../services/productService';
 import { carouselService } from '../../services/carouselService';
 import { FaTruckFast } from "react-icons/fa6";
 import { IoShieldCheckmark } from "react-icons/io5";
@@ -190,7 +190,7 @@ const HomePage: React.FC = () => {
   const handleCarouselClick = (item: CarouselItem) => {
     if (item.carouselType === 'PRODUCT' && item.productId) {
       // Se for um produto, navega para a página de detalhes do produto
-      navigate(`/produtos/${item.productId}`);
+      navigate(`/produto/${item.productId}`);
     } else if (item.carouselType === 'CUSTOM') {
       // Se for personalizado, verifica se tem uma categoria no título ou link
       if (item.linkUrl) {
@@ -246,11 +246,18 @@ const HomePage: React.FC = () => {
                 >
                   <div className="carousel-image-container">
                     <img 
-                      src={item.imageUrl.startsWith('http') ? item.imageUrl : `${API_BASE_URL}${item.imageUrl}`} 
+                      src={(() => {
+                        const u = item.imageUrl || '';
+                        const fixed = u.replace('/uploads/product/', '/uploads/products/');
+                        if (fixed.includes('/uploads/products/')) {
+                          const fname = fixed.substring(fixed.lastIndexOf('/') + 1);
+                          return `http://localhost:8080/api/products/images/${fname}`;
+                        }
+                        return fixed;
+                      })()}
                       alt={item.title}
                       onError={(e) => {
                         console.error('Erro ao carregar imagem do carrossel:', item.imageUrl);
-                        // Fallback para logo se a imagem não carregar
                         (e.target as HTMLImageElement).src = '/images/logo.webp';
                       }}
                     />
