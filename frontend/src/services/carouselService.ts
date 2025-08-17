@@ -1,13 +1,34 @@
 import { CarouselItem } from '../types';
 import { API_BASE_URL } from './productService';
 
+const normalizeCarouselImageUrl = (url: string): string => {
+  if (!url) return '/images/logo.webp';
+  let fixed = url.trim();
+  fixed = fixed.replace('/uploads/product/', '/uploads/products/');
+  fixed = fixed.replace('uploads/product/', 'uploads/products/');
+  const lastSlash = fixed.lastIndexOf('/')
+  const filename = lastSlash >= 0 ? fixed.substring(lastSlash + 1) : fixed;
+  if (fixed.includes('/uploads/products/')) {
+    return `${API_BASE_URL}/api/products/images/${filename}`;
+  }
+  if (fixed.includes('/api/products/images/')) {
+    return fixed.startsWith('http') ? fixed : `${API_BASE_URL}${fixed.startsWith('/') ? fixed : '/' + fixed}`;
+  }
+  if (!fixed.startsWith('http') && !fixed.startsWith('/')) fixed = `/${fixed}`;
+  if (!fixed.startsWith('http')) fixed = `${API_BASE_URL}${fixed}`;
+  return fixed;
+};
+
 class CarouselService {
-  // Buscar itens ativos do carrossel (público)
   async getActiveCarouselItems(): Promise<CarouselItem[]> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/carousel/active`);
       if (response.ok) {
-        return await response.json();
+        const items: CarouselItem[] = await response.json();
+        return items.map(item => ({
+          ...item,
+          imageUrl: normalizeCarouselImageUrl(item.imageUrl)
+        }));
       }
       return [];
     } catch (error) {
@@ -16,7 +37,6 @@ class CarouselService {
     }
   }
 
-  // Buscar todos os itens (admin)
   async getAllCarouselItems(authToken: string): Promise<CarouselItem[]> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/carousel/admin`, {
@@ -25,7 +45,11 @@ class CarouselService {
         },
       });
       if (response.ok) {
-        return await response.json();
+        const items: CarouselItem[] = await response.json();
+        return items.map(item => ({
+          ...item,
+          imageUrl: normalizeCarouselImageUrl(item.imageUrl)
+        }));
       }
       return [];
     } catch (error) {
@@ -34,7 +58,6 @@ class CarouselService {
     }
   }
 
-  // Adicionar produto ao carrossel
   async addProductToCarousel(productId: number, displayOrder: number, authToken: string): Promise<void> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/carousel/add-product/${productId}?displayOrder=${displayOrder}`, {
@@ -52,8 +75,6 @@ class CarouselService {
       throw error;
     }
   }
-
-  // Adicionar imagem personalizada ao carrossel
   async addCustomToCarousel(
     imageFile: File,
     title: string,
@@ -87,7 +108,6 @@ class CarouselService {
     }
   }
 
-  // Remover item do carrossel
   async removeCarouselItem(id: number, authToken: string): Promise<void> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/carousel/${id}`, {
@@ -106,7 +126,6 @@ class CarouselService {
     }
   }
 
-  // Ativar/desativar item
   async toggleCarouselItem(id: number, authToken: string): Promise<void> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/carousel/${id}/toggle`, {

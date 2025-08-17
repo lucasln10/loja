@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import ProductManager from '../../components/admin/ProductManager';
 import StockManager from '../../components/admin/StockManager';
@@ -16,9 +16,9 @@ interface Product {
     id: number;
     name: string;
   };
-  quantity: number; // Corrigido: quantity em vez de stock
+  quantity: number;
   imageUrl?: string;
-  imageUrls?: string[]; // Adicionado suporte para múltiplas imagens
+  imageUrls?: string[];
 }
 
 interface Category {
@@ -36,6 +36,7 @@ interface User {
 const AdminPage: React.FC = () => {
   const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -60,7 +61,7 @@ const AdminPage: React.FC = () => {
 
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
-  // Verificar se o usuário é admin
+  // Verificar se o usuário é admin e aplicar deep-link inicial
   useEffect(() => {
     if (!user) {
       navigate('/login');
@@ -85,6 +86,22 @@ const AdminPage: React.FC = () => {
       if (!isNaN(n)) setDeeplinkProductId(n);
     }
   }, [user, isAdmin, navigate]);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    const params = new URLSearchParams(location.search);
+    const tab = params.get('tab');
+    if (tab) {
+      setActiveTab(tab);
+    }
+    const pid = params.get('productId');
+    if (pid) {
+      const n = parseInt(pid, 10);
+      if (!isNaN(n)) setDeeplinkProductId(n);
+    } else {
+      setDeeplinkProductId(null);
+    }
+  }, [location.search, isAdmin]);
 
   // Carregar dados
   useEffect(() => {

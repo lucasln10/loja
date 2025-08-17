@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AdminProduct } from '../../types';
 import './ProductManager.css';
 
@@ -13,11 +14,13 @@ interface ProductManagerProps {
 }
 
 const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<AdminProduct[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<AdminProduct | null>(null);
+  // Removido: não usado
+  // const [selectedProduct, setSelectedProduct] = useState<AdminProduct | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [showCreate, setShowCreate] = useState(false); // esconder criação por padrão
+  const [showCreate] = useState(false); // esconder criação por padrão
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -43,9 +46,13 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
 
   // Carregar produtos e categorias
   useEffect(() => {
-    loadProducts();
-    loadCategories();
-  }, []);
+    const run = async () => {
+      await loadProducts();
+      await loadCategories();
+    };
+    run();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authToken]);
 
   const loadProducts = async () => {
     try {
@@ -72,6 +79,16 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
     } catch (e) {
       console.error('Erro ao alternar status do produto', e);
     }
+  };
+
+  // Vai para o estoque
+  const goToEditStock = (productId: number) => {
+    navigate(`/admin?tab=stock&productId=${productId}`);
+  };
+
+  // Vai para a página de detalhes do produto
+  const goToProductDetails = (productId: number) => {
+    navigate(`/produto/${productId}`);
   };
 
   const loadCategories = async () => {
@@ -211,7 +228,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
       imageUrls: []
     });
     setIsEditing(false);
-    setSelectedProduct(null);
+  // selecionado removido
     setImageFiles([]);
     setImagePreviews([]);
     setIsUploadingImage(false);
@@ -433,7 +450,12 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
           
           <div className="products-grid">
             {products.map(product => (
-              <div key={product.id} className="product-card">
+              <div 
+                key={product.id} 
+                className="product-card"
+                onClick={() => product.id && goToProductDetails(product.id as number)}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className="product-image">
                   {product.imageUrls && product.imageUrls.length > 0 ? (
                     <div className="product-images-container">
@@ -475,7 +497,13 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
                 
                 <div className="product-actions">
                   <button
-                    onClick={() => handleToggleStatus(product)}
+                    onClick={(e) => { e.stopPropagation(); if (product.id) goToEditStock(product.id as number); }}
+                    className="btn-primary"
+                  >
+                    Editar Estoque
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleToggleStatus(product); }}
                     className="btn-secondary"
                   >
                     {product.status ? 'Desativar' : 'Ativar'}
