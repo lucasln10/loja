@@ -13,6 +13,8 @@ public class Category {
     private String name;
     @OneToMany(mappedBy = "category")
     private List<Product> produtos;
+    @Column(nullable = false)
+    private boolean status = false;
 
     public List<Product> getProdutos() {
         return produtos;
@@ -31,6 +33,12 @@ public class Category {
     }
     public void setName(String name) {
         this.name = name;
+    }
+    public boolean getStatus() {
+        return isActive;
+    }
+    public void setStatus(boolean isActive) {
+        this.isActive = isActive;
     }
 
 }

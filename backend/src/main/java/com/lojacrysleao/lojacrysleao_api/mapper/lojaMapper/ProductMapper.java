@@ -91,9 +91,9 @@ public class ProductMapper {
         return product;
     }
 
-    public Product toEntity(ProductDTO dto, Category category) {
+    public Product toEntity(ProductDTO dto, List<Category> setCategorys) {
         Product product = toEntity(dto);
-        product.setCategory(category);
+        product.setCategorys(category);
         return product;
     }
 

@@ -23,7 +23,7 @@ public class ProductDTO {
 
     private String detailedDescription;
 
-    private Long categoryId;
+    private List<Long> categoryId;
 
     private boolean status;
 

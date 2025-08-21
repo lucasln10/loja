@@ -95,5 +95,27 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
+    public boolean enableStatus(Long id){
+        Category categoria = findById(id);
+
+        if (categoria.getStatus() == true){
+            throw new BadRequestException("Categoria já está ativa.")
+        }
+
+        categoria.setStatus(true);
+        categoryRepository.saveAndFlush(categoria);
+        return categoria;
+    }
+
+    public boolean desableStatus(){
+        Category categoria = findById(id);
+
+        if (categoria.getStatus() == false) {
+            throw new BadRequestException("Categoria já está desativada.");
+        }
+        categoria.setStatus(false);
+        categoryRepository.saveAndFlush(categoria);
+        return categoria;
+    }
 
 }
