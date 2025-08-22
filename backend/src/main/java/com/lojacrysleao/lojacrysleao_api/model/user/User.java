@@ -1,5 +1,6 @@
 package com.lojacrysleao.lojacrysleao_api.model.user;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.time.LocalDateTime;
 import com.lojacrysleao.lojacrysleao_api.model.loja.Product;
