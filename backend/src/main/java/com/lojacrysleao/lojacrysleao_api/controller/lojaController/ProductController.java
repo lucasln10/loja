@@ -120,6 +120,18 @@ public class ProductController {
     }
     
     /**
+     * Filtrar produtos por múltiplas categorias
+     */
+    @GetMapping("/by-categories")
+    public ResponseEntity<PageResponseDTO<ProductDTO>> getProductsByCategories(
+            @RequestParam List<Long> categoryIds,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        PageResponseDTO<ProductDTO> products = productService.filterByCategories(categoryIds, page, size);
+        return ResponseEntity.ok(products);
+    }
+    
+    /**
      * Filtra produtos por faixa de preço
      */
     @GetMapping("/price-range")

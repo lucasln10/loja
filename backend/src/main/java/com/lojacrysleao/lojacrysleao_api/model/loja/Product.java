@@ -1,6 +1,5 @@
 package com.lojacrysleao.lojacrysleao_api.model.loja;
 
-import com.fasterxml.jackson.databind.annotation.EnumNaming;
 import com.lojacrysleao.lojacrysleao_api.model.storage.Storage;
 import com.lojacrysleao.lojacrysleao_api.model.user.User;
 import jakarta.persistence.*;
@@ -38,9 +37,19 @@ public class Product {
     @Column(nullable = true, length = 2000)
     private String detailedDescription;
 
+    // Relacionamento com categoria principal (mantido para compatibilidade)
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private List<Category> categorys;
+    private Category category;
+
+    // Relacionamento N:N com categorias (novo)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "product_category",
+        joinColumns = @JoinColumn(name = "product_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories = new HashSet<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ProductImage> images = new ArrayList<>();

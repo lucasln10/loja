@@ -1,11 +1,11 @@
 package com.lojacrysleao.lojacrysleao_api.dto.lojaDTO;
 
-import com.lojacrysleao.lojacrysleao_api.model.loja.ProductImage;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -23,7 +23,11 @@ public class ProductDTO {
 
     private String detailedDescription;
 
-    private List<Long> categoryId;
+    // Categoria principal (mantido para compatibilidade)
+    private Long categoryId;
+
+    // Múltiplas categorias (novo)
+    private Set<Long> categoryIds;
 
     private boolean status;
 

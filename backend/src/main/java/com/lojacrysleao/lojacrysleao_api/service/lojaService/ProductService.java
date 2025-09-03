@@ -1,6 +1,7 @@
 package com.lojacrysleao.lojacrysleao_api.service.lojaService;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,20 +55,32 @@ public class ProductService {
             throw new BadRequestException("ProductDTO não pode ser nulo");
         }
         
-        if (dto.getCategoryId() == null) {
-            throw new BadRequestException("ID da categoria é obrigatório");
+        Product product = productMapper.toEntity(dto);
+        
+        // Configurar categoria principal (para compatibilidade)
+        if (dto.getCategoryId() != null) {
+            Category category = categoryRepository.findById(dto.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
+            product.setCategory(category);
         }
         
-        Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
-
-        Product product = productMapper.toEntity(dto, category);
+        // Configurar múltiplas categorias
+        if (dto.getCategoryIds() != null && !dto.getCategoryIds().isEmpty()) {
+            Set<Category> categories = dto.getCategoryIds().stream()
+                    .map(id -> categoryRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + id + " não encontrada")))
+                    .collect(Collectors.toSet());
+            product.getCategories().addAll(categories);
+        }
+        
         // Por padrão, novos produtos ficam ativos para aparecerem na Home
         if (!product.isStatus()) {
             product.setStatus(true);
         }
+        
         // Primeiro salva o produto para garantir que tenha ID
         Product savedProduct = productRepository.save(product);
+        
         // Agora cria o estoque vinculado ao produto salvo
         Storage storage = storageService.create(savedProduct);
         savedProduct.setStorage(storage);
@@ -76,7 +89,7 @@ public class ProductService {
     }
 
     public List<ProductDTO> listAll() {
-        return  productRepository.findAll()
+        return productRepository.findAll()
                 .stream()
                 .map(productMapper::toDTO)
                 .collect(Collectors.toList());
@@ -112,24 +125,33 @@ public class ProductService {
             throw new BadRequestException("ProductDTO e ID não podem ser nulos");
         }
 
-        if (dto.getCategoryId() == null) {
-            throw new BadRequestException("ID da categoria é obrigatório");
-        }
-
         Product existing = productRepository.findById(dto.getId())
             .orElseThrow(() -> new ResourceNotFoundException("Produto com ID " + dto.getId() + " não encontrado"));
 
-        Category category = categoryRepository.findById(dto.getCategoryId())
-            .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
+        // Atualizar campos básicos
+        productMapper.updateEntityFromDTO(dto, existing);
 
-        // Atualiza apenas os campos mutáveis
-        existing.setName(dto.getName());
-        existing.setPrice(dto.getPrice());
-        existing.setQuantity(dto.getQuantity());
-        existing.setDescription(dto.getDescription());
-        existing.setDetailedDescription(dto.getDetailedDescription());
-        existing.setStatus(dto.isStatus());
-        existing.setCategory(category);
+        // Atualizar categoria principal (para compatibilidade)
+        if (dto.getCategoryId() != null) {
+            Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoryId() + " não encontrada"));
+            existing.setCategory(category);
+        }
+
+        // Atualizar múltiplas categorias
+        if (dto.getCategoryIds() != null) {
+            // Limpar categorias existentes
+            existing.getCategories().clear();
+            
+            // Adicionar novas categorias
+            if (!dto.getCategoryIds().isEmpty()) {
+                Set<Category> categories = dto.getCategoryIds().stream()
+                        .map(id -> categoryRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + id + " não encontrada")))
+                        .collect(Collectors.toSet());
+                existing.getCategories().addAll(categories);
+            }
+        }
 
         Product savedProduct = productRepository.save(existing);
         // Atualiza o estoque existente para refletir a nova quantidade
@@ -262,6 +284,36 @@ public class ProductService {
         
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         Page<Product> productPage = productRepository.findByCategoryIdAndStatus(categoryId, true, pageable);
+        
+        List<ProductDTO> productDTOs = productPage.getContent()
+                .stream()
+                .map(productMapper::toDTO)
+                .collect(Collectors.toList());
+        
+        return PageResponseDTO.of(
+            productDTOs,
+            productPage.getNumber(),
+            productPage.getSize(),
+            productPage.getTotalElements()
+        );
+    }
+    
+    /**
+     * Filtra produtos por múltiplas categorias
+     */
+    public PageResponseDTO<ProductDTO> filterByCategories(List<Long> categoryIds, int page, int size) {
+        if (categoryIds == null || categoryIds.isEmpty()) {
+            throw new BadRequestException("Pelo menos um ID de categoria deve ser informado");
+        }
+        
+        // Verifica se as categorias existem
+        for (Long categoryId : categoryIds) {
+            categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + categoryId + " não encontrada"));
+        }
+        
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        Page<Product> productPage = productRepository.findByCategoriesIdInAndStatus(categoryIds, true, pageable);
         
         List<ProductDTO> productDTOs = productPage.getContent()
                 .stream()

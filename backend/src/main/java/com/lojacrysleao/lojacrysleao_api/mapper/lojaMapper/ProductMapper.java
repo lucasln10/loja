@@ -7,6 +7,7 @@ import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.ProductDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,7 +25,18 @@ public class ProductMapper {
         dto.setQuantity(product.getQuantity());
         dto.setDescription(product.getDescription());
         dto.setDetailedDescription(product.getDetailedDescription());
+        
+        // Categoria principal (mantido para compatibilidade)
         dto.setCategoryId(product.getCategory() != null ? product.getCategory().getId() : null);
+        
+        // Múltiplas categorias
+        if (product.getCategories() != null && !product.getCategories().isEmpty()) {
+            Set<Long> categoryIds = product.getCategories().stream()
+                    .map(Category::getId)
+                    .collect(Collectors.toSet());
+            dto.setCategoryIds(categoryIds);
+        }
+        
         dto.setStatus(product.isStatus());
 
         // Mapear as URLs das imagens
@@ -91,10 +103,39 @@ public class ProductMapper {
         return product;
     }
 
-    public Product toEntity(ProductDTO dto, List<Category> setCategorys) {
+    public Product toEntity(ProductDTO dto, Category category) {
         Product product = toEntity(dto);
-        product.setCategorys(category);
+        product.setCategory(category);
         return product;
+    }
+    
+    // Método para atualizar um produto existente com múltiplas categorias
+    public void updateEntityFromDTO(ProductDTO dto, Product product) {
+        if (dto.getName() != null) {
+            product.setName(dto.getName());
+        }
+        
+        if (dto.getPrice() >= 0) {
+            product.setPrice(dto.getPrice());
+        }
+        
+        if (dto.getQuantity() >= 0) {
+            product.setQuantity(dto.getQuantity());
+        }
+        
+        if (dto.getDescription() != null) {
+            product.setDescription(dto.getDescription());
+        }
+        
+        if (dto.getDetailedDescription() != null) {
+            product.setDetailedDescription(dto.getDetailedDescription());
+        }
+        
+        if (dto.getStatus() != null) {
+            product.setStatus(dto.getStatus());
+        }
+        
+        // As categorias serão atualizadas no service
     }
 
     /**

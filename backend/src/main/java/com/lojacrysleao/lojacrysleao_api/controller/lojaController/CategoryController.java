@@ -4,7 +4,6 @@ import com.lojacrysleao.lojacrysleao_api.dto.lojaDTO.CategoryDTO;
 import com.lojacrysleao.lojacrysleao_api.service.lojaService.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,37 +15,65 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    // Listar todas as categorias
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
-        List<CategoryDTO> categories = categoryService.listAll();
-        return ResponseEntity.ok(categories);
+    public ResponseEntity<List<CategoryDTO>> listAll() {
+        return ResponseEntity.ok(categoryService.listAll());
     }
 
+    // Listar apenas categorias raiz (sem pai)
+    @GetMapping("/root")
+    public ResponseEntity<List<CategoryDTO>> listRootCategories() {
+        return ResponseEntity.ok(categoryService.listRootCategories());
+    }
+
+    // Listar subcategorias de uma categoria específica
+    @GetMapping("/{id}/subcategories")
+    public ResponseEntity<List<CategoryDTO>> listSubcategories(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.listSubcategories(id));
+    }
+
+    // Listar categorias visíveis no header
+    @GetMapping("/header")
+    public ResponseEntity<List<CategoryDTO>> listHeaderCategories() {
+        return ResponseEntity.ok(categoryService.listHeaderCategories());
+    }
+
+    // Obter uma categoria específica
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
-        CategoryDTO category = categoryService.findById(id);
-        return ResponseEntity.ok(category);
+    public ResponseEntity<CategoryDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.findById(id));
     }
 
+    // Criar uma nova categoria
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
-        CategoryDTO createdCategory = categoryService.create(categoryDTO);
-        return ResponseEntity.ok(createdCategory);
+    public ResponseEntity<CategoryDTO> create(@RequestBody CategoryDTO categoryDTO) {
+        return ResponseEntity.ok(categoryService.create(categoryDTO));
     }
 
+    // Atualizar uma categoria existente
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
+    public ResponseEntity<CategoryDTO> update(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
         categoryDTO.setId(id);
-        CategoryDTO updatedCategory = categoryService.update(categoryDTO);
-        return ResponseEntity.ok(updatedCategory);
+        return ResponseEntity.ok(categoryService.update(categoryDTO));
     }
 
+    // Deletar uma categoria
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         categoryService.delete(id);
-        return ResponseEntity.ok("Categoria excluída com sucesso");
+        return ResponseEntity.noContent().build();
+    }
+
+    // Ativar uma categoria
+    @PutMapping("/{id}/enable")
+    public ResponseEntity<Boolean> enable(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.enableStatus(id));
+    }
+
+    // Desativar uma categoria
+    @PutMapping("/{id}/disable")
+    public ResponseEntity<Boolean> disable(@PathVariable Long id) {
+        return ResponseEntity.ok(!categoryService.desableStatus(id));
     }
 }

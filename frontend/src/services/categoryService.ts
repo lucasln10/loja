@@ -4,6 +4,9 @@ const API_BASE_URL = 'http://localhost:8080';
 export interface CategoryDTO {
   id?: number;
   name: string;
+  status?: boolean; // Adding status field
+  parentId?: number; // Para suportar subcategorias
+  showInHeader?: boolean; // Controle de visibilidade no header
 }
 
 export const categoryService = {
@@ -28,6 +31,27 @@ export const categoryService = {
     }
   },
 
+  // GET /api/categories/header - Buscar apenas categorias configuradas para o header
+  async getHeaderCategories(): Promise<CategoryDTO[]> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/categories/header`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Erro HTTP: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao buscar categorias do header:', error);
+      throw error;
+    }
+  },
+
   // GET /api/categories/{id} - Buscar categoria por ID
   async getCategoryById(id: number): Promise<CategoryDTO> {
     try {
@@ -45,6 +69,27 @@ export const categoryService = {
       return await response.json();
     } catch (error) {
       console.error('Erro ao buscar categoria por ID:', error);
+      throw error;
+    }
+  },
+
+  // GET /api/categories/{id}/subcategories - Buscar subcategorias de uma categoria
+  async getSubcategories(parentId: number): Promise<CategoryDTO[]> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/categories/${parentId}/subcategories`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar subcategorias: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao buscar subcategorias:', error);
       throw error;
     }
   },

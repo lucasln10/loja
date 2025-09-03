@@ -38,12 +38,44 @@ public class CategoryService {
         }
         
         Category category = categoryMapper.toEntity(dto);
+        
+        // Se for uma subcategoria, verificar se a categoria pai existe
+        if (dto.getParentId() != null) {
+            Category parent = categoryRepository.findById(dto.getParentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Categoria pai com ID " + dto.getParentId() + " não encontrada"));
+            category.setParent(parent);
+        }
+        
         Category saved = categoryRepository.save(category);
         return categoryMapper.toDTO(saved);
     }
 
     public List<CategoryDTO> listAll() {
-        return  categoryRepository.findAll()
+        return categoryRepository.findAll()
+                .stream()
+                .map(categoryMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+    
+    // Listar apenas categorias raiz (sem pai)
+    public List<CategoryDTO> listRootCategories() {
+        return categoryRepository.findByParentIdIsNull()
+                .stream()
+                .map(categoryMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+    
+    // Listar subcategorias de uma categoria específica
+    public List<CategoryDTO> listSubcategories(Long parentId) {
+        return categoryRepository.findByParentId(parentId)
+                .stream()
+                .map(categoryMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+    
+    // Listar categorias visíveis no header
+    public List<CategoryDTO> listHeaderCategories() {
+        return categoryRepository.findByShowInHeaderAndStatus(true, true)
                 .stream()
                 .map(categoryMapper::toDTO)
                 .collect(Collectors.toList());
@@ -67,11 +99,28 @@ public class CategoryService {
             throw new BadRequestException("Nome da categoria é obrigatório");
         }
 
-        categoryRepository.findById(dto.getId())
+        Category existing = categoryRepository.findById(dto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getId() + " não encontrada"));
 
-        Category category = categoryMapper.toEntity(dto);
-        Category saved = categoryRepository.save(category);
+        // Atualizar campos básicos
+        categoryMapper.updateEntityFromDTO(dto, existing);
+        
+        // Se for uma subcategoria, verificar se a categoria pai existe
+        if (dto.getParentId() != null && !dto.getParentId().equals(existing.getId())) {
+            // Não permitir que uma categoria seja pai de si mesma
+            if (dto.getParentId().equals(dto.getId())) {
+                throw new BadRequestException("Uma categoria não pode ser pai de si mesma");
+            }
+            
+            Category parent = categoryRepository.findById(dto.getParentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Categoria pai com ID " + dto.getParentId() + " não encontrada"));
+            existing.setParent(parent);
+        } else if (dto.getParentId() == null) {
+            // Remover o relacionamento com a categoria pai se parentId for null
+            existing.setParent(null);
+        }
+
+        Category saved = categoryRepository.save(existing);
         return categoryMapper.toDTO(saved);
     }
 
@@ -80,8 +129,15 @@ public class CategoryService {
             throw new BadRequestException("ID não pode ser nulo");
         }
         
-        findById(id);
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + id + " não encontrada"));
 
+        // Verificar se tem subcategorias
+        List<Category> subcategories = categoryRepository.findByParentId(id);
+        if (!subcategories.isEmpty()) {
+            throw new ConflictException("Não é possível deletar categoria com subcategorias. Primeiro remova as subcategorias.");
+        }
+        
         // Verifica produtos vinculados a esta categoria
         boolean hasProducts = productRepository.findAll()
                 .stream()
@@ -96,26 +152,28 @@ public class CategoryService {
     }
 
     public boolean enableStatus(Long id){
-        Category categoria = findById(id);
+        Category categoria = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + id + " não encontrada"));
 
         if (categoria.getStatus() == true){
-            throw new BadRequestException("Categoria já está ativa.")
+            throw new BadRequestException("Categoria já está ativa.");
         }
 
         categoria.setStatus(true);
         categoryRepository.saveAndFlush(categoria);
-        return categoria;
+        return categoria.getStatus();
     }
 
-    public boolean desableStatus(){
-        Category categoria = findById(id);
+    public boolean desableStatus(Long id){
+        Category categoria = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + id + " não encontrada"));
 
         if (categoria.getStatus() == false) {
             throw new BadRequestException("Categoria já está desativada.");
         }
         categoria.setStatus(false);
         categoryRepository.saveAndFlush(categoria);
-        return categoria;
+        return false; // Return false when category is disabled
     }
 
 }

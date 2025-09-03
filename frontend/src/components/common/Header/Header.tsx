@@ -21,14 +21,14 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
-  // Carregar categorias da API
+  // Carregar categorias da API (apenas as configuradas para o header)
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const categoriesData = await categoryService.getAllCategories();
+        const categoriesData = await categoryService.getHeaderCategories();
         setCategories(categoriesData);
       } catch (error) {
-        console.error('Erro ao carregar categorias:', error);
+        console.error('Erro ao carregar categorias do header:', error);
         // Fallback para categorias estáticas se a API falhar
         setCategories([
           { id: 1, name: 'PROMOÇÕES' },

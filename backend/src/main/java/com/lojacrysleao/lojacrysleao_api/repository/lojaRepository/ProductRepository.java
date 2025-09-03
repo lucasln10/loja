@@ -34,6 +34,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	Page<Product> findByCategoryIdAndStatus(Long categoryId, boolean status, Pageable pageable);
 	Page<Product> findByCategoryId(Long categoryId, Pageable pageable);
 	
+	// Filtros por múltiplas categorias
+	@Query("SELECT p FROM Product p JOIN p.categories c WHERE c.id = :categoryId AND p.status = :status")
+	Page<Product> findByCategoriesIdAndStatus(@Param("categoryId") Long categoryId, @Param("status") boolean status, Pageable pageable);
+	
+	@Query("SELECT p FROM Product p JOIN p.categories c WHERE c.id IN :categoryIds AND p.status = :status")
+	Page<Product> findByCategoriesIdInAndStatus(@Param("categoryIds") List<Long> categoryIds, @Param("status") boolean status, Pageable pageable);
+	
 	// Filtros por preço
 	Page<Product> findByPriceBetweenAndStatus(Double minPrice, Double maxPrice, boolean status, Pageable pageable);
 	Page<Product> findByPriceBetween(Double minPrice, Double maxPrice, Pageable pageable);
