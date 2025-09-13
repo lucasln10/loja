@@ -7,6 +7,7 @@ export interface CategoryDTO {
   status?: boolean; // Adding status field
   parentId?: number; // Para suportar subcategorias
   showInHeader?: boolean; // Controle de visibilidade no header
+  headerOrder?: number; // Controle de ordenação no header
 }
 
 export const categoryService = {
@@ -156,6 +157,27 @@ export const categoryService = {
       }
     } catch (error) {
       console.error('Erro ao deletar categoria:', error);
+      throw error;
+    }
+  },
+  
+  // PUT /api/categories/header-order - Atualizar ordem das categorias no header
+  async updateHeaderOrder(categoryIds: number[], authToken: string): Promise<void> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/categories/header-order`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(categoryIds),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Erro ao atualizar ordem das categorias: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar ordem das categorias:', error);
       throw error;
     }
   }

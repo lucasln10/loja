@@ -31,6 +31,10 @@ public class Category {
     // Controle de visibilidade no header
     @Column(name = "show_in_header", nullable = false)
     private boolean showInHeader = false;
+    
+    // Campo para ordenação das categorias no header
+    @Column(name = "header_order", nullable = false)
+    private int headerOrder = 0;
 
     // Getters e Setters
     public List<Product> getProdutos() {
@@ -87,5 +91,13 @@ public class Category {
     
     public void setShowInHeader(boolean showInHeader) {
         this.showInHeader = showInHeader;
+    }
+    
+    public int getHeaderOrder() {
+        return headerOrder;
+    }
+    
+    public void setHeaderOrder(int headerOrder) {
+        this.headerOrder = headerOrder;
     }
 }

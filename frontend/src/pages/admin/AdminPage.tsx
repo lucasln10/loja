@@ -5,6 +5,7 @@ import axios from 'axios';
 import ProductManager from '../../components/admin/ProductManager';
 import StockManager from '../../components/admin/StockManager';
 import CarouselManager from '../../components/admin/CarouselManager';
+import CategoryManager from '../../components/admin/CategoryManager'; // Adicionando o import do CategoryManager
 import './AdminPage.css';
 
 interface Product {
@@ -54,12 +55,6 @@ const AdminPage: React.FC = () => {
     stock: '',
     imageUrl: ''
   });
-
-  const [newCategory, setNewCategory] = useState({
-    name: ''
-  });
-
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
   // Verificar se o usuário é admin e aplicar deep-link inicial
   useEffect(() => {
@@ -185,58 +180,6 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  const handleAddCategory = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        'http://localhost:8080/api/categories',
-        {
-      name: newCategory.name
-        },
-        token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
-      );
-
-    setNewCategory({ name: '' });
-      
-      loadData();
-      alert('Categoria adicionada com sucesso!');
-    } catch (error) {
-      alert('Erro ao adicionar categoria');
-    }
-  };
-
-  const handleEditCategory = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingCategory) return;
-    
-    try {
-      const token = localStorage.getItem('token');
-      await axios.put(
-        `http://localhost:8080/api/categories/${editingCategory.id}`,
-        {
-          id: editingCategory.id,
-          name: editingCategory.name
-        },
-        token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
-      );
-
-      setEditingCategory(null);
-      loadData();
-      alert('Categoria atualizada com sucesso!');
-    } catch (error) {
-      alert('Erro ao atualizar categoria');
-    }
-  };
-
-  const startEditingCategory = (category: Category) => {
-    setEditingCategory({ ...category });
-  };
-
-  const cancelEditingCategory = () => {
-    setEditingCategory(null);
-  };
-
   const handleDeleteProduct = async (productId: number) => {
     if (window.confirm('Tem certeza que deseja excluir este produto?')) {
       try {
@@ -245,22 +188,6 @@ const AdminPage: React.FC = () => {
         alert('Produto excluído com sucesso!');
       } catch (error) {
         alert('Erro ao excluir produto');
-      }
-    }
-  };
-
-  const handleDeleteCategory = async (categoryId: number) => {
-    if (window.confirm('Tem certeza que deseja excluir esta categoria?')) {
-      try {
-        const token = localStorage.getItem('token');
-        await axios.delete(
-          `http://localhost:8080/api/categories/${categoryId}`,
-          token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
-        );
-        loadData();
-        alert('Categoria excluída com sucesso!');
-      } catch (error) {
-        alert('Erro ao excluir categoria');
       }
     }
   };
@@ -393,78 +320,8 @@ const AdminPage: React.FC = () => {
           <CarouselManager />
         )}
 
-        {activeTab === 'carousel' && (
-          <CarouselManager />
-        )}
-
         {activeTab === 'categories' && (
-          <div className="categories-section">
-            <h2>Gerenciar Categorias</h2>
-            
-            <div className="add-form">
-              <h3>Adicionar Nova Categoria</h3>
-              <form onSubmit={handleAddCategory}>
-                <input
-                  type="text"
-                  placeholder="Nome da categoria"
-                  value={newCategory.name}
-                  onChange={(e) => setNewCategory({...newCategory, name: e.target.value})}
-                  required
-                />
-                <button type="submit">Adicionar Categoria</button>
-              </form>
-            </div>
-
-            {editingCategory && (
-              <div className="edit-form">
-                <h3>Editar Categoria</h3>
-                <form onSubmit={handleEditCategory}>
-                  <input
-                    type="text"
-                    placeholder="Nome da categoria"
-                    value={editingCategory.name}
-                    onChange={(e) => setEditingCategory({...editingCategory, name: e.target.value})}
-                    required
-                  />
-                  <div className="form-buttons">
-                    <button type="submit">Salvar Alterações</button>
-                    <button type="button" onClick={cancelEditingCategory}>Cancelar</button>
-                  </div>
-                </form>
-              </div>
-            )}
-
-            <div className="categories-list">
-              <h3>Categorias Existentes ({categories.length})</h3>
-              <div className="categories-grid">
-                {categories.map(category => (
-                  <div key={category.id} className="category-card">
-                    <h4>{category.name}</h4>
-                    <div className="category-actions">
-                      <button 
-                        onClick={() => startEditingCategory(category)}
-                        className="edit-btn"
-                      >
-                        Editar
-                      </button>
-                      <button 
-                        onClick={() => handleDeleteCategory(category.id)}
-                        className="delete-btn"
-                      >
-                        Excluir
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {categories.length === 0 && (
-                <div className="no-categories">
-                  <p>Nenhuma categoria cadastrada ainda.</p>
-                </div>
-              )}
-            </div>
-          </div>
+          <CategoryManager authToken={localStorage.getItem('token') || ''} />
         )}
 
         {activeTab === 'users' && (

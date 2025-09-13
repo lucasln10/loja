@@ -24,6 +24,9 @@ public class CategoryMapper {
         
         // Mapear controle de visibilidade
         dto.setShowInHeader(category.isShowInHeader());
+        
+        // Mapear ordenação no header
+        dto.setHeaderOrder(category.getHeaderOrder());
 
         return dto;
     }
@@ -44,6 +47,11 @@ public class CategoryMapper {
         if (dto.getShowInHeader() != null) {
             category.setShowInHeader(dto.getShowInHeader());
         }
+        
+        // headerOrder será atualizado no service quando necessário
+        if (dto.getHeaderOrder() != null) {
+            category.setHeaderOrder(dto.getHeaderOrder());
+        }
 
         return category;
     }
@@ -60,6 +68,10 @@ public class CategoryMapper {
         
         if (dto.getShowInHeader() != null) {
             category.setShowInHeader(dto.getShowInHeader());
+        }
+        
+        if (dto.getHeaderOrder() != null) {
+            category.setHeaderOrder(dto.getHeaderOrder());
         }
         // parentId será tratado no service para evitar referências circulares
     }

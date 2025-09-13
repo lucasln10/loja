@@ -68,7 +68,7 @@ loja/
 - ✅ Gerenciar perfil
 
 ### **👑 Administradores**
-- ✅ Gerenciar produtos
+- ✅ Gerenciar produtos (agora com suporte a múltiplas categorias!)
 - ✅ Criar categorias
 - ✅ Administrar usuários
 - ✅ Ver estatísticas
@@ -100,6 +100,7 @@ loja/
 
 ### **👑 Administração**
 - [documentation/doc_backend/ADMIN_README.md](documentation/doc_backend/ADMIN_README.md) - Painel admin
+- [documentation/MULTI_CATEGORY_FEATURE.md](documentation/MULTI_CATEGORY_FEATURE.md) - Gerenciamento de múltiplas categorias por produto
 
 ---
 
@@ -125,6 +126,7 @@ Escolha seu caminho:
 - **🐳 Quero usar Docker**: Vá para [docker-compose.yml](docker-compose.yml)
 - **🔧 Quero entender o código**: Vá para [backend/README.md](backend/README.md) ou [frontend/README.md](frontend/README.md)
 - **👑 Quero administrar**: Vá para [ADMIN_README.md](documentation/doc_backend/ADMIN_README.md)
+- **🏷️ Quero gerenciar múltiplas categorias**: Vá para [MULTI_CATEGORY_FEATURE.md](documentation/MULTI_CATEGORY_FEATURE.md)
 
 ---
 

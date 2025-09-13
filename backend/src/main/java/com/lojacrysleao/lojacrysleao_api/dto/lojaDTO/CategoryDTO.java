@@ -7,6 +7,7 @@ public class CategoryDTO {
     private Boolean status;
     private Long parentId; // Para suportar subcategorias
     private Boolean showInHeader; // Controle de visibilidade no header
+    private Integer headerOrder; // Controle de ordenação no header
 
     // Getters e Setters
     public Long getId() {
@@ -47,5 +48,13 @@ public class CategoryDTO {
 
     public void setShowInHeader(Boolean showInHeader) {
         this.showInHeader = showInHeader;
+    }
+    
+    public Integer getHeaderOrder() {
+        return headerOrder;
+    }
+    
+    public void setHeaderOrder(Integer headerOrder) {
+        this.headerOrder = headerOrder;
     }
 }

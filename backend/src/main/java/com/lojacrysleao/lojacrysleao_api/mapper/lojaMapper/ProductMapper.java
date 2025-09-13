@@ -131,8 +131,8 @@ public class ProductMapper {
             product.setDetailedDescription(dto.getDetailedDescription());
         }
         
-        if (dto.getStatus() != null) {
-            product.setStatus(dto.getStatus());
+        if (dto.isStatus() != product.isStatus()) {
+            product.setStatus(dto.isStatus());
         }
         
         // As categorias serão atualizadas no service

@@ -20,7 +20,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
   // Removido: não usado
   // const [selectedProduct, setSelectedProduct] = useState<AdminProduct | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [showCreate] = useState(false); // esconder criação por padrão
+  const [showCreate, setShowCreate] = useState(false); // Permitir mostrar/ocultar criação
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -40,6 +40,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
     price: 0,
     quantity: 0,
     categoryId: 0,
+    categoryIds: [], // Inicializando com array vazio
     imageUrl: '',
     imageUrls: []
   });
@@ -107,12 +108,23 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: name === 'price' || name === 'quantity' || name === 'categoryId' 
-        ? parseFloat(value) || 0 
-        : value
-    }));
+    
+    // Tratamento especial para seleção de múltiplas categorias
+    if (name === 'categoryIds') {
+      const selectElement = e.target as HTMLSelectElement;
+      const selectedValues = Array.from(selectElement.selectedOptions).map(option => parseInt(option.value));
+      setFormData(prev => ({
+        ...prev,
+        categoryIds: selectedValues
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: name === 'price' || name === 'quantity' || name === 'categoryId' 
+          ? parseFloat(value) || 0 
+          : value
+      }));
+    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -175,10 +187,11 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
     setIsLoading(true);
 
     try {
-      // Primeiro, criar ou atualizar o produto
+      // Preparar dados do produto com múltiplas categorias
       const productData = { 
         ...formData, 
-        imageUrl: formData.imageUrls?.[0] || '' // Usar primeira imagem como principal para compatibilidade
+        imageUrl: formData.imageUrls?.[0] || '', // Usar primeira imagem como principal para compatibilidade
+        categoryIds: formData.categoryIds || [] // Garantir que sempre tenha um array
       };
 
       const url = isEditing 
@@ -221,14 +234,15 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
     setFormData({
       name: '',
       description: '',
+      detailedDescription: '',
       price: 0,
       quantity: 0,
       categoryId: 0,
+      categoryIds: [], // Resetar para array vazio
       imageUrl: '',
       imageUrls: []
     });
     setIsEditing(false);
-  // selecionado removido
     setImageFiles([]);
     setImagePreviews([]);
     setIsUploadingImage(false);
@@ -239,10 +253,31 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
     return category ? category.name : 'Categoria não encontrada';
   };
 
+  const getCategoryNames = (categoryIds?: number[]) => {
+    if (!categoryIds || categoryIds.length === 0) {
+      return 'Nenhuma categoria';
+    }
+    
+    const names = categoryIds
+      .map(id => {
+        const category = categories.find(cat => cat.id === id);
+        return category ? category.name : null;
+      })
+      .filter(name => name !== null) as string[];
+    
+    return names.length > 0 ? names.join(', ') : 'Categoria não encontrada';
+  };
+
   return (
     <div className="product-manager">
       <div className="product-manager-header">
         <h2>Gerenciar Produtos</h2>
+        <button 
+          className="btn-primary" 
+          onClick={() => setShowCreate(!showCreate)}
+        >
+          {showCreate ? 'Cancelar' : 'Adicionar Novo Produto'}
+        </button>
       </div>
 
       <div className="product-manager-content">
@@ -265,20 +300,37 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
               </div>
 
               <div className="form-group">
-                <label>Categoria *</label>
-                <select
-                  name="categoryId"
-                  value={formData.categoryId}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value={0}>Selecione uma categoria</option>
+                <label>Categorias *</label>
+                <div className="checkbox-group">
                   {categories.map(category => (
-                    <option key={category.id} value={category.id}>
+                    <label key={category.id} className="checkbox-item">
+                      <input
+                        type="checkbox"
+                        name="categoryIds"
+                        value={category.id}
+                        checked={formData.categoryIds?.includes(category.id) || false}
+                        onChange={(e) => {
+                          const categoryId = category.id;
+                          if (e.target.checked) {
+                            // Adicionar categoria
+                            setFormData(prev => ({
+                              ...prev,
+                              categoryIds: [...(prev.categoryIds || []), categoryId]
+                            }));
+                          } else {
+                            // Remover categoria
+                            setFormData(prev => ({
+                              ...prev,
+                              categoryIds: (prev.categoryIds || []).filter(id => id !== categoryId)
+                            }));
+                          }
+                        }}
+                      />
                       {category.name}
-                    </option>
+                    </label>
                   ))}
-                </select>
+                </div>
+                <small>Selecione uma ou mais categorias</small>
               </div>
             </div>
 
@@ -487,7 +539,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ authToken }) => {
                 
                 <div className="product-info">
                   <h4>{product.name}</h4>
-                  <p className="product-category">{getCategoryName(product.categoryId)}</p>
+                  <p className="product-category">{getCategoryNames(product.categoryIds || (product.categoryId ? [product.categoryId] : []))}</p>
                   <p className="product-price">R$ {product.price.toFixed(2)}</p>
                   <p className="product-stock">Estoque: {product.quantity}</p>
                   {product.description && (
