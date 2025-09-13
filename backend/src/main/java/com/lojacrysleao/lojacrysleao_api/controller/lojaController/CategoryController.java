@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CategoryController {
 
     @Autowired
@@ -76,4 +77,22 @@ public class CategoryController {
     public ResponseEntity<Boolean> disable(@PathVariable Long id) {
         return ResponseEntity.ok(!categoryService.desableStatus(id));
     }
+
+    // Endpoint para atualizar a ordem das categorias no header
+    @PutMapping("/header-order")
+    public ResponseEntity<?> updateHeaderOrder(@RequestBody List<Long> categoryIds, 
+                                               @RequestHeader("Authorization") String authHeader) {
+        try {
+            // Extrair token (remover "Bearer " prefixo)
+            String token = authHeader.substring(7);
+            
+            // Atualizar a ordem das categorias
+            categoryService.updateHeaderOrder(categoryIds);
+            
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
 }

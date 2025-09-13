@@ -10,6 +10,7 @@ export interface ProductDTO {
   quantity: number;
   description: string;
   categoryId: number;
+  categoryIds?: number[]; // Adicionando suporte para múltiplas categorias
   imageUrl?: string;
   imageUrls?: string[];
   status?: boolean;
@@ -66,6 +67,7 @@ export const productService = {
         description: dto.description || '',
         category: 'Produto', // será substituído em getAllProductsWithCategories
         categoryId: dto.categoryId,
+        categoryIds: dto.categoryIds, // Adicionando suporte para múltiplas categorias
         quantity: dto.quantity
       }));
     } catch (error) {
@@ -87,10 +89,27 @@ export const productService = {
           .filter(c => typeof c.id === 'number')
           .map(c => [c.id as number, c.name])
       );
-      return products.map(p => ({
-        ...p,
-        category: categoryMap.get(p.categoryId || 0) || 'Produto'
-      }));
+      
+      return products.map(p => {
+        // Se tiver múltiplas categorias, mostrar todas
+        if (p.categoryIds && p.categoryIds.length > 0) {
+          const categoryNames = p.categoryIds
+            .map(id => categoryMap.get(id))
+            .filter(name => name !== undefined)
+            .join(', ');
+          
+          return {
+            ...p,
+            category: categoryNames || 'Produto'
+          };
+        }
+        
+        // Se não tiver múltiplas categorias, usar a categoria principal
+        return {
+          ...p,
+          category: categoryMap.get(p.categoryId || 0) || 'Produto'
+        };
+      });
     } catch (error) {
       console.error('Erro ao buscar produtos com categorias:', error);
       return [];
@@ -114,6 +133,36 @@ export const productService = {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const dto: ProductDTO = await response.json();
       console.log('📦 Produto recebido:', dto);
+      
+      // Se tiver múltiplas categorias, mostrar todas
+      if (dto.categoryIds && dto.categoryIds.length > 0) {
+        try {
+          const categories = await categoryService.getAllCategories();
+          const categoryNames = dto.categoryIds
+            .map(id => {
+              const category = categories.find(c => c.id === id);
+              return category ? category.name : null;
+            })
+            .filter(name => name !== null)
+            .join(', ');
+          
+          return {
+            id: dto.id || 0,
+            name: dto.name,
+            price: dto.price,
+            image: getProductImage(dto),
+            description: dto.description || '',
+            category: categoryNames || 'Produto',
+            categoryId: dto.categoryId,
+            categoryIds: dto.categoryIds,
+            quantity: dto.quantity
+          };
+        } catch {
+          console.log('❌ Erro ao buscar categorias, usando fallback "Produto"');
+        }
+      }
+      
+      // Se não tiver múltiplas categorias, usar a categoria principal
       let categoryName = 'Produto';
       try {
         const categories = await categoryService.getAllCategories();
@@ -131,6 +180,7 @@ export const productService = {
         description: dto.description || '',
         category: categoryName,
         categoryId: dto.categoryId,
+        categoryIds: dto.categoryIds,
         quantity: dto.quantity
       };
     } catch (error) {

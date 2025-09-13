@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
+interface Category { 
+  id: number; 
+  name: string; 
+}
+
 interface ProductRow {
   id: number;
   name: string;
   price: number;
   categoryId: number;
+  categoryIds?: number[]; // Adicionando suporte para múltiplas categorias
   description?: string;
   detailedDescription?: string;
   status: boolean;
@@ -14,9 +20,10 @@ interface ProductRow {
   imageUrls?: string[];
 }
 
-interface Category { id: number; name: string; }
-
-interface StockManagerProps { authToken: string; selectedProductId?: number }
+interface StockManagerProps { 
+  authToken: string; 
+  selectedProductId?: number 
+}
 
 const API_BASE_URL = 'http://localhost:8080/api';
 
@@ -54,7 +61,8 @@ const StockManager: React.FC<StockManagerProps> = ({ authToken, selectedProductI
         id: p.id,
         name: p.name,
         price: p.price,
-        categoryId: p.categoryId,
+        categoryId: p.categoryId || 0, // Manter compatibilidade
+        categoryIds: p.categoryIds || [], // Nova propriedade
         description: p.description,
         detailedDescription: p.detailedDescription,
         status: !!p.status,
@@ -84,15 +92,29 @@ const StockManager: React.FC<StockManagerProps> = ({ authToken, selectedProductI
   const startCreate = () => {
     setCreating(true);
     setEditingId(null);
-    setDraft({ name: '', price: 0, categoryId: categories[0]?.id ?? 0, description: '', detailedDescription: '', status: true, quantity: 0, reservation: 0 });
-  setImageFiles([]);
-  setImagePreviews([]);
+    setDraft({ 
+      name: '', 
+      price: 0, 
+      categoryId: 0, // Manter compatibilidade
+      categoryIds: [], // Inicializar como array vazio
+      description: '', 
+      detailedDescription: '', 
+      status: true, 
+      quantity: 0, 
+      reservation: 0 
+    });
+    setImageFiles([]);
+    setImagePreviews([]);
   };
 
   const startEdit = (row: ProductRow) => {
     setEditingId(row.id);
     setCreating(false);
-    setDraft({ ...row });
+    setDraft({ 
+      ...row,
+      categoryId: row.categoryId || 0, // Manter compatibilidade
+      categoryIds: row.categoryIds || [] // Garantir que seja um array
+    });
     // carregar previews existentes (sem marcar para upload)
     const previews: string[] = [];
     if (row.imageUrls && row.imageUrls.length > 0) {
@@ -121,7 +143,7 @@ const StockManager: React.FC<StockManagerProps> = ({ authToken, selectedProductI
       const body = {
         name: draft.name,
         price: draft.price,
-        categoryId: draft.categoryId,
+        categoryIds: draft.categoryIds || [], // Usar categoryIds em vez de categoryId
         description: draft.description || '',
         detailedDescription: draft.detailedDescription || '',
         quantity: draft.quantity ?? 0,
@@ -156,7 +178,7 @@ const StockManager: React.FC<StockManagerProps> = ({ authToken, selectedProductI
         id: editingId,
         name: draft.name,
         price: draft.price,
-        categoryId: draft.categoryId,
+        categoryIds: draft.categoryIds || [], // Usar categoryIds em vez de categoryId
         description: draft.description || '',
         detailedDescription: draft.detailedDescription || '',
         quantity: draft.quantity ?? 0,
@@ -243,10 +265,35 @@ const StockManager: React.FC<StockManagerProps> = ({ authToken, selectedProductI
             </label>
             <label>
               Categoria
-              <select value={draft.categoryId ?? 0} onChange={e => handleChange('categoryId', parseInt(e.target.value, 10))}>
-                <option value={0}>Selecione</option>
-                {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
+              <div className="checkbox-group">
+                {categories.map(category => (
+                  <label key={category.id} className="checkbox-item">
+                    <input
+                      type="checkbox"
+                      name="categoryIds"
+                      value={category.id}
+                      checked={draft.categoryIds?.includes(category.id) || false}
+                      onChange={(e) => {
+                        const categoryId = category.id;
+                        if (e.target.checked) {
+                          // Adicionar categoria
+                          setDraft(prev => ({
+                            ...prev,
+                            categoryIds: [...(prev.categoryIds || []), categoryId]
+                          }));
+                        } else {
+                          // Remover categoria
+                          setDraft(prev => ({
+                            ...prev,
+                            categoryIds: (prev.categoryIds || []).filter(id => id !== categoryId)
+                          }));
+                        }
+                      }}
+                    />
+                    {category.name}
+                  </label>
+                ))}
+              </div>
             </label>
             <label>
               Status
@@ -324,7 +371,14 @@ const StockManager: React.FC<StockManagerProps> = ({ authToken, selectedProductI
               {rows.map(r => (
                 <tr key={r.id}>
                   <td>{r.name}</td>
-                  <td>{categories.find(c => c.id === r.categoryId)?.name || '-'}</td>
+                  <td>
+                    {r.categoryIds && r.categoryIds.length > 0 
+                      ? r.categoryIds.map(id => {
+                          const category = categories.find(c => c.id === id);
+                          return category ? category.name : `ID: ${id}`;
+                        }).join(', ')
+                      : (categories.find(c => c.id === r.categoryId)?.name || '-')}
+                  </td>
                   <td>R$ {Number(r.price).toFixed(2)}</td>
                   <td>{r.quantity}</td>
                   <td>{r.reservation}</td>

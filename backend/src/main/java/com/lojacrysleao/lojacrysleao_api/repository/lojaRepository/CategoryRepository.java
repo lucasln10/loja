@@ -20,4 +20,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     
     // Métodos para categorias visíveis no header
     List<Category> findByShowInHeaderAndStatus(boolean showInHeader, boolean status);
+    
+    // Método para categorias visíveis no header ordenadas
+    List<Category> findByShowInHeaderAndStatusOrderByHeaderOrder(boolean showInHeader, boolean status);
 }

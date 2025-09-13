@@ -7,6 +7,7 @@ export interface Product {
   detailedDescription?: string;
   category?: string;
   categoryId?: number;
+  categoryIds?: number[]; // Adicionando suporte para múltiplas categorias
   image: string;
   imageUrl?: string;
   imageUrls?: string[];
@@ -22,6 +23,7 @@ export interface AdminProduct {
   price: number;
   quantity: number;
   categoryId: number;
+  categoryIds?: number[]; // Adicionando suporte para múltiplas categorias
   imageUrl?: string;
   imageUrls?: string[];
   status?: boolean;

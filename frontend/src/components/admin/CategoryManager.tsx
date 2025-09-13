@@ -7,18 +7,23 @@ interface CategoryManagerProps {
 }
 
 const CategoryManager: React.FC<CategoryManagerProps> = ({ authToken }) => {
+  console.log('CategoryManager renderizado com authToken:', authToken); // Adicionando log de depuração
+  
   const [categories, setCategories] = useState<CategoryDTO[]>([]);
+  const [headerCategories, setHeaderCategories] = useState<CategoryDTO[]>([]); // Nova variável para categorias do header
   const [rootCategories, setRootCategories] = useState<CategoryDTO[]>([]);
   const [subcategories, setSubcategories] = useState<Record<number, CategoryDTO[]>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<CategoryDTO | null>(null);
   const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());
+  const [draggedCategory, setDraggedCategory] = useState<CategoryDTO | null>(null); // Para drag and drop
 
   const [formData, setFormData] = useState<CategoryDTO>({
     name: '',
     parentId: undefined,
-    showInHeader: false
+    showInHeader: false,
+    headerOrder: 0
   });
 
   // Carregar categorias
@@ -30,10 +35,10 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ authToken }) => {
     try {
       setIsLoading(true);
       const allCategories = await categoryService.getAllCategories();
-      setCategories(allCategories);
+      setCategories(allCategories || []); // Garantir que allCategories não seja undefined
       
       // Separar categorias raiz
-      const rootCats = allCategories.filter(cat => !cat.parentId);
+      const rootCats = (allCategories || []).filter(cat => !cat.parentId);
       setRootCategories(rootCats);
       
       // Carregar subcategorias para cada categoria raiz
@@ -41,16 +46,32 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ authToken }) => {
       for (const cat of rootCats) {
         try {
           const subs = await categoryService.getSubcategories(cat.id!);
-          subcats[cat.id!] = subs;
+          subcats[cat.id!] = subs || []; // Garantir que subs não seja undefined
         } catch (error) {
           console.error(`Erro ao carregar subcategorias para categoria ${cat.id}:`, error);
         }
       }
       setSubcategories(subcats);
+      
+      // Carregar categorias do header ordenadas
+      loadHeaderCategories();
     } catch (error) {
       console.error('Erro ao carregar categorias:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadHeaderCategories = async () => {
+    try {
+      const headerCats = await categoryService.getHeaderCategories();
+      // Ordenar por headerOrder
+      const sortedHeaderCats = (headerCats || []).sort((a, b) => 
+        (a.headerOrder || 0) - (b.headerOrder || 0)
+      );
+      setHeaderCategories(sortedHeaderCats);
+    } catch (error) {
+      console.error('Erro ao carregar categorias do header:', error);
     }
   };
 
@@ -63,6 +84,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ authToken }) => {
       [name]: type === 'checkbox' ? checked : 
               name === 'parentId' && value === '' ? undefined : 
               name === 'parentId' ? parseInt(value) || undefined : 
+              name === 'headerOrder' ? parseInt(value) || 0 :
               value
     }));
   };
@@ -94,7 +116,8 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ authToken }) => {
     setFormData({
       name: category.name || '',
       parentId: category.parentId,
-      showInHeader: category.showInHeader || false
+      showInHeader: category.showInHeader || false,
+      headerOrder: category.headerOrder || 0
     });
     setSelectedCategory(category);
     setIsEditing(true);
@@ -149,7 +172,8 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ authToken }) => {
     setFormData({
       name: '',
       parentId: undefined,
-      showInHeader: false
+      showInHeader: false,
+      headerOrder: 0
     });
     setSelectedCategory(null);
     setIsEditing(false);
@@ -177,6 +201,54 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ authToken }) => {
     } catch (error) {
       console.error(`Erro ao carregar subcategorias para categoria ${parentId}:`, error);
     }
+  };
+
+  // Funções para drag and drop
+  const handleDragStart = (e: React.DragEvent, category: CategoryDTO) => {
+    setDraggedCategory(category);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetCategory: CategoryDTO) => {
+    e.preventDefault();
+    
+    if (!draggedCategory || draggedCategory.id === targetCategory.id) {
+      return;
+    }
+    
+    // Criar nova ordem baseada na posição do drop
+    const newOrder = [...headerCategories];
+    const draggedIndex = newOrder.findIndex(c => c.id === draggedCategory.id);
+    const targetIndex = newOrder.findIndex(c => c.id === targetCategory.id);
+    
+    if (draggedIndex !== -1 && targetIndex !== -1) {
+      // Remover a categoria arrastada da posição atual
+      const [removed] = newOrder.splice(draggedIndex, 1);
+      // Inserir na nova posição
+      newOrder.splice(targetIndex, 0, removed);
+      
+      // Atualizar o estado
+      setHeaderCategories(newOrder);
+      
+      // Enviar nova ordem para o backend
+      try {
+        const categoryIds = newOrder.map(c => c.id!);
+        await categoryService.updateHeaderOrder(categoryIds, authToken);
+        alert('Ordem das categorias atualizada com sucesso!');
+      } catch (error) {
+        console.error('Erro ao atualizar ordem das categorias:', error);
+        alert('Erro ao atualizar ordem das categorias');
+        // Reverter a mudança se falhar
+        loadHeaderCategories();
+      }
+    }
+    
+    setDraggedCategory(null);
   };
 
   return (
@@ -220,6 +292,17 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ authToken }) => {
               </select>
             </div>
 
+            <div className="form-group">
+              <label>Ordem no Header</label>
+              <input
+                type="number"
+                name="headerOrder"
+                value={formData.headerOrder || 0}
+                onChange={handleInputChange}
+                min="0"
+              />
+            </div>
+
             <div className="form-group checkbox-group">
               <label>
                 <input
@@ -252,6 +335,48 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ authToken }) => {
           </form>
         </div>
 
+        {/* Seção de ordenação de categorias do header */}
+        <div className="header-order-section">
+          <h3>Ordenar Categorias do Header</h3>
+          <p className="section-description">
+            Arraste e solte as categorias abaixo para definir a ordem em que aparecem no menu do site.
+            Apenas categorias marcadas com "Header" são exibidas.
+          </p>
+          
+          {headerCategories.length > 0 ? (
+            <div className="header-categories-list">
+              {headerCategories.map((category) => (
+                <div
+                  key={category.id}
+                  className={`header-category-item ${category.showInHeader ? 'show-in-header' : ''}`}
+                  draggable={category.showInHeader}
+                  onDragStart={(e) => category.showInHeader && handleDragStart(e, category)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => category.showInHeader && handleDrop(e, category)}
+                >
+                  <div className="category-drag-handle">
+                    {category.showInHeader ? '☰' : '⊘'}
+                  </div>
+                  <div className="category-info">
+                    <span className="category-name">{category.name}</span>
+                    {category.showInHeader && (
+                      <span className="category-badge header-badge">Header</span>
+                    )}
+                    {category.showInHeader && (
+                      <span className="category-order">Ordem: {category.headerOrder || 0}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="no-header-categories">
+              Nenhuma categoria configurada para aparecer no header.
+              Edite uma categoria e marque "Exibir no header do site".
+            </div>
+          )}
+        </div>
+
         {/* Lista de categorias */}
         <div className="categories-list-section">
           <h3>Categorias Existentes</h3>
@@ -267,6 +392,9 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ authToken }) => {
                       <span className="category-name">{category.name}</span>
                       {category.showInHeader && (
                         <span className="category-badge header-badge">Header</span>
+                      )}
+                      {category.showInHeader && (
+                        <span className="category-order">Ordem: {category.headerOrder || 0}</span>
                       )}
                     </div>
                     <div className="category-actions">
@@ -307,6 +435,9 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ authToken }) => {
                               <span className="subcategory-name">↳ {subcategory.name}</span>
                               {subcategory.showInHeader && (
                                 <span className="category-badge header-badge">Header</span>
+                              )}
+                              {subcategory.showInHeader && (
+                                <span className="category-order">Ordem: {subcategory.headerOrder || 0}</span>
                               )}
                             </div>
                             <div className="subcategory-actions">

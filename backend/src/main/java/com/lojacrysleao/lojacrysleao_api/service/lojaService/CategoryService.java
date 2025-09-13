@@ -73,9 +73,9 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
     
-    // Listar categorias visíveis no header
+    // Listar categorias visíveis no header ordenadas
     public List<CategoryDTO> listHeaderCategories() {
-        return categoryRepository.findByShowInHeaderAndStatus(true, true)
+        return categoryRepository.findByShowInHeaderAndStatusOrderByHeaderOrder(true, true)
                 .stream()
                 .map(categoryMapper::toDTO)
                 .collect(Collectors.toList());
@@ -175,5 +175,20 @@ public class CategoryService {
         categoryRepository.saveAndFlush(categoria);
         return false; // Return false when category is disabled
     }
-
+    
+    // Novo método para atualizar a ordem das categorias no header
+    public void updateHeaderOrder(List<Long> categoryIds) {
+        // Para cada ID na lista, atualizar o headerOrder com a posição na lista
+        for (int i = 0; i < categoryIds.size(); i++) {
+            Long categoryId = categoryIds.get(i);
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + categoryId + " não encontrada"));
+            
+            // Atualizar apenas se a categoria estiver configurada para aparecer no header
+            if (category.isShowInHeader()) {
+                category.setHeaderOrder(i);
+                categoryRepository.save(category);
+            }
+        }
+    }
 }

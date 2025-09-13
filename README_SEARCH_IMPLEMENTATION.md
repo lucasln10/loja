@@ -1,188 +1,133 @@
-# Sistema de Busca e Filtros de Produtos - Implementação
+# Implementação de Busca e Filtros - Loja Crys Leão
 
-Este documento descreve a implementação completa do sistema de busca e filtros de produtos na API da Loja Crys Leão.
+## Índice
+1. [Visão Geral](#visão-geral)
+2. [Endpoints de Busca](#endpoints-de-busca)
+3. [Funcionalidades de Filtro](#funcionalidades-de-filtro)
+4. [Ordenação de Resultados](#ordenação-de-resultados)
+5. [Categorias e Hierarquia](#categorias-e-hierarquia)
+6. [Ordenação de Categorias no Header](#ordenação-de-categorias-no-header)
+7. [Considerações Técnicas](#considerações-técnicas)
 
-## 🚀 Funcionalidades Implementadas
+## Visão Geral
 
-### 1. **Busca por Texto**
-- Busca em nome, descrição e descrição detalhada dos produtos
-- Busca case-insensitive
-- Suporte a termos parciais
+Este documento descreve a implementação completa do sistema de busca e filtros da Loja Crys Leão, incluindo endpoints da API, funcionalidades de filtragem, ordenação e organização de categorias.
 
-### 2. **Filtros Avançados**
-- **Categoria**: Filtro por ID de categoria
-- **Preço**: Faixa de preço (mínimo e máximo)
-- **Estoque**: Faixa de estoque (mínimo e máximo)
-- **Disponibilidade**: Apenas produtos com estoque > 0
-- **Status**: Apenas produtos ativos
+## Endpoints de Busca
 
-### 3. **Paginação**
-- Controle de página e tamanho
-- Tamanho máximo de página: 100
-- Informações de navegação (próxima/anterior)
+### Busca Pública de Produtos
+- **GET** `/api/produtos/public/search`
+- Parâmetros: `q` (termo de busca), `page`, `size`, `sort`
 
-### 4. **Ordenação**
-- **Nome**: Ordenação alfabética
-- **Preço**: Ordenação numérica
-- **Data de Criação**: Ordenação cronológica
-- Direção: crescente (asc) ou decrescente (desc)
+### Busca Autenticada de Produtos (Admin)
+- **GET** `/api/produtos/search`
+- Parâmetros: `q` (termo de busca), `page`, `size`, `sort`
 
-## 📁 Arquivos Criados/Modificados
+## Funcionalidades de Filtro
 
-### Novos DTOs
-- `ProductSearchDTO.java` - Parâmetros de busca
-- `PageResponseDTO.java` - Resposta paginada genérica
-- `ProductSearchStatsDTO.java` - Estatísticas para filtros
+### Filtros Disponíveis
+1. Nome do produto (`name`)
+2. Preço (`price_min`, `price_max`)
+3. Categoria (`category`)
+4. Status de estoque (`inStock`)
+5. Status do produto (`status`)
 
-### Repository Atualizado
-- `ProductRepository.java` - Novos métodos de busca e filtros
+### Exemplos de Uso
+```
+# Buscar produtos por nome
+GET /api/produtos/public/search?q=biscuit
 
-### Service Atualizado
-- `ProductService.java` - Métodos de busca, filtros e estatísticas
+# Buscar produtos por faixa de preço
+GET /api/produtos/public/search?price_min=10&price_max=50
 
-### Controller Atualizado
-- `ProductController.java` - Novos endpoints de busca
+# Buscar produtos por categoria
+GET /api/produtos/public/search?category=2
 
-### Modelo Atualizado
-- `Product.java` - Campo `createdAt` para ordenação
-
-## 🔧 Endpoints Disponíveis
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| POST | `/api/products/search` | Busca avançada com filtros |
-| GET | `/api/products/search?q={termo}` | Busca simples por termo |
-| GET | `/api/products/category/{id}` | Filtro por categoria |
-| GET | `/api/products/price-range` | Filtro por faixa de preço |
-| GET | `/api/products/stock` | Filtro por estoque |
-| GET | `/api/products/page` | Paginação básica |
-| GET | `/api/products/stats` | Estatísticas dos produtos |
-
-## 💡 Exemplos de Uso
-
-### Busca Avançada
-```bash
-curl -X POST http://localhost:8080/api/products/search \
-  -H "Content-Type: application/json" \
-  -d '{
-    "searchTerm": "smartphone",
-    "minPrice": 200.0,
-    "maxPrice": 800.0,
-    "inStock": true,
-    "page": 0,
-    "size": 10,
-    "sortBy": "price",
-    "sortDirection": "asc"
-  }'
+# Combinar múltiplos filtros
+GET /api/produtos/public/search?q=silicone&price_min=20&category=3&inStock=true
 ```
 
-### Busca Simples
-```bash
-curl "http://localhost:8080/api/products/search?q=laptop&page=0&size=20"
+## Ordenação de Resultados
+
+### Campos Disponíveis para Ordenação
+- `name` (nome do produto)
+- `price` (preço)
+- `createdAt` (data de criação)
+- `status` (status do produto)
+
+### Direções de Ordenação
+- `ASC` (ascendente)
+- `DESC` (descendente)
+
+### Exemplos
+```
+# Ordenar por nome ascendente
+GET /api/produtos/public/search?sort=name,ASC
+
+# Ordenar por preço descendente
+GET /api/produtos/public/search?sort=price,DESC
+
+# Ordenar por data de criação descendente
+GET /api/produtos/public/search?sort=createdAt,DESC
 ```
 
-### Filtro por Categoria
-```bash
-curl "http://localhost:8080/api/products/category/1?page=0&size=15"
+## Categorias e Hierarquia
+
+### Estrutura de Categorias
+As categorias são organizadas em uma estrutura hierárquica com:
+- Categorias raiz (sem pai)
+- Subcategorias (com categoria pai)
+
+### Endpoints de Categorias
+- **GET** `/api/categories` - Listar todas as categorias
+- **GET** `/api/categories/{id}` - Obter categoria por ID
+- **GET** `/api/categories/{id}/subcategories` - Listar subcategorias
+- **GET** `/api/categories/header` - Listar categorias do header
+- **POST** `/api/categories` - Criar categoria (ADMIN)
+- **PUT** `/api/categories/{id}` - Atualizar categoria (ADMIN)
+- **DELETE** `/api/categories/{id}` - Deletar categoria (ADMIN)
+
+## Ordenação de Categorias no Header
+
+### Funcionalidade
+Os administradores podem controlar a ordem em que as categorias aparecem no menu de navegação do site (header) através de uma interface de drag-and-drop intuitiva.
+
+### Como Funciona
+1. No painel administrativo, na seção "Gerenciar Categorias", existe uma nova área chamada "Ordenar Categorias do Header"
+2. Apenas categorias marcadas com "Exibir no header do site" aparecem nesta lista
+3. O administrador pode arrastar e soltar as categorias para definir a ordem desejada
+4. A ordem é atualizada automaticamente no backend
+
+### Campos Relevantes
+- `showInHeader` (boolean): Indica se a categoria deve aparecer no header
+- `headerOrder` (int): Define a posição da categoria no header
+
+### Endpoints Adicionais
+- **PUT** `/api/categories/header-order` - Atualizar ordem das categorias no header
+
+### Exemplo de Uso
+```
+# Atualizar ordem das categorias no header
+PUT /api/categories/header-order
+Authorization: Bearer {token}
+Content-Type: application/json
+
+[3, 1, 4, 2]  // IDs das categorias na ordem desejada
 ```
 
-### Filtro por Preço
-```bash
-curl "http://localhost:8080/api/products/price-range?minPrice=100&maxPrice=500"
-```
+## Considerações Técnicas
 
-## 🗄️ Banco de Dados
+### Performance
+- Paginação aplicada para evitar sobrecarga
+- Índices recomendados no banco de dados para campos de busca
+- Uso de JPQL parametrizado para proteção contra SQL injection
 
-### Nova Coluna
-- `created_at` na tabela `produtos`
-- Script SQL: `add_created_at_column.sql`
+### Limitações
+- Tamanho máximo de página fixado em 100 itens
+- Busca baseada em LIKE SQL (pode ser lenta com grandes volumes)
+- Sem cache implementado (potencial melhoria com Redis)
 
-### Índices Recomendados
-```sql
--- Para busca por texto
-CREATE INDEX idx_product_name_desc ON produtos (name, description);
-
--- Para filtros de preço
-CREATE INDEX idx_product_price ON produtos (price);
-
--- Para filtros de estoque
-CREATE INDEX idx_product_quantity ON produtos (quantity);
-
--- Para filtros de categoria
-CREATE INDEX idx_product_category ON produtos (category_id);
-
--- Para ordenação por data
-CREATE INDEX idx_product_created_at ON produtos (created_at);
-```
-
-## 🧪 Testes
-
-### Arquivo de Teste
-- `ProductSearchServiceTest.java` - Testes unitários dos métodos de busca
-
-### Cobertura de Testes
-- Validação de parâmetros
-- Busca com filtros
-- Filtros individuais
-- Tratamento de erros
-- Paginação
-
-## 🔒 Segurança
-
-- Endpoints de busca são públicos (sem autenticação)
-- Validação rigorosa de parâmetros de entrada
-- Proteção contra SQL injection através de JPQL parametrizado
-- Limite máximo de tamanho de página (100)
-
-## 📊 Performance
-
-### Otimizações Implementadas
-- Paginação para evitar sobrecarga de memória
-- Consultas otimizadas no nível do banco
-- Filtros aplicados antes da paginação
-- Ordenação no banco de dados
-
-### Recomendações
-- Implementar cache Redis para buscas frequentes
-- Adicionar índices de texto completo para busca avançada
-- Considerar Elasticsearch para busca complexa
-
-## 🚀 Próximos Passos
-
-### Melhorias Futuras
-1. **Cache**: Implementar cache Redis para resultados frequentes
-2. **Busca Full-Text**: Integrar com Elasticsearch
-3. **Filtros Avançados**: Adicionar filtros por marca, avaliação, etc.
-4. **Sugestões**: Implementar autocomplete para busca
-5. **Analytics**: Rastrear termos de busca populares
-
-### Frontend
-- Implementar interface de busca com filtros
-- Componente de paginação
-- Sliders para faixas de preço
-- Dropdown para categorias
-- Campo de busca com autocomplete
-
-## 📝 Documentação
-
-- **API**: `SEARCH_API_DOCUMENTATION.md`
-- **Implementação**: Este arquivo
-- **SQL**: `add_created_at_column.sql`
-
-## 🐛 Troubleshooting
-
-### Problemas Comuns
-1. **Erro de coluna**: Execute o script SQL para adicionar `created_at`
-2. **Performance lenta**: Verifique se os índices estão criados
-3. **Parâmetros inválidos**: Verifique a validação no service
-
-### Logs
-- Habilite logs SQL para debug de consultas
-- Monitore tempo de resposta dos endpoints
-- Verifique uso de memória com grandes resultados
-
----
-
-**Desenvolvido para Loja Crys Leão**  
-**Data**: Dezembro 2024  
-**Versão**: 1.0.0
+### Segurança
+- Validação rigorosa de entradas
+- Proteção contra SQL injection via JPQL parametrizado
+- Autenticação JWT para endpoints administrativos
